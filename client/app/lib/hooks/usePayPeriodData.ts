@@ -20,7 +20,7 @@ export const usePayPeriodData = (
     (state) => state.setPayPeriodTimeSheets
   );
   const setSheets = setPayPeriodTimeSheets || storeSetPayPeriodTimeSheets;
-  const [pageView, setPageView] = useState("");
+  const [pageView, setPageView] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Calculate total pay period hours
@@ -42,6 +42,7 @@ export const usePayPeriodData = (
       if (!userId) {
         setPayPeriodSheets([]);
         setSheets([]);
+        setPageView(""); // Set to empty string when no user
         setLoading(false);
         return;
       }

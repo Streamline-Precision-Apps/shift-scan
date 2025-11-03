@@ -20,13 +20,14 @@ import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
 
 export default function WidgetSection() {
   const [loadingUi, setLoadingUi] = useState(true);
-
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
   const { user, setUser, setPayPeriodTimeSheets } = useUserStore();
   const { setJobsites } = useProfitStore();
   const { setEquipments } = useEquipmentStore();
   const { setCostCodes } = useCostCodeStore();
   const router = useRouter();
   const [toggle, setToggle] = useState(true);
+  const [loadedPageView, setLoadedPageView] = useState("");
 
   // If no user, try to load from localStorage first, then refetch from /api/v1/init if needed
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function WidgetSection() {
                     setEquipments(equipmentsData);
                     setCostCodes(costCodesData);
                     allStoresLoaded = true;
-                    setLoadingUi(false);
+                    // Don't set loadingUi to false here - let the combined effect handle it
                     return; // Don't fetch from API if all data found in localStorage
                   }
                 } catch (err) {
@@ -129,7 +130,7 @@ export default function WidgetSection() {
       } catch (e) {
         console.error("Error in fetchUser:", e);
       } finally {
-        setLoadingUi(false);
+        setUserDataLoaded(true);
       }
     };
     fetchUser();
@@ -162,6 +163,14 @@ export default function WidgetSection() {
 
   // Handlers
   const handleToggle = () => setToggle(!toggle);
+
+  // Wait until user data is loaded, usePayPeriodData is done loading, and pageView is determined (including empty string for homepage)
+  useEffect(() => {
+    if (userDataLoaded && !loading && pageView) {
+      setLoadingUi(false);
+      setLoadedPageView(pageView || "");
+    }
+  }, [userDataLoaded, loading, pageView]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -197,14 +206,14 @@ export default function WidgetSection() {
   return (
     <>
       <BannerSection
-        pageView={pageView}
+        pageView={loadedPageView}
         user={user || { firstName: "" }}
         date={date}
       />
 
       <MainContentSection
         toggle={toggle}
-        pageView={pageView}
+        pageView={loadedPageView}
         isManager={isManager}
         handleToggle={handleToggle}
         loading={loading}
