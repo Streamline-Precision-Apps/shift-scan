@@ -5,6 +5,7 @@ import { Texts } from "../components/(reusable)/texts";
 import { Holds } from "../components/(reusable)/holds";
 import { Grids } from "../components/(reusable)/grids";
 import { useEffect, useMemo, useState } from "react";
+import { getUserId, getApiUrl, apiRequest } from "@/app/lib/utils/api-Utils";
 import { z } from "zod";
 import Spinner from "../components/(animations)/spinner";
 import ControlComponent from "./hoursControl";
@@ -51,9 +52,20 @@ export default function DisplayBreakTime({
     const fetchBreakTime = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/getRecentTimecardReturn");
-        const data = await response.json();
-        const breakTime = new Date(data.endTime); // This will parse in local time
+        const userId = getUserId();
+        if (!userId) {
+          throw new Error("No userId found in localStorage");
+        }
+        const response = await apiRequest(
+          `/api/v1/timesheet/user/${userId}/return`,
+          "GET"
+        );
+
+        if (!response.success) {
+          throw new Error("Failed to fetch break time");
+        }
+
+        const breakTime = new Date(response.data.endTime); // This will parse in local time
         setBreakTime(breakTime); // Store the Date object directly
       } catch (error) {
         if (error instanceof z.ZodError) {

@@ -4,7 +4,7 @@ import { Buttons } from "@/app/v1/components/(reusable)/buttons";
 import { Titles } from "../(reusable)/titles";
 import { Images } from "../(reusable)/images";
 import { useTranslations } from "next-intl";
-import { usePermissions } from "@/app/context/PermissionsContext";
+import { usePermissions } from "@/app/lib/context/permissionContext";
 
 interface CameraComponentProps {
   setImageBlob?: React.Dispatch<React.SetStateAction<Blob | null>>;

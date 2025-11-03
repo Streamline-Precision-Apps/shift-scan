@@ -21,6 +21,7 @@ import {
   updateEmployeeEquipmentLogService,
   getClockOutDetailsService,
   updateClockOutService,
+  getPreviousTimesheet,
 } from "../services/timesheetService.js";
 // GET /v1/timesheet/user/:userId/active-status
 export async function getTimesheetActiveStatusController(
@@ -54,6 +55,25 @@ export async function getRecentTimesheetController(
       return res.status(400).json({ error: "userId parameter is required." });
     }
     const timesheet = await getRecentTimeSheetForUser(userId);
+    if (!timesheet) {
+      return res.status(204).json();
+    }
+    return res.json({ success: true, data: timesheet });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to fetch recent timesheet." });
+  }
+}
+
+export async function getRecentReturnTimesheetController(
+  req: Express.Request,
+  res: Express.Response
+) {
+  try {
+    const userId = req.params.userId;
+    if (!userId) {
+      return res.status(400).json({ error: "userId parameter is required." });
+    }
+    const timesheet = await getPreviousTimesheet(userId);
     if (!timesheet) {
       return res.status(204).json();
     }

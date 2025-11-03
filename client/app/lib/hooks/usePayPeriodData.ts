@@ -82,15 +82,18 @@ export const usePayPeriodData = (
         setSheets(transformedData);
 
         // Fetch page view cookie value (RESTful API)
+
         const pageViewResponse = await fetch(
           `${url}/api/cookies?name=currentPageView`,
           {
             method: "GET",
+            credentials: "include", // <--- this is required!
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
+
         if (
           pageViewResponse.status === 401 ||
           pageViewResponse.status === 403
@@ -101,6 +104,7 @@ export const usePayPeriodData = (
           setPageView("");
         } else {
           const pageViewData = await pageViewResponse.json();
+
           setPageView(pageViewData.value || "");
         }
       } catch (error) {

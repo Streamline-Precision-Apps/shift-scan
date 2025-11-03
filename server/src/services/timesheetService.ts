@@ -1374,3 +1374,20 @@ export async function updateClockOutService(
     };
   }
 }
+
+export async function getPreviousTimesheet(userId: string) {
+  const timesheet = await prisma.timeSheet.findFirst({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc", // Sort by most recent submission date
+    },
+    select: {
+      id: true,
+      endTime: true,
+    },
+  });
+
+  return timesheet;
+}

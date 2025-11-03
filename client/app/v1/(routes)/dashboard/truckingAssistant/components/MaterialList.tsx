@@ -1,12 +1,7 @@
 "use client";
-import {
-  deleteHaulingLogs,
-  updateHaulingLogs,
-} from "@/app/lib/actions/truckingActions";
+import { deleteHaulingLogs } from "@/app/lib/actions/truckingActions";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
 import { Holds } from "@/app/v1/components/(reusable)/holds";
-import { Inputs } from "@/app/v1/components/(reusable)/inputs";
-import { Selects } from "@/app/v1/components/(reusable)/selects";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import SlidingDiv from "@/app/v1/components/(animations)/slideDelete";
 import { useTranslations } from "next-intl";

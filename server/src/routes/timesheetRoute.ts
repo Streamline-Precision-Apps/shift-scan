@@ -18,6 +18,7 @@ import {
   deleteEmployeeEquipmentLogController,
   updateEmployeeEquipmentLogController,
   updateClockOutController,
+  getRecentReturnTimesheetController,
 } from "../controllers/timesheetController.js";
 
 const router = Router();
@@ -27,6 +28,7 @@ router.post("/approve-batch", approveTimesheetsBatchController);
 //create a timesheet
 router.post("/create", createTimesheetAndSwitchJobsController);
 router.get("/user/:userId/recent", getRecentTimesheetController);
+router.get("/user/:userId/return", getRecentReturnTimesheetController);
 // Get active timesheet status for a user
 router.get("/user/:userId/active-status", getTimesheetActiveStatusController);
 // Get dashboard logs for a user

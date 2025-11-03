@@ -15,6 +15,8 @@ import { Images } from "@/app/v1/components/(reusable)/images";
 import { useTimeSheetData } from "@/app/lib/context/TimeSheetIdContext";
 import { Bases } from "@/app/v1/components/(reusable)/bases";
 import { usePermissions } from "@/app/lib/context/permissionContext";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 export default function Comment({
   handleClick,
@@ -36,6 +38,8 @@ export default function Comment({
   loading: boolean;
   currentTimesheetId: number | undefined;
 }) {
+  const { user } = useUserStore();
+
   const c = useTranslations("Clock");
   const { permissionStatus: permissions } = usePermissions();
   const { refetchTimesheet, savedTimeSheetData, setTimeSheetData } =
@@ -62,18 +66,32 @@ export default function Comment({
         return;
       }
       // const coordinates = getStoredCoordinates();
-      const formData2 = new FormData();
-      formData2.append("id", timeSheetId.toString());
-      formData2.append("endTime", new Date().toISOString());
-      formData2.append("timesheetComments", commentsValue);
+
       // formData2.append("clockOutLat", coordinates || "");
       // formData2.append("clockOutLng", coordinates?.longitude.toString() || "");
 
-      const isUpdated = await breakOutTimeSheet(formData2);
+      // const isUpdated = await breakOutTimeSheet(formData2);
+
+      const body = {
+        userId: user?.id,
+        endTime: new Date().toISOString(),
+        timeSheetComments: commentsValue,
+        wasInjured: false,
+        clockOutLat: null,
+        clockOutLng: null,
+      };
+
+      // Use apiRequest to call the backend update route
+      const isUpdated = await apiRequest(
+        `/api/v1/timesheet/${timeSheetId}/clock-out`,
+        "PUT",
+        body
+      );
+
       if (isUpdated) {
         await setCurrentPageView("break");
         setTimeSheetData(null);
-        router.push("/");
+        router.push("/v1");
       }
     } catch (err) {
       console.error(err);

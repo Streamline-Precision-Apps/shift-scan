@@ -1,5 +1,5 @@
-"use server";
-import { auth } from "@/auth";
+"use client";
+import { useUserStore } from "@/app/lib/store/userStore";
 import NewClockProcess from "@/app/v1/components/(clock)/newclockProcess";
 import { Bases } from "@/app/v1/components/(reusable)/bases";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
@@ -7,13 +7,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function Clock() {
-  const session = await auth();
-  if (!session) {
-    redirect("/signin");
-  }
-  const user = session.user;
-  const lang = (await cookies()).get("locale");
-  const locale = lang ? lang.value : "en"; // Default to English
+  const { user } = useUserStore();
+
+  // Get the current language from cookies
+  const lang = user?.UserSettings?.language as string;
+
+  const locale = lang || "en";
 
   return (
     <Bases>
@@ -24,10 +23,10 @@ export default async function Clock() {
           option={"break"}
           locale={locale}
           returnpath="/"
-          mechanicView={user.mechanicView}
-          tascoView={user.tascoView}
-          truckView={user.truckView}
-          laborView={user.laborView}
+          mechanicView={user?.mechanicView ?? false}
+          tascoView={user?.tascoView ?? false}
+          truckView={user?.truckView ?? false}
+          laborView={user?.laborView ?? false}
         />
       </Contents>
     </Bases>
