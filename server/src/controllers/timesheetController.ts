@@ -293,6 +293,23 @@ export interface GeneralTimesheetInput {
   clockOutLong?: number | null;
 }
 
+export interface MechanicTimesheetInput {
+  date: string;
+  jobsiteId: string;
+  workType: string;
+  userId: string;
+  costCode: string;
+  startTime: string;
+  clockInLat?: number | null;
+  clockInLong?: number | null;
+  type?: string;
+  previousTimeSheetId?: number;
+  endTime?: string;
+  previoustimeSheetComments?: string;
+  clockOutLat?: number | null;
+  clockOutLong?: number | null;
+}
+
 // POST /v1/timesheet/create
 export async function createTimesheetAndSwitchJobsController(
   req: Express.Request,
@@ -301,7 +318,8 @@ export async function createTimesheetAndSwitchJobsController(
   try {
     const body = req.body as {
       type: string;
-    } & GeneralTimesheetInput;
+    } & GeneralTimesheetInput &
+      MechanicTimesheetInput;
     const { workType, type, ...rest } = body;
     let result;
     switch (workType) {
@@ -312,7 +330,10 @@ export async function createTimesheetAndSwitchJobsController(
         });
         break;
       case "mechanic":
-        result = await createMechanicTimesheetService({ ...rest, type });
+        result = await createMechanicTimesheetService({
+          data: { ...rest, workType },
+          type,
+        });
         break;
       case "tasco":
         result = await createTascoTimesheetService({ ...rest, type });

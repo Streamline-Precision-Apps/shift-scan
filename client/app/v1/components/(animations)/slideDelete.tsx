@@ -13,6 +13,7 @@ import {
   AlertDialogCancel,
 } from "../ui/alert-dialog";
 import { useTranslations } from "next-intl";
+import { Button } from "../ui/button";
 
 // Define prop types for flexibility
 interface SlidingDivProps extends React.PropsWithChildren {
@@ -51,7 +52,7 @@ export default function SlidingDiv({
   // Detect swipe direction on drag end
   const handleDragEnd = (
     event: MouseEvent | TouchEvent | PointerEvent,
-    info: { offset: { x: number } },
+    info: { offset: { x: number } }
   ) => {
     const threshold = containerWidth * 0.5; // 50% of the container width
 
@@ -99,7 +100,7 @@ export default function SlidingDiv({
 
       {/* Confirmation AlertDialog */}
       <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-        <AlertDialogContent className="max-w-[450px] border-black border-[3px] rounded-[10px] w-[90%]">
+        <AlertDialogContent className="max-w-[450px] rounded-[10px] w-[90%]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-bold text-center">
               Confirm Delete
@@ -111,27 +112,29 @@ export default function SlidingDiv({
           <AlertDialogFooter className="w-full flex flex-row items-center justify-center gap-4">
             <AlertDialogCancel
               asChild
-              className="border-gray-200 hover:bg-white border-2 rounded-[10px]"
+              className="border-gray-200 hover:bg-white rounded-[10px]"
             >
-              <Buttons
-                shadow="none"
-                className="bg-gray-300 text-black px-6 py-2 rounded-md mt-0 w-24"
+              <Button
+                size={"lg"}
+                variant="outline"
+                className="bg-gray-200 text-black px-6 py-2 rounded-md mt-0 w-24"
                 onClick={() => setShowConfirmation(false)}
               >
                 {t("cancel")}
-              </Buttons>
+              </Button>
             </AlertDialogCancel>
             <AlertDialogAction
               asChild
-              className=" bg-red-500   rounded-[10px] w-24"
+              className=" bg-red-500 hover:bg-red-600 border-none rounded-[10px] w-24"
               onClick={handleDelete}
             >
-              <Buttons
-                shadow="none"
+              <Button
+                size={"lg"}
+                variant="destructive"
                 className="bg-app-red text-white px-6 py-2 rounded-md"
               >
                 {t("delete")}
-              </Buttons>
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

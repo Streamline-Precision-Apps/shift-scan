@@ -1,7 +1,6 @@
 "use client";
 import { Bases } from "@/app/v1/components/(reusable)/bases";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { MechanicDisplayList } from "./_components/mechanic-display-list";
 import { Grids } from "@/app/v1/components/(reusable)/grids";
@@ -9,12 +8,10 @@ import { Holds } from "@/app/v1/components/(reusable)/holds";
 import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { Buttons } from "@/app/v1/components/(reusable)/buttons";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export default async function Mechanic() {
-  // const permission = session.user.permission;
-  // const isManager = ["ADMIN", "SUPERADMIN", "MANAGER"].includes(permission);
-  const t = await getTranslations("MechanicWidget");
+export default function Mechanic() {
+  const t = useTranslations("MechanicWidget");
 
   return (
     <Bases>

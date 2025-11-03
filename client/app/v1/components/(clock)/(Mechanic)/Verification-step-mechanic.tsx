@@ -17,7 +17,6 @@ import Spinner from "@/app/v1/components/(animations)/spinner";
 import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
 
 import { usePermissions } from "@/app/lib/context/permissionContext";
-import { handleMechanicTimeSheet } from "@/app/lib/actions/timeSheetActions";
 import Capitalize from "@/app/lib/utils/capitalizeFirst";
 import {
   setCurrentPageView,
@@ -28,6 +27,8 @@ import { useUserStore } from "@/app/lib/store/userStore";
 import { useTimeSheetData } from "@/app/lib/context/TimeSheetIdContext";
 import { useSavedCostCode } from "@/app/lib/context/CostCodeContext";
 import { useCommentData } from "@/app/lib/context/CommentContext";
+import { handleMechanicTimeSheet } from "@/app/lib/actions/timeSheetActions";
+import { sendNotification } from "@/app/lib/actions/generatorActions";
 
 type Option = {
   id: string;
@@ -87,24 +88,33 @@ export default function MechanicVerificationStep({
         console.error("Location permissions are required to clock in.");
         return;
       }
+      const payload: {
+        date: string;
+        jobsiteId: string;
+        workType: string;
+        userId: string;
+        costCode: string;
+        startTime: string;
+        clockInLat?: number | null;
+        clockInLong?: number | null;
+        type?: string;
+        previousTimeSheetId?: number;
+        endTime?: string;
+        previoustimeSheetComments?: string;
+        clockOutLat?: number | null;
+        clockOutLong?: number | null;
+      } = {
+        date: new Date().toISOString(),
+        jobsiteId: jobsite?.id || "",
+        workType: role,
+        userId: id?.toString() || "",
+        costCode: costCode || "",
+        startTime: new Date().toISOString(),
+        // Uncomment and set these if you have coordinates
+        // clockInLat: getStoredCoordinatesResult?.latitude ?? null,
+        // clockInLong: getStoredCoordinatesResult?.longitude ?? null,
+      };
       // const getStoredCoordinatesResult = getStoredCoordinates();
-      const formData = new FormData();
-      formData.append("submitDate", new Date().toISOString());
-      formData.append("userId", id);
-      formData.append("date", new Date().toISOString());
-      formData.append("jobsiteId", jobsite?.id || "");
-      formData.append("costcode", costCode);
-      formData.append("startTime", new Date().toISOString());
-      formData.append("workType", role);
-      // fetch coordinates from permissions context
-      // formData.append(
-      //   "clockInLat",
-      //   getStoredCoordinatesResult?.latitude.toString() || ""
-      // );
-      // formData.append(
-      //   "clockInLong",
-      //   getStoredCoordinatesResult?.longitude.toString() || ""
-      // );
 
       // If switching jobs, include the previous timesheet ID
       if (type === "switchJobs") {
@@ -118,38 +128,29 @@ export default function MechanicVerificationStep({
           }
           return (timeSheetId = ts);
         }
-        formData.append("id", timeSheetId.toString());
-        formData.append("endTime", new Date().toISOString());
-        formData.append(
-          "timeSheetComments",
-          savedCommentData?.id.toString() || ""
-        );
-        formData.append("type", "switchJobs"); // added to switch jobs
-        //   formData.append(
-        //     "clockOutLat",
-        //     getStoredCoordinatesResult?.latitude.toString() || ""
-        //   );
-        //   formData.append(
-        //     "clockOutLong",
-        //     getStoredCoordinatesResult?.longitude.toString() || ""
-        //   );
+        payload.type = "switchJobs";
+        payload.previousTimeSheetId = timeSheetId;
+        payload.endTime = new Date().toISOString();
+        payload.previoustimeSheetComments =
+          savedCommentData?.id?.toString() || "";
+        // Uncomment and set these if you have coordinates
+        // payload.clockOutLat = getStoredCoordinatesResult?.latitude ?? null;
+        // payload.clockOutLong = getStoredCoordinatesResult?.longitude ?? null;
       }
 
-      // Use the new transaction-based function
-      const responseAction = await handleMechanicTimeSheet(formData);
-      if (responseAction.success && type === "switchJobs") {
-        await fetch("/api/notifications/send-multicast", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            topic: "timecard-submission",
-            title: "Timecard Approval Needed",
-            message: `#${responseAction.createdTimeCard.id} has been submitted by ${responseAction.createdTimeCard.User.firstName} ${responseAction.createdTimeCard.User.lastName} for approval.`,
-            link: `/admins/timesheets?id=${responseAction.createdTimeCard.id}`,
-            referenceId: responseAction.createdTimeCard.id,
-          }),
+      const responseAction = await handleMechanicTimeSheet(payload);
+      if (
+        type === "switchJobs" &&
+        responseAction &&
+        responseAction.createdTimeSheet &&
+        responseAction.createdTimeSheet.id
+      ) {
+        await sendNotification({
+          topic: "timecard-submission",
+          title: "Timecard Approval Needed",
+          message: `#${responseAction.createdTimeCard.id} has been submitted by ${responseAction.createdTimeCard.User.firstName} ${responseAction.createdTimeCard.User.lastName} for approval.`,
+          link: `/admins/timesheets?id=${responseAction.createdTimeCard.id}`,
+          referenceId: responseAction.createdTimeCard.id,
         });
       }
 
@@ -162,7 +163,7 @@ export default function MechanicVerificationStep({
         setWorkRole(role),
         setLaborType(clockInRoleTypes || ""),
         refetchTimesheet(),
-      ]).then(() => router.push("/dashboard"));
+      ]).then(() => router.push("/v1/dashboard"));
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     } finally {

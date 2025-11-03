@@ -8,7 +8,7 @@ import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -17,6 +17,7 @@ import {
   DialogFooter,
   DialogTitle,
   DialogClose,
+  DialogDescription,
 } from "@/app/v1/components/ui/dialog";
 import { Input } from "@/app/v1/components/ui/input";
 import { Textarea } from "@/app/v1/components/ui/textarea";
@@ -30,6 +31,8 @@ import {
 } from "@/app/lib/actions/mechanicActions";
 import { PullToRefresh } from "@/app/v1/components/(animations)/pullToRefresh";
 import SlidingDiv from "@/app/v1/components/(animations)/slideDelete";
+import { useEquipmentStore } from "@/app/lib/store/equipmentStore";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
 
 type Project = {
   id: number;
@@ -51,8 +54,6 @@ type Equipment = {
 export function MechanicDisplayList() {
   const [modalOpen, setModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState<number | null>(null);
   const [form, setForm] = useState({
     equipment: { id: "", name: "" },
     hours: "",
@@ -64,6 +65,14 @@ export function MechanicDisplayList() {
     hours: "",
     description: "",
   });
+  const t = useTranslations("MechanicWidget");
+  const router = useRouter();
+  const { equipments } = useEquipmentStore();
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [timecardId, setTimeSheetId] = useState<string | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loadingProjectId, setLoadingProjectId] = useState<number | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [startProjectLoading, setStartProjectLoading] = useState(false);
@@ -151,66 +160,29 @@ export function MechanicDisplayList() {
     }
   };
 
-  const handleDeleteProject = async () => {
-    if (!projectToDelete) return;
-
+  const handleDeleteProject = async (projectToDelete: number) => {
     try {
-      // Show loading state for delete operation
-      setLoadingProjectId(projectToDelete);
-
       const result = await deleteProject(projectToDelete);
       if (result) {
-        // Close modal and refresh the list
-        setDeleteModalOpen(false);
-        setProjectToDelete(null);
-        // Set loading to refresh the list
-        setLoading(true);
-        setRefreshing(false);
-        fetchData();
+        // Remove the project from the local state instead of refreshing
+        setProjects((prev) => prev.filter((p) => p.id !== projectToDelete));
       }
     } catch (error) {
       console.error("Error deleting project:", error);
-      // Add error handling UI here if needed
     } finally {
       setLoadingProjectId(null);
     }
   };
 
-  const confirmDelete = (projectId: number) => {
-    setProjectToDelete(projectId);
-    setDeleteModalOpen(true);
-  };
-
-  const t = useTranslations("MechanicWidget");
-  const router = useRouter();
-  const [equipmentList, setEquipmentList] = useState<Equipment[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [timecardId, setTimeSheetId] = useState<string | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loadingProjectId, setLoadingProjectId] = useState<number | null>(null);
-
-  const fetchEquipmentList = useCallback(async () => {
-    const EquipmentListRes = await fetch("/api/equipmentIdNameQrIdAndCode", {
-      next: { tags: ["equipment-list"] },
-    });
-    const EquipmentList = await EquipmentListRes.json();
-    setEquipmentList(EquipmentList);
-  }, []);
-
   const fetchProjectById = useCallback(async (id: string) => {
     try {
-      const projectRes = await fetch(`/api/getProjectById/${id}`, {
-        next: { tags: ["maintenance-projects"] },
-      });
+      const projectRes = await apiRequest(`/api/v1/mechanic-logs/${id}`, "GET");
 
-      if (!projectRes.ok) {
-        const errorData = await projectRes.json();
-        throw new Error(errorData.error || `Error: ${projectRes.status}`);
+      if (!projectRes) {
+        throw new Error("Failed to fetch project.");
       }
 
-      const projectData = await projectRes.json();
-      return projectData;
+      return projectRes;
     } catch (error) {
       console.error(`Error fetching project with ID ${id}:`, error);
       throw error;
@@ -274,23 +246,18 @@ export function MechanicDisplayList() {
     try {
       // Add a 1-second delay to better showcase the refresh animation
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // First, fetch the most recent timecard
-      const timecardRes = await fetch("/api/getRecentTimecard", {
-        next: { tags: ["timesheets"] },
-      });
-      const timecardData = await timecardRes.json();
-      setTimeSheetId(timecardData.id);
+      const timecardDataRaw = localStorage.getItem("timesheetId");
+      // Parse the JSON string to get the object
+      const timecardData = timecardDataRaw ? JSON.parse(timecardDataRaw) : null;
+      // expected value {"id":328,"endTime":null}
+      setTimeSheetId(timecardData?.id);
 
       // Then, fetch projects connected to that timecard
       if (timecardData?.id) {
-        const projectsRes = await fetch(
-          `/api/getProjects?timecardId=${timecardData.id}`,
-          {
-            next: { tags: ["maintenance-projects"] },
-          }
+        const projectsData = await apiRequest(
+          `/api/v1/mechanic-logs/timesheet/${timecardData.id}`,
+          "GET"
         );
-        const projectsData = await projectsRes.json();
         setProjects(projectsData);
       } else {
         setProjects([]);
@@ -302,15 +269,15 @@ export function MechanicDisplayList() {
       setRefreshing(false);
     }
   }, [projects.length]);
+
   // separate function to have a useEffect and a callback
   useEffect(() => {
     fetchData();
-    fetchEquipmentList();
-  }, [fetchData, fetchEquipmentList]);
+  }, [fetchData]);
 
   return (
     <>
-      {equipmentList && (
+      {equipments && equipments.length > 0 && (
         <>
           {/* Create New Project Modal */}
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -321,11 +288,12 @@ export function MechanicDisplayList() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <DialogHeader>
                   <DialogTitle>{t("CreateNewProject")}</DialogTitle>
+                  <DialogDescription></DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                   <MobileCombobox
                     label={t("SelectEquipment")}
-                    options={equipmentList.map((e) => ({
+                    options={equipments.map((e) => ({
                       label:
                         `${e.code ? `${e.code} -` : ""} ${e.name}` ||
                         "Unnamed Equipment",
@@ -334,7 +302,7 @@ export function MechanicDisplayList() {
                     value={form.equipment.id ? [form.equipment.id] : []}
                     onChange={(selectedIds: string[]) => {
                       const selectedId = selectedIds[0] || "";
-                      const selectedEquipment = equipmentList.find(
+                      const selectedEquipment = equipments.find(
                         (e) => e.id === selectedId
                       );
                       setForm((prev) => ({
@@ -404,11 +372,12 @@ export function MechanicDisplayList() {
               <form onSubmit={handleUpdate} className="space-y-4">
                 <DialogHeader>
                   <DialogTitle>{t("UpdateProject")}</DialogTitle>
+                  <DialogDescription></DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                   <MobileCombobox
                     label={t("SelectEquipment")}
-                    options={equipmentList.map((e) => ({
+                    options={equipments.map((e) => ({
                       label: e.name || "Unnamed Equipment",
                       value: e.id,
                     }))}
@@ -417,7 +386,7 @@ export function MechanicDisplayList() {
                     }
                     onChange={(selectedIds: string[]) => {
                       const selectedId = selectedIds[0] || "";
-                      const selectedEquipment = equipmentList.find(
+                      const selectedEquipment = equipments.find(
                         (e) => e.id === selectedId
                       );
                       setUpdateForm((prev) => ({
@@ -496,7 +465,7 @@ export function MechanicDisplayList() {
       <Grids rows="7" gap="5">
         {/* Header */}
         <Holds background={"white"} className={`row-start-1 row-end-2 h-full `}>
-          <TitleBoxes onClick={() => router.push("/dashboard")}>
+          <TitleBoxes onClick={() => router.push("/v1/dashboard")}>
             <Titles size="lg">{t("Projects")}</Titles>
           </TitleBoxes>
         </Holds>
@@ -524,7 +493,9 @@ export function MechanicDisplayList() {
                     {projects.map((project) => (
                       <SlidingDiv
                         key={project.id}
-                        onSwipeLeft={() => confirmDelete(project.id)}
+                        onSwipeLeft={() => {
+                          handleDeleteProject(project.id);
+                        }}
                         confirmationMessage={t("DeleteProjectPrompt")}
                       >
                         <div className="pb-2 pl-2 pt-1 pr-1 rounded-lg border border-gray-200 bg-white shadow-sm flex flex-col gap-1">
@@ -543,8 +514,8 @@ export function MechanicDisplayList() {
                               className={`text-xs ${
                                 loadingProjectId === project.id
                                   ? "bg-gray-100 text-gray-400"
-                                  : "text-blue-600 bg-blue-50 hover:bg-blue-100"
-                              } px-2 py-1 rounded w-14 h-10 justify-center flex items-center`}
+                                  : "text-blue-600 bg-slate-100 hover:bg-blue-100"
+                              } px-2 py-0.5 rounded w-12 h-10 justify-center flex items-center border border-gray-200`}
                               onClick={() => handleEditProject(project.id)}
                               disabled={loadingProjectId === project.id}
                             >
@@ -609,44 +580,6 @@ export function MechanicDisplayList() {
           </Contents>
         </Holds>
       </Grids>
-
-      {/* Delete Confirmation Modal */}
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent className="w-[90%] max-w-md mx-auto rounded-lg">
-          <DialogHeader>
-            <DialogTitle>{t("DeleteProject")}</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-gray-600">{t("DeleteProjectConfirmation")}</p>
-          </div>
-          <DialogFooter className="flex flex-row gap-2 justify-end">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                size={"lg"}
-                variant="secondary"
-                onClick={() => setProjectToDelete(null)}
-              >
-                {t("Cancel")}
-              </Button>
-            </DialogClose>
-            <Button
-              size={"lg"}
-              type="button"
-              onClick={handleDeleteProject}
-              disabled={loadingProjectId === projectToDelete}
-              className="bg-red-500 hover:none text-white"
-            >
-              {loadingProjectId === projectToDelete ? (
-                <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin inline-block" />
-              ) : null}
-              {loadingProjectId === projectToDelete
-                ? t("Deleting")
-                : t("Delete")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

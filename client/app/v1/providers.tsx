@@ -8,6 +8,7 @@ import { ScanDataEQProvider } from "../lib/context/equipmentContext";
 import { TimeSheetDataProvider } from "../lib/context/TimeSheetIdContext";
 import { CurrentViewProvider } from "../lib/context/CurrentViewContext";
 import { NotificationProvider } from "../lib/context/NotificationContext";
+import { SavedCostCodeProvider } from "../lib/context/CostCodeContext";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -18,7 +19,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
             <TimeSheetDataProvider>
               <CurrentViewProvider>
                 <NotificationProvider>
-                  <PermissionsProvider>{children}</PermissionsProvider>
+                  <SavedCostCodeProvider>
+                    <PermissionsProvider>{children}</PermissionsProvider>
+                  </SavedCostCodeProvider>
                 </NotificationProvider>
               </CurrentViewProvider>
             </TimeSheetDataProvider>

@@ -166,7 +166,7 @@ export default function WidgetSection() {
 
   // Wait until user data is loaded, usePayPeriodData is done loading, and pageView is determined (including empty string for homepage)
   useEffect(() => {
-    if (userDataLoaded && !loading && pageView) {
+    if (userDataLoaded && !loading) {
       setLoadingUi(false);
       setLoadedPageView(pageView || "");
     }

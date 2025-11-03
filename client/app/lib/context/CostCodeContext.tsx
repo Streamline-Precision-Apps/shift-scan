@@ -9,6 +9,7 @@ import React, {
   useEffect,
 } from "react";
 import { setCostCode as setCostCodeCookie } from "@/app/lib/actions/cookieActions";
+import { apiRequest } from "../utils/api-Utils";
 // creates a prop to be passes to a context
 type SavedCostCodeProps = {
   savedCostCode: string | null;
@@ -31,15 +32,19 @@ export const SavedCostCodeProvider: React.FC<{ children: ReactNode }> = ({
     const initializeCostCode = async () => {
       try {
         // Fetch cookie data once during initialization
-        const previousCostCode = await fetch(
-          "/api/cookies?method=get&name=costCode"
-        ).then((res) => res.json());
+        const res = await apiRequest("/api/cookies?name=costCode", "GET");
 
-        if (previousCostCode && previousCostCode !== "") {
-          setCostCode(previousCostCode);
+        // Only parse JSON if response is ok (not 404 or other errors)
+        if (res.success) {
+          const previousCostCode = await res.json();
+          if (previousCostCode && previousCostCode !== "") {
+            setCostCode(previousCostCode);
+          }
         }
+        // Silently handle 404 or other errors - just leave costCode as null
       } catch (error) {
-        console.error("Error fetching job site cookie:", error);
+        // Silently handle errors - costCode will remain as null
+        console.debug("Cost code not found or error fetching:", error);
       }
     };
 

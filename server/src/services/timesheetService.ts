@@ -1,6 +1,9 @@
 import { formatISO } from "date-fns";
 import type { EquipmentState, Prisma } from "../../generated/prisma/client.js";
-import type { GeneralTimesheetInput } from "../controllers/timesheetController.js";
+import type {
+  GeneralTimesheetInput,
+  MechanicTimesheetInput,
+} from "../controllers/timesheetController.js";
 import prisma from "../lib/prisma.js";
 
 export async function updateTimesheetService({
@@ -503,8 +506,62 @@ export async function createGeneralTimesheetService({
   return createdTimeSheet;
 }
 
-export async function createMechanicTimesheetService({}) {
+export async function createMechanicTimesheetService({
+  data,
+  type,
+}: {
+  data: MechanicTimesheetInput;
+  type?: string;
+}) {
   // Implementation for creating a mechanic timesheet
+  const createdTimeCard = await prisma.$transaction(async (prisma) => {
+    // Step 1: Create a new TimeSheet
+    const createdTimeSheet = await prisma.timeSheet.create({
+      data: {
+        date: formatISO(data.date),
+        Jobsite: { connect: { id: data.jobsiteId } },
+        User: { connect: { id: data.userId } },
+        CostCode: { connect: { name: data.costCode } },
+        startTime: formatISO(data.startTime),
+        workType: "MECHANIC",
+        status: "DRAFT",
+        clockInLat: data.clockInLat || null,
+        clockInLng: data.clockInLong || null,
+      },
+      include: {
+        User: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    if (createdTimeSheet) {
+      await prisma.user.update({
+        where: { id: data.userId },
+        data: {
+          clockedIn: true,
+        },
+      });
+    }
+    if (type === "switchJobs" && data.previousTimeSheetId && data.endTime) {
+      await prisma.timeSheet.update({
+        where: { id: data.previousTimeSheetId },
+        data: {
+          endTime: formatISO(data.endTime),
+          comment: data.previoustimeSheetComments || null,
+          status: "PENDING",
+          clockInLat: data.clockInLat || null,
+          clockInLng: data.clockInLong || null,
+        },
+      });
+    }
+    return createdTimeSheet;
+  });
+
+  return createdTimeCard;
 }
 
 export async function createTruckDriverTimesheetService({}) {
