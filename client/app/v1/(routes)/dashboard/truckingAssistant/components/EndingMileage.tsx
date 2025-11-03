@@ -127,7 +127,7 @@ export const EndingMileage = ({
 
   return (
     <div className="w-full">
-      <div className="w-full border-b-[2px] border-black mb-2">
+      <div className="w-full border-b-2 border-black mb-2">
         <Titles size={"md"} className="text-left">
           {t("Mileage")}
         </Titles>

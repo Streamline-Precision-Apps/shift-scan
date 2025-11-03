@@ -46,8 +46,13 @@ export default function StateLog({
 }) {
   const t = useTranslations("TruckingAssistant");
   const AddStateMileage = async () => {
+    if (!truckingLog) {
+      console.error("Trucking log ID not available yet");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("truckingLogId", truckingLog ?? "");
+    formData.append("truckingLogId", truckingLog);
     try {
       const tempStateMileage = await createStateMileage(formData);
       setStateMileage((prev) => [
@@ -77,7 +82,8 @@ export default function StateLog({
 
             <Button
               size={"icon"}
-              className="bg-app-green w-10 hover:bg-app-green text-black py-1.5 px-3 border-[3px] border-black rounded-[10px] shadow-none"
+              disabled={isLoading || !truckingLog}
+              className="bg-app-green w-10 hover:bg-app-green text-black py-1.5 px-3 border-[3px] border-black rounded-[10px] shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                 AddStateMileage();
               }}
@@ -100,6 +106,7 @@ export default function StateLog({
               StateMileage={StateMileage}
               setStateMileage={setStateMileage}
               startingMileage={startingMileage}
+              truckingLogId={truckingLog}
             />
           </Contents>
         </Holds>

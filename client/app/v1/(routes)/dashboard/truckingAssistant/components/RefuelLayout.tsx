@@ -45,8 +45,13 @@ export default function RefuelLayout({
 }) {
   const t = useTranslations("TruckingAssistant");
   const AddRefuelLog = async () => {
+    if (!truckingLog) {
+      console.error("Trucking log ID not available yet");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("truckingLogId", truckingLog ?? "");
+    formData.append("truckingLogId", truckingLog);
     try {
       const tempRefuelLog = await createRefuelLog(formData);
       setRefuelLogs((prev) => [
@@ -76,7 +81,8 @@ export default function RefuelLayout({
 
           <Button
             size={"icon"}
-            className="bg-app-green hover:bg-app-green   w-10  text-black py-1.5 px-3 border-[3px] border-black rounded-[10px] shadow-none"
+            disabled={isLoading || !truckingLog}
+            className="bg-app-green hover:bg-app-green   w-10  text-black py-1.5 px-3 border-[3px] border-black rounded-[10px] shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => {
               AddRefuelLog();
             }}
@@ -98,6 +104,7 @@ export default function RefuelLayout({
             refuelLogs={refuelLogs}
             setRefuelLogs={setRefuelLogs}
             startingMileage={startingMileage}
+            truckingLogId={truckingLog}
           />
         </Contents>
       </Holds>

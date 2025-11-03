@@ -7,8 +7,6 @@ import type {
   TruckTimesheetInput,
 } from "../controllers/timesheetController.js";
 import prisma from "../lib/prisma.js";
-import e from "express";
-import { start } from "repl";
 
 export async function updateTimesheetService({
   id,
@@ -1482,7 +1480,7 @@ export async function getClockOutDetailsService(userId: string) {
   endOfDay.setHours(23, 59, 59, 999);
 
   // Fetch all required data in parallel
-  const [timesheets, user] = await Promise.all([
+  const [timesheets, user, previousComment] = await Promise.all([
     prisma.timeSheet.findMany({
       where: {
         userId,
@@ -1500,11 +1498,25 @@ export async function getClockOutDetailsService(userId: string) {
       where: { id: userId },
       select: { signature: true },
     }),
+
+    prisma.timeSheet.findFirst({
+      where: {
+        userId,
+        endTime: null,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        comment: true,
+      },
+    }),
   ]);
 
   const signature = user?.signature || "";
+  const comment = previousComment?.comment || "";
 
-  return { timesheets, signature };
+  return { timesheets, signature, comment };
 }
 export async function updateClockOutService(
   timeSheetId: string,

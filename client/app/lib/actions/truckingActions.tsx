@@ -2,313 +2,317 @@
 
 import { apiRequest } from "../utils/api-Utils";
 
+/**
+ * Equipment Hauled Operations
+ * Uses: /api/v1/trucking-logs/:id?field=equipmentHauled
+ */
+
 export async function createEquipmentHauled(formData: FormData) {
-  const truckingLogId = formData.get("truckingLogId") as string;
+  const timeSheetId = formData.get("timeSheetId") as string;
 
-  const equipmentHauled = await prisma.equipmentHauled.create({
-    data: {
-      TruckingLog: {
-        connect: { id: truckingLogId },
-      },
-    },
-  });
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${timeSheetId}?field=equipmentHauled`,
+    "POST"
+  );
 
-  revalidatePath("/dashboard/truckingAssistant");
-  revalidateTag("equipmentHauled");
-  return equipmentHauled;
+  return response.equipmentHauled;
 }
 
 export async function updateEquipmentLogsLocation(formData: FormData) {
-  const id = formData.get("id") as string;
-  const jobSiteId = formData.get("jobSiteId") as string;
+  const equipmentHauledId = formData.get("id") as string;
   const truckingLogId = formData.get("truckingLogId") as string;
-  const name = formData.get("jobSiteName") as string;
 
-  // First check if jobSite exists
-  const jobSiteExists = await prisma.jobsite.findUnique({
-    where: { qrId: jobSiteId, name },
-    select: { id: true },
-  });
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=equipmentHauled`,
+    "PUT",
+    {
+      equipmentHauledId,
+      // Note: jobSite validation now handled by backend
+    }
+  );
 
-  if (!jobSiteExists) {
-    throw new Error(`Jobsite with ID ${jobSiteId} not found`);
-  }
-
-  // Use a nested update to update the related Equipment's jobsiteId in one call.
-  const updatedLog = await prisma.equipmentHauled.update({
-    where: { id },
-    data: {
-      truckingLogId,
-    },
-  });
-  // Create EquipmentLocationLog for the updated jobSiteId
-  revalidateTag("equipmentHauled");
-  revalidatePath("/dashboard/truckingAssistant");
-  return updatedLog;
+  return response;
 }
 
 export async function updateEquipmentLogs(formData: FormData) {
-  const id = formData.get("id") as string;
+  const equipmentHauledId = formData.get("id") as string;
   const truckingLogId = formData.get("truckingLogId") as string;
+  const source = formData.get("source") as string;
+  const destination = formData.get("destination") as string;
+  const startMileageStr = formData.get("startMileage") as string;
+  const endMileageStr = formData.get("endMileage") as string;
 
-  // Then proceed with update, using the actual equipment's id for the relationship
-  const updatedLog = await prisma.equipmentHauled.update({
-    where: { id },
-    data: {
-      truckingLogId,
-      source: formData.get("source") as string,
-      destination: formData.get("destination") as string,
-      startMileage:
-        formData.get("startMileage") !== null &&
-        formData.get("startMileage") !== ""
-          ? Number(formData.get("startMileage"))
-          : null,
-      endMileage:
-        formData.get("endMileage") !== null && formData.get("endMileage") !== ""
-          ? Number(formData.get("endMileage"))
-          : null,
-    },
-  });
+  const startMileage =
+    startMileageStr !== null && startMileageStr !== ""
+      ? Number(startMileageStr)
+      : null;
+  const endMileage =
+    endMileageStr !== null && endMileageStr !== ""
+      ? Number(endMileageStr)
+      : null;
 
-  revalidateTag("equipmentHauled");
-  revalidatePath("/dashboard/truckingAssistant");
-  return updatedLog;
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=equipmentHauled`,
+    "PUT",
+    {
+      equipmentHauledId,
+      source,
+      destination,
+      startMileage,
+      endMileage,
+    }
+  );
+
+  return response;
 }
 
 export async function updateEquipmentLogsEquipment(formData: FormData) {
-  const id = formData.get("id") as string;
-  const equipmentQrId = formData.get("equipmentId") as string;
+  const equipmentHauledId = formData.get("id") as string;
+  const equipmentId = formData.get("equipmentId") as string;
   const truckingLogId = formData.get("truckingLogId") as string;
 
-  // First check if equipment exists, using qrId to find it
-  const equipmentExists = await prisma.equipment.findUnique({
-    where: { id: equipmentQrId },
-  });
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=equipmentHauled`,
+    "PUT",
+    {
+      equipmentHauledId,
+      equipmentId,
+    }
+  );
 
-  if (!equipmentExists) {
-    throw new Error(`Equipment with QR ID ${equipmentQrId} not found`);
-  }
-
-  // Then proceed with update, using the actual equipment's id for the relationship
-  const updatedLog = await prisma.equipmentHauled.update({
-    where: { id },
-    data: {
-      truckingLogId,
-      equipmentId: equipmentExists.id, // Use equipment's id, not qrId
-    },
-  });
-
-  revalidateTag("equipmentHauled");
-  revalidatePath("/dashboard/truckingAssistant");
-  return updatedLog;
+  return response;
 }
 
-export async function deleteEquipmentHauled(id: string) {
-  await prisma.equipmentHauled.delete({
-    where: { id },
-  });
+export async function deleteEquipmentHauled(
+  equipmentHauledId: string,
+  truckingLogId: string
+) {
+  await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=equipmentHauled`,
+    "DELETE",
+    { resourceId: equipmentHauledId }
+  );
 
-  revalidateTag("equipmentHauled");
   return true;
 }
 
-/* MATERIALS Hauled */
-//------------------------------------------------------------------
-//------------------------------------------------------------------
+/**
+ * Material Hauled Operations
+ * Uses: /api/v1/trucking-logs/:id?field=material
+ */
 
 export async function createHaulingLogs(formData: FormData) {
   const truckingLogId = formData.get("truckingLogId") as string;
   const name = formData.get("name") as string;
   const quantity = parseInt(formData.get("quantity") as string);
-  const createdAt = new Date().toISOString();
+  const LocationOfMaterial = formData.get("LocationOfMaterial") as string;
+  const unit = formData.get("unit") as string;
+  const loadType = formData.get("loadType") as string;
 
-  const haulingLog = await prisma.material.create({
-    data: {
-      truckingLogId,
+  if (!truckingLogId) {
+    throw new Error("Trucking log ID is required");
+  }
+
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=material`,
+    "POST",
+    {
       name,
       quantity,
-      createdAt,
-    },
-  });
+      LocationOfMaterial,
+      unit,
+      loadType: loadType || null, // Convert empty string to null
+    }
+  );
 
-  revalidatePath("/dashboard/truckingAssistant");
-  return haulingLog;
+  return response.material;
 }
 
 export async function updateHaulingLogs(formData: FormData) {
-  const LoadType: {
-    UNSCREENED: "UNSCREENED";
-    SCREENED: "SCREENED";
-  } = {
-    UNSCREENED: "UNSCREENED",
-    SCREENED: "SCREENED",
-  };
   const id = formData.get("id") as string;
+  const truckingLogId = formData.get("truckingLogId") as string;
   const name = formData.get("name") as string;
   const LocationOfMaterial = formData.get("LocationOfMaterial") as string;
   const quantity = Number(formData.get("quantity") as string);
-  const truckingLogId = formData.get("truckingLogId") as string;
   const loadTypeString = formData.get("loadType") as string;
-  const unit = formData.get("unit") as materialUnit;
-
-  let loadType = null;
-  if (!loadTypeString) {
-    loadType = null;
-  } else if (loadTypeString === "UNSCREENED") {
-    loadType = LoadType.UNSCREENED;
-  } else if (loadTypeString === "SCREENED") {
-    loadType = LoadType.SCREENED;
-  }
+  const unit = formData.get("unit") as string;
 
   // If ID is provided, update the existing log
   if (id) {
-    const updatedLog = await prisma.material.update({
-      where: { id },
-      data: {
+    const response = await apiRequest(
+      `/api/v1/trucking-logs/${truckingLogId}?field=material`,
+      "PUT",
+      {
+        materialId: id,
         name,
         LocationOfMaterial,
         quantity,
-        ...(unit && { unit }),
-        loadType,
-      },
-    });
+        unit,
+        loadType: loadTypeString || null, // Convert empty string to null
+      }
+    );
 
-    return updatedLog;
+    return response;
   }
 
-  // If no ID, create a new log
-  const haulingLog = await prisma.material.create({
-    data: {
+  // If no ID, create a new log (shouldn't happen but kept for compatibility)
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=material`,
+    "POST",
+    {
       name,
       LocationOfMaterial,
       quantity,
-      truckingLogId,
-    },
-  });
-  revalidateTag("material");
-  return haulingLog;
+      unit,
+      loadType: loadTypeString || null, // Convert empty string to null
+    }
+  );
+
+  return response.material;
 }
 
-export async function deleteHaulingLogs(id: string) {
-  await prisma.material.delete({
-    where: { id },
-  });
+export async function deleteHaulingLogs(id: string, truckingLogId: string) {
+  await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=material`,
+    "DELETE",
+    { resourceId: id }
+  );
 
-  revalidateTag("material");
   return true;
 }
 
-/* Update */
-//------------------------------------------------------------------
-//------------------------------------------------------------------
+/**
+ * Mileage & Notes Operations
+ * Uses: /api/v1/trucking-logs/:id?field=startingMileage|endingMileage|notes
+ */
 
 export const updateTruckingMileage = async (formData: FormData) => {
-  const id = formData.get("id") as string;
+  const truckingLogId = formData.get("id") as string;
   const endingMileage = parseInt(formData.get("endingMileage") as string);
 
-  const updatedLog = await prisma.truckingLog.update({
-    where: { id },
-    data: {
-      endingMileage,
-    },
-  });
-  return updatedLog;
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=endingMileage`,
+    "PUT",
+    { endingMileage }
+  );
+
+  return response;
 };
 
 export const updateTruckDrivingNotes = async (formData: FormData) => {
-  const TruckingId = formData.get("id") as string;
-  const comment = (formData.get("comment") as string) || "";
+  const truckingLogId = formData.get("id") as string;
+  const notes = (formData.get("comment") as string) || "";
 
-  const updatedLog = await prisma.truckingLog.update({
-    where: { id: TruckingId },
-    data: {
-      TimeSheet: {
-        update: {
-          comment,
-        },
-      },
-    },
-  });
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=notes`,
+    "PUT",
+    { notes }
+  );
 
-  revalidatePath("/dashboard/truckingAssistant");
-  return updatedLog;
+  return response;
 };
+
+/**
+ * State Mileage Operations
+ * Uses: /api/v1/trucking-logs/:id?field=stateMileage
+ */
 
 export async function createStateMileage(formData: FormData) {
   const truckingLogId = formData.get("truckingLogId") as string;
-
-  const equipmentHauled = await prisma.stateMileage.create({
-    data: {
-      truckingLogId,
-    },
-  });
-
-  revalidatePath("/dashboard/truckingAssistant");
-  revalidateTag("equipmentHauled");
-  return equipmentHauled;
-}
-
-export async function updateStateMileage(formData: FormData) {
-  const id = formData.get("id") as string;
   const state = formData.get("state") as string;
   const stateLineMileage = Number(formData.get("stateLineMileage")) || 0;
 
-  // Update the state mileage in the database
-  const updatedStateMileage = await prisma.stateMileage.update({
-    where: { id },
-    data: {
+  if (!truckingLogId) {
+    throw new Error("Trucking log ID is required");
+  }
+
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=stateMileage`,
+    "POST",
+    {
       state,
       stateLineMileage,
-    },
-  });
+    }
+  );
 
-  return updatedStateMileage;
+  return response.stateMileage;
 }
 
-export async function deleteStateMileage(id: string) {
-  await prisma.stateMileage.delete({
-    where: { id },
-  });
+export async function updateStateMileage(formData: FormData) {
+  const stateMileageId = formData.get("id") as string;
+  const truckingLogId = formData.get("truckingLogId") as string;
+  const state = formData.get("state") as string;
+  const stateLineMileage = Number(formData.get("stateLineMileage")) || 0;
+
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=stateMileage`,
+    "PUT",
+    {
+      stateMileageId,
+      state,
+      stateLineMileage,
+    }
+  );
+
+  return response;
+}
+
+export async function deleteStateMileage(id: string, truckingLogId: string) {
+  await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=stateMileage`,
+    "DELETE",
+    { resourceId: id }
+  );
 
   return true;
 }
 
+/**
+ * Refuel Log Operations
+ * Uses: /api/v1/trucking-logs/:id?field=refuelLogs
+ */
+
 export async function createRefuelLog(formData: FormData) {
   const truckingLogId = formData.get("truckingLogId") as string;
+  const gallonsRefueled = formData.get("gallonsRefueled") as string;
+  const milesAtFueling = formData.get("milesAtFueling") as string;
 
-  const refueledLogs = await prisma.refuelLog.create({
-    data: {
-      truckingLogId,
-    },
-  });
+  if (!truckingLogId) {
+    throw new Error("Trucking log ID is required");
+  }
 
-  revalidatePath("/dashboard/truckingAssistant");
-  return refueledLogs;
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=refuelLogs`,
+    "POST",
+    {
+      gallonsRefueled: gallonsRefueled ? Number(gallonsRefueled) : undefined,
+      milesAtFueling: milesAtFueling ? Number(milesAtFueling) : undefined,
+    }
+  );
+
+  return response.refuelLogs;
 }
 
 export async function createRefuelEquipmentLog(formData: FormData) {
   const employeeEquipmentLogId = formData.get(
     "employeeEquipmentLogId"
   ) as string;
-
   const gallonsRefueledStr = formData.get("gallonsRefueled") as string | null;
   const gallonsRefueled = gallonsRefueledStr
     ? parseFloat(gallonsRefueledStr)
     : null;
 
-  const refueledLogs = await prisma.refuelLog.create({
-    data: {
-      employeeEquipmentLogId,
+  // This endpoint is for equipment refueling - kept for compatibility
+  // In the future, this should also use the API endpoint
+  const response = await apiRequest(
+    `/api/v1/timesheet/equipment-log/${employeeEquipmentLogId}`,
+    "POST",
+    {
       gallonsRefueled,
-    },
-  });
+    }
+  );
 
-  revalidatePath(`/dashboard/equipment/${employeeEquipmentLogId}`);
-  revalidatePath("/dashboard/truckingAssistant");
-
-  const { id } = refueledLogs;
-  const data = { id, gallonsRefueled, employeeEquipmentLogId };
-  return data;
+  return response;
 }
 
 export async function deleteEmployeeEquipmentLog(id: string) {
@@ -322,28 +326,31 @@ export async function deleteEmployeeEquipmentLog(id: string) {
 }
 
 export async function updateRefuelLog(formData: FormData) {
-  const id = formData.get("id") as string;
+  const refuelLogId = formData.get("id") as string;
+  const truckingLogId = formData.get("truckingLogId") as string;
   const gallonsRefueled =
     Number(formData.get("gallonsRefueled") as string) || 0;
-  const milesAtFueling = Number(formData.get("milesAtfueling")) || 0;
+  const milesAtFueling = Number(formData.get("milesAtFueling")) || 0;
 
-  // Update the state mileage in the database
-  const updatedStateMileage = await prisma.refuelLog.update({
-    where: { id },
-    data: {
+  const response = await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=refuelLogs`,
+    "PUT",
+    {
+      refuelLogId,
       gallonsRefueled,
       milesAtFueling,
-    },
-  });
-  revalidatePath("/dashboard/truckingAssistant");
+    }
+  );
 
-  return updatedStateMileage;
+  return response;
 }
 
-export async function deleteRefuelLog(id: string) {
-  await prisma.refuelLog.delete({
-    where: { id },
-  });
+export async function deleteRefuelLog(id: string, truckingLogId: string) {
+  await apiRequest(
+    `/api/v1/trucking-logs/${truckingLogId}?field=refuelLogs`,
+    "DELETE",
+    { resourceId: id }
+  );
 
   return true;
 }

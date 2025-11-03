@@ -86,6 +86,7 @@ export default function Comment({
         "PUT",
         body
       );
+      console.log("Clock-out update response:", isUpdated);
 
       if (isUpdated) {
         await setCurrentPageView("break");

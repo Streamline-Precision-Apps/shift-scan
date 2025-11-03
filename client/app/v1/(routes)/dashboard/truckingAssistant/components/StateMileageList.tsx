@@ -27,6 +27,7 @@ export default function StateMileageList({
   setStateMileage,
   StateOptions,
   startingMileage,
+  truckingLogId,
 }: {
   StateMileage: StateMileage[] | undefined;
   setStateMileage: React.Dispatch<
@@ -37,6 +38,7 @@ export default function StateMileageList({
     label: string;
   }[];
   startingMileage: number | null;
+  truckingLogId: string | undefined;
 }) {
   const t = useTranslations("TruckingAssistant");
   const [editedStateMileage, setEditedStateMileage] = useState<StateMileage[]>(
@@ -69,6 +71,7 @@ export default function StateMileageList({
     debounce(async (stateMileage: StateMileage) => {
       const formData = new FormData();
       formData.append("id", stateMileage.id);
+      formData.append("truckingLogId", truckingLogId ?? "");
       formData.append("state", stateMileage.state || "");
       formData.append(
         "stateLineMileage",
@@ -89,7 +92,7 @@ export default function StateMileageList({
     const newStateMileage = editedStateMileage.filter((sm) => sm.id !== id);
     setEditedStateMileage(newStateMileage);
     setStateMileage(newStateMileage);
-    const isDeleted = await deleteStateMileage(id);
+    const isDeleted = await deleteStateMileage(id, truckingLogId ?? "");
     if (isDeleted) {
       setEditedStateMileage(newStateMileage || []);
       setStateMileage(newStateMileage);
@@ -106,6 +109,7 @@ export default function StateMileageList({
     // Call server action to update the state
     const formData = new FormData();
     formData.append("id", newStateMileage[index].id);
+    formData.append("truckingLogId", truckingLogId ?? "");
     formData.append("state", value);
     formData.append(
       "stateLineMileage",
@@ -204,11 +208,12 @@ export default function StateMileageList({
                     type="number"
                     name="stateLineMileage"
                     value={sm.stateLineMileage || ""}
-                    placeholder={t("Mileage")}
+                    placeholder={"0"}
                     onChange={(e) => handleMileageChange(index, e.target.value)}
                     onBlur={() => {
                       const formData = new FormData();
                       formData.append("id", sm.id);
+                      formData.append("truckingLogId", truckingLogId ?? "");
                       formData.append("state", sm.state || "");
                       formData.append(
                         "stateLineMileage",

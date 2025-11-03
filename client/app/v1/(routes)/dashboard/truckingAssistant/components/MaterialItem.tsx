@@ -70,7 +70,10 @@ export default function MaterialItem({
         updatedMaterial.LocationOfMaterial || ""
       );
       formData.append("unit", updatedMaterial.unit || "");
-      formData.append("loadType", updatedMaterial.loadType?.toString() || "");
+      formData.append(
+        "loadType",
+        updatedMaterial.loadType ? updatedMaterial.loadType.toString() : ""
+      );
       formData.append("quantity", updatedMaterial.quantity?.toString() || "0");
       formData.append("truckingLogId", updatedMaterial.truckingLogId);
 

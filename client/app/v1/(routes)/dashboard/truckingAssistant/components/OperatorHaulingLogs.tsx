@@ -1,13 +1,14 @@
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Contents } from "@/components/(reusable)/contents";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
 import { useEffect, useState } from "react";
 import MaterialList from "./MaterialList";
-import { createHaulingLogs } from "@/actions/truckingActions";
-import { Texts } from "@/components/(reusable)/texts";
+
 import { useTranslations } from "next-intl";
 import MaterialItem from "./MaterialItem";
+import { createHaulingLogs } from "@/app/lib/actions/truckingActions";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Contents } from "@/app/v1/components/(reusable)/contents";
+import { Texts } from "@/app/v1/components/(reusable)/texts";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
 
 type Material = {
   id: string;
@@ -121,6 +122,7 @@ export default function OperatorHaulingLogs({
                 setMaterial={setMaterial}
                 setContentView={setContentView}
                 setSelectedItemId={setSelectedItemId}
+                truckingLogId={truckingLog}
               />
             )
           )}

@@ -24,10 +24,12 @@ export default function RefuelLogsList({
   refuelLogs,
   setRefuelLogs,
   startingMileage,
+  truckingLogId,
 }: {
   refuelLogs: Refueled[] | undefined;
   setRefuelLogs: React.Dispatch<React.SetStateAction<Refueled[] | undefined>>;
   startingMileage: number | null;
+  truckingLogId: string | undefined;
 }) {
   const t = useTranslations("TruckingAssistant");
   const [editedRefuel, setEditedRefuel] = useState<Refueled[]>(
@@ -64,12 +66,13 @@ export default function RefuelLogsList({
     debounce(async (refuelLog: Refueled) => {
       const formData = new FormData();
       formData.append("id", refuelLog.id);
+      formData.append("truckingLogId", truckingLogId ?? "");
       formData.append(
         "gallonsRefueled",
         refuelLog.gallonsRefueled?.toString() || "0"
       );
       formData.append(
-        "milesAtfueling",
+        "milesAtFueling",
         refuelLog.milesAtFueling?.toString() || "0"
       );
 
@@ -86,7 +89,7 @@ export default function RefuelLogsList({
     const newRefueledLogs = editedRefuel.filter((rL) => rL.id !== id);
     setEditedRefuel(newRefueledLogs);
     setRefuelLogs(newRefueledLogs);
-    const isDeleted = await deleteRefuelLog(id);
+    const isDeleted = await deleteRefuelLog(id, truckingLogId ?? "");
     if (isDeleted) {
       setEditedRefuel(newRefueledLogs || []);
       setRefuelLogs(newRefueledLogs);
@@ -178,12 +181,13 @@ export default function RefuelLogsList({
                     onBlur={() => {
                       const formData = new FormData();
                       formData.append("id", rL.id);
+                      formData.append("truckingLogId", truckingLogId ?? "");
                       formData.append(
                         "gallonsRefueled",
                         rL.gallonsRefueled?.toString() || ""
                       );
                       formData.append(
-                        "milesAtfueling",
+                        "milesAtFueling",
                         rL.milesAtFueling?.toString() || ""
                       );
                       updateRefuelLog(formData);
@@ -209,12 +213,13 @@ export default function RefuelLogsList({
                     onBlur={() => {
                       const formData = new FormData();
                       formData.append("id", rL.id);
+                      formData.append("truckingLogId", truckingLogId ?? "");
                       formData.append(
                         "gallonsRefueled",
                         rL.gallonsRefueled?.toString() || ""
                       );
                       formData.append(
-                        "milesAtfueling",
+                        "milesAtFueling",
                         rL.milesAtFueling?.toString() || ""
                       );
                       updateRefuelLog(formData);

@@ -8,6 +8,8 @@ import StateLog from "./components/StateLog";
 import RefuelLayout from "./components/RefuelLayout";
 import WorkDetails from "./components/workDetails";
 import TruckTabOptions from "./TruckTabOptions";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 type StateMileage = {
   id: string;
@@ -62,6 +64,8 @@ enum LoadType {
 }
 
 export default function TruckDriver() {
+  const { user } = useUserStore();
+  const userId = user?.id;
   const t = useTranslations("TruckingAssistant");
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(1);
@@ -170,67 +174,49 @@ export default function TruckDriver() {
     startingMileage,
   ]);
 
+  // Single consolidated useEffect that fetches all data at once
   useEffect(() => {
-    const fetchTruckingLog = async () => {
-      try {
-        const res = await fetch(`/api/getTruckingLogs/truckingId`);
-        if (!res.ok) throw new Error(t("FailedToFetchTruckingLogs"));
-        const data = await res.json();
-        setTimeSheetId(data);
-      } catch (error) {
-        console.error(t("ErrorFetchingTruckingLogs"), error);
-      }
-    };
+    if (!userId) return;
 
-    fetchTruckingLog();
-  }, []);
-
-  useEffect(() => {
-    if (!timeSheetId) return;
-
-    // Clear all previous state before fetching new data
-    setEndMileage(null);
-    setNotes("");
-    setRefuelLogs([]);
-    setStateMileage([]);
-    setMaterial([]);
-    setEquipmentHauled([]);
-    setStartingMileage(null);
-
-    const fetchData = async () => {
+    const fetchAllTruckingData = async () => {
       setIsLoading(true);
       try {
-        const endpoints = [
-          `/api/getTruckingLogs/endingMileage/${timeSheetId}`, // 0
-          `/api/getTruckingLogs/notes/${timeSheetId}`, // 1
-          `/api/getTruckingLogs/refueledLogs/${timeSheetId}`, // 2
-          `/api/getTruckingLogs/stateMileage/${timeSheetId}`, // 3
-          `/api/getTruckingLogs/material/${timeSheetId}`, // 4
-          `/api/getTruckingLogs/equipmentHauled/${timeSheetId}`, // 5
-          `/api/getTruckingLogs/startingMileage/${timeSheetId}`, // 7
-        ];
+        // Step 1: Get the timesheet with trucking log ID
+        const timeSheetData = await apiRequest(
+          `/api/v1/trucking-logs/user/${userId}`,
+          "GET"
+        );
 
-        const responses = await Promise.all(endpoints.map((url) => fetch(url)));
-        const data = await Promise.all(responses.map((res) => res.json()));
+        if (!timeSheetData?.TruckingLogs?.[0]?.id) {
+          throw new Error("No trucking log found for user.");
+        }
 
-        // Map data in the same order as endpoints
-        setEndMileage(data[0]?.endingMileage || null);
-        setNotes(data[1] || "");
-        setRefuelLogs(data[2] || []);
-        setStateMileage(data[3] || []);
-        setMaterial(data[4] || []);
-        setEquipmentHauled(data[5] || []);
+        const truckingLogId = timeSheetData.TruckingLogs[0].id;
+        setTimeSheetId(truckingLogId);
 
-        setStartingMileage(data[6]?.startingMileage || null);
+        // Step 2: Fetch all trucking log details in one request
+        const truckingLogData = await apiRequest(
+          `/api/v1/trucking-logs/${truckingLogId}`,
+          "GET"
+        );
+
+        // Set all data at once from a single response
+        setEndMileage(truckingLogData?.endingMileage || null);
+        setNotes(truckingLogData?.TimeSheet?.comment || "");
+        setRefuelLogs(truckingLogData?.RefuelLogs || []);
+        setStateMileage(truckingLogData?.StateMileages || []);
+        setMaterial(truckingLogData?.Materials || []);
+        setEquipmentHauled(truckingLogData?.EquipmentHauled || []);
+        setStartingMileage(truckingLogData?.startingMileage || null);
       } catch (error) {
-        console.error(t("FetchingError"), error);
+        console.error(t("ErrorFetchingTruckingLogs"), error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, [timeSheetId]);
+    fetchAllTruckingData();
+  }, [userId, t]);
 
   return (
     <Grids rows={"10"} className="h-full w-full">

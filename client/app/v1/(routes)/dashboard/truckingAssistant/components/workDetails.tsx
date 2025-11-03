@@ -1,16 +1,10 @@
-import { Buttons } from "@/app/v1/components/(reusable)/buttons";
-import { Grids } from "@/app/v1/components/(reusable)/grids";
 import { Holds } from "@/app/v1/components/(reusable)/holds";
-import Sliders from "@/app/v1/components/(reusable)/sliders";
-
 import { EndingMileage } from "./EndingMileage";
 // import TruckDriverNotes from "./TruckDriverNotes";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
 import { useState } from "react";
 import TruckDriverNotes from "./TruckDriverNotes";
 import { useTranslations } from "next-intl";
-import { set } from "lodash";
-import { setStartingMileage } from "@/actions/cookieActions";
 
 type StateMileage = {
   id: string;

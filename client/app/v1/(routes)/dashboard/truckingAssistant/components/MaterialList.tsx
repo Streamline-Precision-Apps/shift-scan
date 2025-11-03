@@ -28,11 +28,13 @@ export default function MaterialList({
   setMaterial,
   setContentView,
   setSelectedItemId,
+  truckingLogId,
 }: {
   material: Material[] | undefined;
   setMaterial: Dispatch<SetStateAction<Material[] | undefined>>;
   setContentView: Dispatch<SetStateAction<"Item" | "List">>;
   setSelectedItemId: Dispatch<SetStateAction<string | null>>;
+  truckingLogId: string | undefined;
 }) {
   const t = useTranslations("TruckingAssistant");
   const [editedMaterials, setEditedMaterials] = useState<Material[]>(
@@ -56,7 +58,7 @@ export default function MaterialList({
     setEditedMaterials(updatedMaterials);
     setMaterial(updatedMaterials); // Sync with parent state
 
-    const isDeleted = await deleteHaulingLogs(materialId);
+    const isDeleted = await deleteHaulingLogs(materialId, truckingLogId ?? "");
 
     if (!isDeleted) {
       console.error(t("FailedToDeletePleaseTryAgain"));

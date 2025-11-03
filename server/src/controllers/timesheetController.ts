@@ -24,6 +24,9 @@ import {
   getPreviousTimesheet,
   returnToPreviousTimesheetService,
 } from "../services/timesheetService.js";
+
+import Express from "express";
+
 // GET /v1/timesheet/user/:userId/active-status
 export async function getTimesheetActiveStatusController(
   req: Express.Request,
@@ -42,9 +45,6 @@ export async function getTimesheetActiveStatusController(
       .json({ error: "Failed to fetch active timesheet status." });
   }
 }
-
-import Express from "express";
-
 // GET /v1/timesheet/user/:userId/recent
 export async function getRecentTimesheetController(
   req: Express.Request,

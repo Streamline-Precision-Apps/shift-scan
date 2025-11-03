@@ -8,7 +8,6 @@ import MaterialList from "./MaterialList";
 import {
   createEquipmentHauled,
   createHaulingLogs,
-  deleteEquipmentHauled,
 } from "@/app/lib/actions/truckingActions";
 import EquipmentList from "./EquipmentList";
 import { useTranslations } from "next-intl";
@@ -26,6 +25,7 @@ import {
   AlertDialogCancel,
   AlertDialogTrigger,
 } from "@/app/v1/components/ui/alert-dialog";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
 
 type EquipmentHauled = {
   id: string;
@@ -95,18 +95,19 @@ export default function HaulingLogs({
 
   // Add Temporary Equipment
   const addTempEquipmentList = async () => {
-    const formData = new FormData();
-    formData.append("truckingLogId", truckingLog ?? "");
-
     try {
-      const tempEquipment = await createEquipmentHauled(formData);
+      const response = await apiRequest(
+        `/api/v1/trucking-logs/${truckingLog}?field=equipmentHauled`,
+        "POST"
+      );
+      const tempEquipment = response.equipmentHauled;
       setEquipmentHauled((prev) => [
         {
           id: tempEquipment.id,
           truckingLogId: tempEquipment.truckingLogId,
           equipmentId: tempEquipment.equipmentId ?? null,
-          source: "",
-          destination: "",
+          source: tempEquipment.source ?? "",
+          destination: tempEquipment.destination ?? "",
           createdAt: new Date(),
           Equipment: {
             id: "",
@@ -116,8 +117,8 @@ export default function HaulingLogs({
             id: "",
             name: "",
           },
-          startMileage: null,
-          endMileage: null,
+          startMileage: tempEquipment.startMileage ?? null,
+          endMileage: tempEquipment.endMileage ?? null,
         },
         ...(prev ?? []),
       ]);
@@ -128,8 +129,13 @@ export default function HaulingLogs({
 
   // Add Temporary Material
   const addTempMaterial = async () => {
+    if (!truckingLog) {
+      console.error("Trucking log ID not available yet");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("truckingLogId", truckingLog ?? "");
+    formData.append("truckingLogId", truckingLog);
     formData.append("name", "Material");
     formData.append("quantity", "1");
 
@@ -160,10 +166,22 @@ export default function HaulingLogs({
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteEquipmentHauled(id);
-      setEquipmentHauled(
-        (prevLogs) => prevLogs?.filter((log) => log.id !== id) ?? []
+      const body = {
+        resourceId: id,
+      };
+
+      await apiRequest(
+        `/api/v1/trucking-logs/${truckingLog}?field=equipmentHauled`,
+        "DELETE",
+        body
       );
+
+      // Remove from state immediately
+      setEquipmentHauled((prevLogs) => {
+        const updated = prevLogs?.filter((log) => log.id !== id) ?? [];
+
+        return updated;
+      });
       setDeleteDialogOpen(false);
       setEquipmentToDelete(null);
     } catch (error) {
@@ -190,6 +208,7 @@ export default function HaulingLogs({
           <Button
             size={"icon"}
             variant={"outline"}
+            disabled={isLoading || !truckingLog}
             className={`${
               activeTab === 1
                 ? "bg-app-green"
@@ -202,7 +221,7 @@ export default function HaulingLogs({
                 : equipmentHauled?.length === 0
                 ? "bg-app-green"
                 : "bg-app-red"
-            }`}
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
             onClick={() => {
               if (activeTab === 1) {
                 addTempMaterial();
@@ -254,6 +273,7 @@ export default function HaulingLogs({
                       setMaterial={setMaterial}
                       setContentView={setContentView}
                       setSelectedItemId={setSelectedItemId}
+                      truckingLogId={truckingLog}
                     />
                   )
                 )}

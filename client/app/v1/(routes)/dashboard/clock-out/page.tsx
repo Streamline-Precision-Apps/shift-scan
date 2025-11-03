@@ -104,9 +104,11 @@ export default function TempClockOutContent() {
           `/api/v1/timesheet/user/${user.id}/clock-out-details`,
           "GET"
         );
+
         const data = response.data;
         setTimesheets(data.timesheets || []);
         setBase64String(data.signature || "");
+        setCommentsValue(data.comment || "");
         // Set the most recent active timesheet (endTime === null)
         const activeTimeSheet = (data.timesheets || [])
           .filter((timesheet: TimeSheet) => timesheet.endTime === null)

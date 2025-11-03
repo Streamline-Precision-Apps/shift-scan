@@ -151,13 +151,9 @@ export default function EquipmentList({
             </Texts>
           </Holds>
         )}
-        {equipmentHauled.map((mat: EquipmentHauled) => (
-          <Holds key={mat.id}>
-            <Holds
-              key={mat.id}
-              background={"white"}
-              className={`w-full h-full gap-4`}
-            >
+        {equipmentHauled.map((mat: EquipmentHauled, index) => (
+          <Holds key={mat.id || index}>
+            <Holds background={"white"} className={`w-full h-full gap-4`}>
               {/* Equipment Input with Label */}
               <Holds className="w-full h-full justify-center">
                 <Label>

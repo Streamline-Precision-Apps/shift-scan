@@ -11,6 +11,7 @@ import formsRoutes from "./formsRoute.js";
 import userRoutes from "./userRoute.js";
 import timesheetRoutes from "./timesheetRoute.js";
 import mechanicLogsRoutes from "./mechanicLogsRoutes.js";
+import truckingLogsRoutes from "./truckingLogsRoutes.js";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use("/v1/jobsite", jobsiteRoutes);
 router.use("/v1/user", userRoutes);
 router.use("/v1/timesheet", timesheetRoutes);
 router.use("/v1/mechanic-logs", mechanicLogsRoutes);
+router.use("/v1/trucking-logs", truckingLogsRoutes);
 router.use("/v1", initRoutes);
 
 router.use("/notifications", notificationRoutes);
