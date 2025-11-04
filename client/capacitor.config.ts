@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   appName: "Shift Scan",
   webDir: "out",
   server: {
-    url: "http://192.168.1.102:3001",
+    url: "http://localhost:3000",
     cleartext: true,
   },
   plugins: {
