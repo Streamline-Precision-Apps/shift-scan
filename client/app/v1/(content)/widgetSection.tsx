@@ -17,6 +17,7 @@ import { Banners } from "../components/(reusable)/banners";
 import { useProfitStore } from "@/app/lib/store/profitStore";
 import { useEquipmentStore } from "@/app/lib/store/equipmentStore";
 import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 export default function WidgetSection() {
   const [loadingUi, setLoadingUi] = useState(true);
@@ -96,9 +97,8 @@ export default function WidgetSection() {
               token = localStorage.getItem("token") || "";
               userId = localStorage.getItem("userId") as string | undefined;
             }
+            const url = getApiUrl();
 
-            const url =
-              process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
             const res = await fetch(`${url}/api/v1/init`, {
               method: "POST",
               headers: {

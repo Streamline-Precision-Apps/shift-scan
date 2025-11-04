@@ -18,6 +18,7 @@ import { Calendar } from "../ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { setLocaleCookie } from "@/app/lib/client/cookie-utils";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 export const EnterAccountInfo = ({
   userId,
@@ -121,7 +122,7 @@ export const EnterAccountInfo = ({
     data.append("emergencyContactNumber", form.emergencyContactPhone);
 
     // Make a post route to finish user setup\
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const API_URL = getApiUrl();
     const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

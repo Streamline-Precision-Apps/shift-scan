@@ -14,9 +14,9 @@ import {
   verifyPasswordResetToken,
 } from "@/app/lib/actions/reset";
 import Spinner from "@/app/v1/components/(animations)/spinner";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
+const API_URL = getApiUrl();
 type TokenStatus = "loading" | "valid" | "invalid" | "expired";
 
 function ChangePasswordContent() {

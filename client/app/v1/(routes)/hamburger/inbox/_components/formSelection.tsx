@@ -14,7 +14,7 @@ import { useEffect, useState, useCallback, Suspense } from "react";
 import InboxSkeleton from "./inboxSkeleton";
 import { useInfiniteScroll } from "@/app/lib/hooks/useInfiniteScroll";
 import { useUserStore } from "@/app/lib/store/userStore";
-import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
 
 type Form = {
   id: string;
@@ -142,7 +142,7 @@ export default function FormSelection({
     const fetchForms = async () => {
       try {
         setLoading(true);
-        const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+        const url = getApiUrl();
         const response = await fetch(`${url}/api/v1/forms`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -165,7 +165,7 @@ export default function FormSelection({
     setCreateLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+      const url = getApiUrl();
       const res = await fetch(`${url}/api/v1/forms/submission`, {
         method: "POST",
         headers: {

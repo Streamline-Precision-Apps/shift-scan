@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "../store/userStore";
+import { getApiUrl } from "../utils/api-Utils";
 
 export type PayPeriodTimesheets = {
   startTime: Date;
@@ -48,9 +49,8 @@ export const usePayPeriodData = (
       }
       try {
         setLoading(true);
-
+        const url = getApiUrl();
         // Fetch pay period timesheets with userId in POST body
-        const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
 
         const payPeriodResponse = await fetch(
           `${url}/api/v1/pay-period-timesheets`,

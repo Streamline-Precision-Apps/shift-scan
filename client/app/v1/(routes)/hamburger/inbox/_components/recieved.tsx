@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import RecievedInboxSkeleton from "./recievedInboxSkeleton";
 import { useInfiniteScroll } from "@/app/lib/hooks/useInfiniteScroll";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 enum FormStatus {
   PENDING = "PENDING",
@@ -61,7 +62,7 @@ export default function RTab({ isManager }: { isManager: boolean }) {
   const router = useRouter();
 
   const fetchRequests = async (skip: number, reset: boolean = false) => {
-    const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+    const url = getApiUrl();
     const token =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const response = await fetch(
@@ -95,7 +96,7 @@ export default function RTab({ isManager }: { isManager: boolean }) {
   useEffect(() => {
     const fetchEmployeeRequests = async () => {
       try {
-        const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+        const url = getApiUrl();
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(`${url}/api/v1/user`, {

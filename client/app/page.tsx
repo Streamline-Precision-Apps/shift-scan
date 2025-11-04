@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./v1/components/ui/popover";
+import { getApiUrl } from "./lib/utils/api-Utils";
 
 export default function Home() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function Home() {
       if (isNative) {
         const token = localStorage.getItem("jwt");
         const userId = localStorage.getItem("userId");
-        const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+        const url = getApiUrl();
 
         if (token && userId) {
           try {

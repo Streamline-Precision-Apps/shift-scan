@@ -1,6 +1,8 @@
 "use client";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { getApiUrl } from "../utils/api-Utils";
+
+const API_URL = getApiUrl();
 
 /**
  * Request a password reset email

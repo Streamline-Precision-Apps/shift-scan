@@ -11,6 +11,7 @@ import NotificationSettings from "@/app/v1/components/(signup)/notificationSetti
 import ProfilePictureSetup from "@/app/v1/components/(signup)/profilePictureSetup";
 import SignatureSetup from "@/app/v1/components/(signup)/signatureSetup";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 // Define Zod schema for validating props
 const propsSchema = z.object({
@@ -47,8 +48,8 @@ function SignUpContent() {
   const handleComplete = async () => {
     try {
       // Make a post route to finish user setup\
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
+
       const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

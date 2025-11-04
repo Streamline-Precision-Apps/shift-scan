@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { IntlProvider } from "next-intl";
 import { Device } from "@capacitor/device";
+import { SplashScreen } from "@capacitor/splash-screen";
 import { loadMessages, defaultLocale, type Locale } from "./i18n-client";
 import defaultMessages from "../messages/en.json";
 import { readLocaleCookie, setLocaleCookie } from "./cookie-utils";
@@ -79,6 +80,16 @@ export default function ClientIntlProvider({
     }
 
     initLocale();
+
+    // Hide splash screen after initialization
+    const hideSplash = async () => {
+      try {
+        await SplashScreen.hide();
+      } catch (e) {
+        console.warn("Failed to hide splash screen:", e);
+      }
+    };
+    hideSplash();
 
     return () => {
       mounted = false;

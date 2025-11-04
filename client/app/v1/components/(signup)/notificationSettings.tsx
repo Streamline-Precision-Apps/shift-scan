@@ -10,6 +10,7 @@ import { ProgressBar } from "./progressBar";
 import { Button } from "../ui/button";
 import { usePermissions } from "@/app/lib/context/permissionContext";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 type UserSettings = {
   userId: string;
@@ -109,8 +110,8 @@ export default function NotificationSettings({
     }
     try {
       setIsSubmitting(true);
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
+
       const res = await fetch(`${API_URL}/api/v1users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

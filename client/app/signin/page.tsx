@@ -9,6 +9,7 @@ import { useUserStore } from "../lib/store/userStore";
 import { useProfitStore } from "../lib/store/profitStore";
 import { useEquipmentStore } from "../lib/store/equipmentStore";
 import { useCostCodeStore } from "../lib/store/costCodeStore";
+import { getApiUrl } from "../lib/utils/api-Utils";
 
 export default function SignInPage() {
   const isNative = Capacitor.isNativePlatform();
@@ -35,7 +36,8 @@ export default function SignInPage() {
       typeof window !== "undefined" ? localStorage.getItem("userId") : null;
     if (token && userId) {
       // Try to fetch user info and set user, then redirect
-      const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+      const url = getApiUrl();
+
       fetch(`${url}/api/v1/init`, {
         method: "POST",
         headers: {
@@ -70,8 +72,7 @@ export default function SignInPage() {
     setLoading(true);
     setError("");
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
 
       // POST /auth/signin (assumption). Adjust path if your server uses a different route.
       const res = await fetch(`${API_URL}/auth/login`, {
@@ -109,8 +110,7 @@ export default function SignInPage() {
         // Store token and userId
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", String(userId));
-
-        const url = process.env.NEXT_PUBLIC_API_URL || `http://localhost:3001`;
+        const url = getApiUrl();
         const response = await fetch(`${url}/api/v1/init`, {
           method: "POST",
           headers: {

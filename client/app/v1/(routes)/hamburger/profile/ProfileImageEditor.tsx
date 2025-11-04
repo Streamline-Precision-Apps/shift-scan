@@ -15,7 +15,7 @@ import Spinner from "@/app/v1/components/(animations)/spinner";
 import "@/app/globals.css";
 import { usePermissions } from "@/app/lib/context/permissionContext";
 import { updateUserImage } from "@/app/lib/actions/hamburgerActions";
-import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
 import { X } from "lucide-react";
 
 type Employee = {
@@ -249,19 +249,15 @@ export default function ProfileImageEditor({
       formData.append("file", file, "profile.png");
       formData.append("folder", "profileImages");
 
+      const urlVal = getApiUrl();
       const token = localStorage.getItem("token") || "";
-      const res = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
-        }/api/storage/upload`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
+      const res = await fetch(`${urlVal}/api/storage/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
       if (!res.ok) {
         throw new Error("Failed to upload image");

@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import SignatureSetUpModal from "./signatureSetupModal";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 interface SignatureSetupProps {
   userId: string;
@@ -58,8 +59,7 @@ const SignatureSetup: React.FC<SignatureSetupProps> = ({
 
     setIsSubmitting(true);
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
       const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

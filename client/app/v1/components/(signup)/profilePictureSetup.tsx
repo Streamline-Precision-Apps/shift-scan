@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { ProgressBar } from "./progressBar";
 import { Button } from "../ui/button";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 type prop = {
   userId: string;
@@ -50,8 +51,7 @@ export default function ProfilePictureSetup({
       // Add cache-busting param to break browser cache
       const cacheBustedUrl = `${url}?t=${Date.now()}`;
       // Make a post route to finish user setup\
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
       const dbRes = await fetch(`${API_URL}/api/v1/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -9,6 +9,7 @@ import { Holds } from "../(reusable)/holds";
 import { Labels } from "../(reusable)/labels";
 import { Texts } from "../(reusable)/texts";
 import { Images } from "../(reusable)/images";
+import { getApiUrl } from "@/app/lib/utils/api-Utils";
 
 const ResetPassword = ({
   userId,
@@ -92,8 +93,7 @@ const ResetPassword = ({
 
     setIsSubmitting(true);
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const API_URL = getApiUrl();
       const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
