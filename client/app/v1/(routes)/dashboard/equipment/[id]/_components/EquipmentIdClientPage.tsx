@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import { differenceInSeconds, parseISO } from "date-fns";
 import {
   deleteEmployeeEquipmentLog,
-  deleteRefuelLog,
+  deleteEquipmentRefuelLog,
   updateRefuelLog,
 } from "@/app/lib/actions/truckingActions";
 import Spinner from "@/app/v1/components/(animations)/spinner";
@@ -257,8 +257,8 @@ export default function CombinedForm({ id }: { id: string }) {
     try {
       // Check if there's a refuel log to delete
       if (state.formState.refuelLogs) {
-        // Call the deleteRefuelLog server action with the ID of the refuel log
-        await deleteRefuelLog(state.formState.refuelLogs.id);
+        // Call the deleteEquipmentRefuelLog action with the ID of the refuel log
+        await deleteEquipmentRefuelLog(state.formState.refuelLogs.id);
 
         // Update the state to reflect the deletion
         setState((prev) => ({

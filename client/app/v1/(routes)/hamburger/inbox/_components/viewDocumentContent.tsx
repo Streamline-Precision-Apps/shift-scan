@@ -1,10 +1,10 @@
 "use client";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Holds } from "@/components/(reusable)/holds";
-import { Titles } from "@/components/(reusable)/titles";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Spinner from "@/components/(animations)/spinner";
+import Spinner from "@/app/v1/components/(animations)/spinner";
 
 export function ViewDocumentContent({ id }: { id: string }) {
   const router = useRouter();
@@ -48,7 +48,7 @@ export function ViewDocumentContent({ id }: { id: string }) {
       } catch (err) {
         console.error("Fetch document error:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to load document",
+          err instanceof Error ? err.message : "Failed to load document"
         );
       } finally {
         setLoading(false);

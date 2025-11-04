@@ -1,6 +1,6 @@
 "use client";
-import { Holds } from "@/components/(reusable)/holds";
-import { Texts } from "@/components/(reusable)/texts";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { useTranslations } from "next-intl";
 import { useCalculateBarHeight } from "./useCalculateBarHeight";
 

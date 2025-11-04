@@ -9,6 +9,7 @@ import { TimeSheetDataProvider } from "../lib/context/TimeSheetIdContext";
 import { CurrentViewProvider } from "../lib/context/CurrentViewContext";
 import { NotificationProvider } from "../lib/context/NotificationContext";
 import { SavedCostCodeProvider } from "../lib/context/CostCodeContext";
+import { PayPeriodHoursProvider } from "../lib/context/PayPeriodHoursContext";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +21,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
               <CurrentViewProvider>
                 <NotificationProvider>
                   <SavedCostCodeProvider>
-                    <PermissionsProvider>{children}</PermissionsProvider>
+                    <PayPeriodHoursProvider>
+                      <PermissionsProvider>{children}</PermissionsProvider>
+                    </PayPeriodHoursProvider>
                   </SavedCostCodeProvider>
                 </NotificationProvider>
               </CurrentViewProvider>

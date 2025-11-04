@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import QrScanner from "qr-scanner";
 import { equipmentType } from "./companyDocuments";
-import { usePermissions } from "@/app/context/PermissionsContext";
+import { usePermissions } from "@/app/lib/context/permissionContext";
 
 type EquipmentQrReaderProps = {
   handleNextStep: () => void;
@@ -38,7 +38,7 @@ export default function Qr({
   const [isLoading, setIsLoading] = useState(true);
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
-  const { requestCameraPermission, permissions } = usePermissions();
+  const { requestCameraPermission, permissionStatus } = usePermissions();
 
   // Performance patch: Override getContext for better canvas performance
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Qr({
     HTMLCanvasElement.prototype.getContext = function (
       this: HTMLCanvasElement,
       type: string,
-      options?: CanvasRenderingContext2DSettings,
+      options?: CanvasRenderingContext2DSettings
     ) {
       if (type === "2d") {
         options = { ...options, willReadFrequently: true };
@@ -64,13 +64,13 @@ export default function Qr({
       if (!data || typeof data !== "string") return false;
       return equipment.some((item) => item.qrId === data.trim());
     },
-    [equipment],
+    [equipment]
   );
 
   const checkCameraPermissions = useCallback(async () => {
     try {
       // First check if we already have camera permissions
-      if (permissions?.camera === true) {
+      if (permissionStatus.camera === "granted") {
         return true;
       }
 
@@ -91,7 +91,12 @@ export default function Qr({
       setScanErrorType("permission");
       return false;
     }
-  }, [permissions, setScanError, setScanErrorType, requestCameraPermission]);
+  }, [
+    permissionStatus.camera,
+    setScanError,
+    setScanErrorType,
+    requestCameraPermission,
+  ]);
 
   const handleScanSuccess = useCallback(
     (result: QrScanner.ScanResult) => {
@@ -120,7 +125,7 @@ export default function Qr({
       setScanError,
       setScanErrorType,
       handleNextStep,
-    ],
+    ]
   );
 
   const handleScanFail = useCallback(
@@ -136,7 +141,7 @@ export default function Qr({
         }
       }, 1000);
     },
-    [startCamera, setScanError],
+    [startCamera, setScanError]
   );
 
   const toggleFlash = async () => {
@@ -174,7 +179,8 @@ export default function Qr({
       try {
         // Use the permissions state to determine if we need to check permissions
         const hasPermission =
-          permissions.camera || (await checkCameraPermissions());
+          permissionStatus.camera === "granted" ||
+          (await checkCameraPermissions());
         if (!hasPermission) return;
 
         scanner = new QrScanner(videoRef.current, handleScanSuccess, {
@@ -244,7 +250,7 @@ export default function Qr({
     checkCameraPermissions,
     setScanError,
     setScanErrorType,
-    permissions,
+    permissionStatus.camera,
   ]);
 
   return (

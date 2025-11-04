@@ -4,7 +4,7 @@
 
 import { cva, type VariantProps } from "class-variance-authority";
 import { HTMLAttributes, FC } from "react";
-import { cn } from "@/components/(reusable)/utils";
+import { cn } from "@/app/v1/components/(reusable)/utils";
 
 const OptionsVariants = cva(
   "flex items-center justify-center rounded-full w-50 h-35", //this applies to all variants

@@ -21,6 +21,7 @@ import { Bases } from "@/app/v1/components/(reusable)/bases";
 import { apiRequestNoResCheck } from "@/app/lib/utils/api-Utils";
 import { useProfitStore } from "@/app/lib/store/profitStore";
 import { useEquipmentStore } from "@/app/lib/store/equipmentStore";
+import { Suspense } from "react";
 
 const JobCodesSchema = z.object({
   id: z.string(),
@@ -55,7 +56,7 @@ type JobCodes = z.infer<typeof JobCodesSchema>;
 
 type EquipmentCodes = z.infer<typeof EquipmentCodesSchema>;
 
-export default function QRGeneratorContent() {
+function QRGeneratorContent() {
   const { jobsites, setJobsites } = useProfitStore();
   const { equipments, setEquipments } = useEquipmentStore();
   const [activeTab, setActiveTab] = useState(1);
@@ -340,5 +341,23 @@ export default function QRGeneratorContent() {
         </Grids>
       </Contents>
     </Bases>
+  );
+}
+
+export default function QRGenerator() {
+  return (
+    <Suspense
+      fallback={
+        <Bases>
+          <Contents>
+            <Grids rows={"7"} gap={"5"}>
+              <LoadingQRGeneratorContent />
+            </Grids>
+          </Contents>
+        </Bases>
+      }
+    >
+      <QRGeneratorContent />
+    </Suspense>
   );
 }

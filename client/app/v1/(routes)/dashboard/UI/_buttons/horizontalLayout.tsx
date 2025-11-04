@@ -50,7 +50,7 @@ export default function HorizontalLayout({
         <img
           src={titleImg}
           alt={titleImgAlt}
-          className="h-full w-full max-h-[40px] max-w-[40px] object-contain"
+          className="h-full w-full max-h-10 max-w-10 object-contain"
         />
 
         <Titles size={textSize}>{t(text)}</Titles>

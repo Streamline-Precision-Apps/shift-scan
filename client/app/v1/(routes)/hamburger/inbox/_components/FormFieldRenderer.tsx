@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { useEquipmentStore } from "@/app/lib/store/equipmentStore";
 import { useProfitStore } from "@/app/lib/store/profitStore";
 import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
-import { FormIndividualTemplate } from "../../../admins/forms/[id]/_component/hooks/types";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { FormIndividualTemplate } from "../_adminComponents/types";
 
 // Define FormFieldValue type to match RenderFields expectations
 type FormFieldValue =

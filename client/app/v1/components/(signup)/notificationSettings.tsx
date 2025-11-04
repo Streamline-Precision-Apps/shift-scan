@@ -47,12 +47,8 @@ export default function NotificationSettings({
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isRequiredAccessed, setIsRequiredAccessed] = useState(false);
-  const {
-    requestCameraPermission,
-    requestLocationPermission,
-    resetCameraPermission,
-    resetLocationPermission,
-  } = usePermissions();
+  const { requestCameraPermission, requestLocationPermission } =
+    usePermissions();
 
   // Update the state for a particular setting
   const handleChange = (key: keyof UserSettings, value: boolean) => {
@@ -66,7 +62,7 @@ export default function NotificationSettings({
       handleChange("cameraAccess", granted);
     } else {
       // Reset the permission so it can be re-requested if toggled back on
-      resetCameraPermission();
+
       handleChange("cameraAccess", false);
     }
   };
@@ -79,7 +75,7 @@ export default function NotificationSettings({
       handleChange("locationAccess", result.success);
     } else {
       // Reset the permission so it can be re-requested if toggled back on
-      resetLocationPermission();
+
       handleChange("locationAccess", false);
     }
   };

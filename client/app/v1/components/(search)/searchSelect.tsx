@@ -2,16 +2,15 @@
 //and stores it in a state to be searched and filtered. The main location is in QrGenerator.tsx as of now.
 "use client";
 import React, { useState, useEffect, ChangeEvent } from "react";
-import SearchBar from "@/components/(search)/searchbar";
-import { Holds } from "@/components/(reusable)/holds";
+import SearchBar from "@/app/v1/components/(search)/searchbar";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
 import { useTranslations } from "next-intl";
-import { Grids } from "@/components/(reusable)/grids";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
 import { Texts } from "../(reusable)/texts";
 import { Buttons } from "../(reusable)/buttons";
 import { Contents } from "../(reusable)/contents";
 import Spinner from "../(animations)/spinner";
 import EmptyView from "../(reusable)/emptyView";
-import { EquipmentTags } from "../../../prisma/generated/prisma/client";
 
 type JobCode = {
   id: string;
@@ -23,7 +22,7 @@ type EquipmentCode = {
   id: string;
   qrId: string;
   name: string;
-  equipmentTag: EquipmentTags;
+  equipmentTag: "TRUCK" | "TRAILER" | "VEHICLE" | "EQUIPMENT";
 };
 
 type Props<T> = {
@@ -66,8 +65,8 @@ function SearchSelect<T extends JobCode | EquipmentCode>({
       options.filter(
         (option) =>
           option.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          option.qrId.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+          option.qrId.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     );
   }, [searchTerm, options]);
 

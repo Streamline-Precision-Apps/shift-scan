@@ -9,8 +9,9 @@ import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useState, useEffect, FormEvent } from "react";
 import { useTranslations } from "next-intl";
-import { setUserLanguage } from "@/app/lib/actions/userActions";
+
 import { setLocale } from "@/app/lib/actions/cookieActions";
+import { updateSettings } from "@/app/lib/actions/hamburgerActions";
 
 type Props = {
   setIsOpenLanguageSelector: () => void;
@@ -44,15 +45,28 @@ export default function LanguageModal({ setIsOpenLanguageSelector }: Props) {
 
   const handleLanguageChange = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    formData.append("id", userId ?? "");
-    const response = await setUserLanguage(formData);
-    if (response === "en") {
-      await setLocale(false);
-    } else {
-      await setLocale(true);
+    try {
+      const formData = new FormData(e.target as HTMLFormElement);
+      const selectedLanguage = formData.get("language") as string;
+
+      // Update settings via API
+      const response = await updateSettings({
+        userId: userId ?? "",
+        language: selectedLanguage,
+      });
+
+      if (response.success) {
+        // Update locale cookie based on language
+        if (selectedLanguage === "en") {
+          await setLocale(false);
+        } else {
+          await setLocale(true);
+        }
+        setIsOpenLanguageSelector();
+      }
+    } catch (error) {
+      console.error("Error updating language:", error);
     }
-    setIsOpenLanguageSelector();
   };
 
   // end of language selector modal

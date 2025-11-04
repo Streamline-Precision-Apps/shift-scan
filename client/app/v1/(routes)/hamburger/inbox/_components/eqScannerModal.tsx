@@ -1,7 +1,7 @@
-import { Contents } from "@/components/(reusable)/contents";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
-import { TitleBoxes } from "@/components/(reusable)/titleBoxes";
+import { Contents } from "@/app/v1/components/(reusable)/contents";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
 import QrHandler from "./qrHandler";
 import { useEffect, useState } from "react";
 import { equipmentType } from "./companyDocuments";

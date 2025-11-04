@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Contents } from "@/components/(reusable)/contents";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
-import { Images } from "@/components/(reusable)/images";
-import { Texts } from "@/components/(reusable)/texts";
-import { Titles } from "@/components/(reusable)/titles";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Contents } from "@/app/v1/components/(reusable)/contents";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Images } from "@/app/v1/components/(reusable)/images";
+import { Texts } from "@/app/v1/components/(reusable)/texts";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
 import Qr from "./qr";
 import { equipmentType } from "./companyDocuments";
 

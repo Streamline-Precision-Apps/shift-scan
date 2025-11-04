@@ -1,10 +1,10 @@
 "use client";
 import "@/app/globals.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EnterAccountInfo } from "@/app/v1/components/(signup)/EnterAccountInfo";
 import ResetPassword from "@/app/v1/components/(signup)/resetPassword";
 import NotificationSettings from "@/app/v1/components/(signup)/notificationSettings";
@@ -19,27 +19,29 @@ const propsSchema = z.object({
 });
 
 // Validation logic
-function validateProps(userId: string, accountSetup: boolean) {
+function validateProps(userId: string | null, accountSetup: string | null) {
   try {
-    propsSchema.parse({ userId, accountSetup });
-    return true;
+    const parsed = propsSchema.parse({
+      userId: userId || undefined,
+      accountSetup: accountSetup === "true",
+    });
+    return { valid: true, data: parsed };
   } catch (error) {
     console.error("Invalid props:", error);
-    return false;
+    return { valid: false, data: null };
   }
 }
 
-export default function Content({
-  userId,
-  accountSetup,
-  userName,
-}: {
-  userId: string;
-  accountSetup: boolean;
-  userName: string;
-}) {
+function SignUpContent() {
   const router = useRouter();
-  const isValid = validateProps(userId, accountSetup); // Ensure this is at the top
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+  const accountSetup = searchParams.get("accountSetup");
+  const userName = searchParams.get("userName") || "";
+
+  const validation = validateProps(userId, accountSetup);
+  const isValid = validation.valid;
+
   const [step, setStep] = useState(1); // Always call useState
   const totalSteps = 6; // Total number of steps in the signup process
   const handleComplete = async () => {
@@ -73,7 +75,7 @@ export default function Content({
     <>
       {step === 1 && (
         <EnterAccountInfo
-          userId={userId}
+          userId={userId!}
           handleNextStep={handleNextStep}
           userName={userName}
           totalSteps={totalSteps}
@@ -83,7 +85,7 @@ export default function Content({
 
       {step === 2 && (
         <ResetPassword
-          userId={userId}
+          userId={userId!}
           handleNextStep={handleNextStep}
           totalSteps={totalSteps}
           currentStep={step}
@@ -91,7 +93,7 @@ export default function Content({
       )}
       {step === 3 && (
         <NotificationSettings
-          userId={userId}
+          userId={userId!}
           handleNextStep={handleNextStep}
           totalSteps={totalSteps}
           currentStep={step}
@@ -99,7 +101,7 @@ export default function Content({
       )}
       {step === 4 && (
         <ProfilePictureSetup
-          userId={userId}
+          userId={userId!}
           handleNextStep={handleNextStep}
           totalSteps={totalSteps}
           currentStep={step}
@@ -108,7 +110,7 @@ export default function Content({
 
       {(step === 5 || step === 6) && (
         <SignatureSetup
-          userId={userId}
+          userId={userId!}
           handleNextStep={handleComplete}
           setStep={setStep}
           totalSteps={totalSteps}
@@ -116,5 +118,13 @@ export default function Content({
         />
       )}
     </>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignUpContent />
+    </Suspense>
   );
 }

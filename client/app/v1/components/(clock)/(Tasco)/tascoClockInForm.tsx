@@ -1,15 +1,18 @@
 "use client";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Contents } from "@/components/(reusable)/contents";
-import { Holds } from "@/components/(reusable)/holds";
-import { Selects } from "@/components/(reusable)/selects";
-import { Grids } from "@/components/(reusable)/grids";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Contents } from "@/app/v1/components/(reusable)/contents";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Selects } from "@/app/v1/components/(reusable)/selects";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
 import { useTranslations } from "next-intl";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TitleBoxes } from "@/components/(reusable)/titleBoxes";
-import { Titles } from "@/components/(reusable)/titles";
+import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { EquipmentSelector } from "../(General)/equipmentSelector";
-import { MaterialType } from "@/lib/types";
+
+export type MaterialType = {
+  name: string;
+};
 
 type TascoClockInFormProps = {
   handlePrevStep: () => void;

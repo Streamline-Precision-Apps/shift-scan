@@ -1,10 +1,10 @@
 // components/reusable/SelectableModal.tsx
 import { useState, ChangeEvent, FC } from "react";
-import { NModals } from "@/components/(reusable)/newmodals";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Titles } from "@/components/(reusable)/titles";
+import { NModals } from "@/app/v1/components/(reusable)/newmodals";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { Images } from "./images";
 
 type Option = {

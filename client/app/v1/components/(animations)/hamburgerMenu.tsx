@@ -2,8 +2,8 @@
 import "@/app/globals.css";
 import React, { useState } from "react";
 import { motion, MotionConfig } from "framer-motion";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Images } from "@/components/(reusable)/images";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Images } from "@/app/v1/components/(reusable)/images";
 import { Holds } from "../(reusable)/holds";
 
 export function AnimatedHamburgerButton() {

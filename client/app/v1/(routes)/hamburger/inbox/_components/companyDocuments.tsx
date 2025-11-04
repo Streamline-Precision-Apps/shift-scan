@@ -1,17 +1,17 @@
 "use client";
-import Spinner from "@/components/(animations)/spinner";
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Contents } from "@/components/(reusable)/contents";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
-import { NModals } from "@/components/(reusable)/newmodals";
-import { Selects } from "@/components/(reusable)/selects";
-import { Titles } from "@/components/(reusable)/titles";
+import Spinner from "@/app/v1/components/(animations)/spinner";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Contents } from "@/app/v1/components/(reusable)/contents";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { NModals } from "@/app/v1/components/(reusable)/newmodals";
+import { Selects } from "@/app/v1/components/(reusable)/selects";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Images } from "@/components/(reusable)/images";
+import { Images } from "@/app/v1/components/(reusable)/images";
 import EqScannerModal from "./eqScannerModal";
-import { Texts } from "@/components/(reusable)/texts";
+import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { useTranslations } from "next-intl";
 
 type documentType = {

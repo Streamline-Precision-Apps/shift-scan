@@ -1,7 +1,7 @@
 "use client";
 import "@/app/globals.css";
 import { useTranslations } from "next-intl";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { Images } from "@/app/v1/components/(reusable)/images";
@@ -19,7 +19,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 type TokenStatus = "loading" | "valid" | "invalid" | "expired";
 
-export default function ChangePassword() {
+function ChangePasswordContent() {
   const t = useTranslations("PasswordReset");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -470,5 +470,33 @@ export default function ChangePassword() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ChangePassword() {
+  return (
+    <Suspense
+      fallback={
+        <main className="relative min-h-screen overflow-hidden bg-app-gradient bg-to-br from-app-dark-blue via-app-blue to-app-blue px-4 py-8 md:py-0 md:max-h-screen flex flex-col items-center justify-center">
+          <div className="pointer-events-none fixed inset-0 z-0">
+            <div className="absolute inset-0 bg-linear-to-br from-app-dark-blue via-app-blue to-app-blue animate-gradient-move opacity-80" />
+            <div className="absolute left-1/2 top-1/4 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 bg-app-blue opacity-20 rounded-full blur-3xl" />
+            <div className="absolute right-0 bottom-0 w-[400px] h-[400px] bg-app-blue opacity-10 rounded-full blur-2xl" />
+          </div>
+          <div className="relative z-10 w-full h-[90vh] max-w-md">
+            <div className="bg-white/95 h-full backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8 space-y-8 md:space-y-6">
+              <div className="text-center h-full flex flex-col justify-center items-center gap-4">
+                <Texts size={"lg"} className="text-app-dark-blue">
+                  Loading...
+                </Texts>
+                <Spinner />
+              </div>
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <ChangePasswordContent />
+    </Suspense>
   );
 }

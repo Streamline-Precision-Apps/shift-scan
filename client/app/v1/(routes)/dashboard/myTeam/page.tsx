@@ -42,7 +42,7 @@ type TeamListItem = {
   userCount: number;
 };
 
-export default function MyTeam() {
+function MyTeamContent() {
   const { user } = useUserStore();
   const userId = user?.id;
   const router = useRouter();
@@ -259,5 +259,32 @@ export default function MyTeam() {
         </Grids>
       </Contents>
     </Bases>
+  );
+}
+
+export default function MyTeam() {
+  return (
+    <Suspense
+      fallback={
+        <Bases>
+          <Contents>
+            <Grids rows={"7"} gap={"5"} className="h-full w-full">
+              <Holds
+                background={"white"}
+                className="row-start-1 row-end-8 h-full w-full"
+              >
+                <Contents width={"section"}>
+                  <Holds className="my-auto">
+                    <Spinner />
+                  </Holds>
+                </Contents>
+              </Holds>
+            </Grids>
+          </Contents>
+        </Bases>
+      }
+    >
+      <MyTeamContent />
+    </Suspense>
   );
 }

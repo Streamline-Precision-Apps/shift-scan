@@ -315,6 +315,23 @@ export async function createRefuelEquipmentLog(formData: FormData) {
   return response;
 }
 
+/**
+ * Delete refuel log for equipment logs
+ * Uses: /api/v1/timesheet/equipment-log/:equipmentLogId
+ */
+export async function deleteEquipmentRefuelLog(refuelLogId: string) {
+  try {
+    await apiRequest(
+      `/api/v1/timesheet/refuel-log/${refuelLogId}`,
+      "DELETE"
+    );
+    return true;
+  } catch (error) {
+    console.error("Error deleting equipment refuel log:", error);
+    throw error;
+  }
+}
+
 export async function deleteEmployeeEquipmentLog(id: string) {
   try {
     await apiRequest(`/api/v1/timesheet/equipment-log/${id}`, "DELETE");

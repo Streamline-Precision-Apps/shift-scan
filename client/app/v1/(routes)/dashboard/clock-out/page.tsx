@@ -1,11 +1,11 @@
 "use client";
 import { ChangeEvent, use, useEffect, useState } from "react";
-import { InjuryReportContent } from "./(components)/injury-report/injuryReportContent";
+import { InjuryReportContent } from "./_components/injuryReportContent";
 import { useCurrentView } from "@/app/lib/context/CurrentViewContext";
-import ReviewYourDay from "./(components)/reviewYourDay/reviewYourDay";
-import { LaborClockOut } from "./(components)/clock-out-Verification/laborClockOut";
-import { PreInjuryReport } from "./(components)/no-injury";
-import Comment from "./(components)/comment";
+import ReviewYourDay from "./_components/reviewYourDay";
+import { LaborClockOut } from "./_components/laborClockOut";
+import { PreInjuryReport } from "./_components/no-injury";
+import Comment from "./_components/comment";
 import { useTimeSheetData } from "@/app/lib/context/TimeSheetIdContext";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { usePermissions } from "@/app/lib/context/permissionContext";

@@ -1,18 +1,20 @@
 "use client";
 
-import { Buttons } from "@/components/(reusable)/buttons";
-import { Grids } from "@/components/(reusable)/grids";
-import { Holds } from "@/components/(reusable)/holds";
-import { Images } from "@/components/(reusable)/images";
-import { Labels } from "@/components/(reusable)/labels";
-import { NModals } from "@/components/(reusable)/newmodals";
-import { TextAreas } from "@/components/(reusable)/textareas";
-import { Texts } from "@/components/(reusable)/texts";
-import { Titles } from "@/components/(reusable)/titles";
-import { LogItem } from "@/lib/types";
+import { Buttons } from "@/app/v1/components/(reusable)/buttons";
+import { Grids } from "@/app/v1/components/(reusable)/grids";
+import { Holds } from "@/app/v1/components/(reusable)/holds";
+import { Images } from "@/app/v1/components/(reusable)/images";
+import { Labels } from "@/app/v1/components/(reusable)/labels";
+import { NModals } from "@/app/v1/components/(reusable)/newmodals";
+import { TextAreas } from "@/app/v1/components/(reusable)/textareas";
+import { Texts } from "@/app/v1/components/(reusable)/texts";
+import { Titles } from "@/app/v1/components/(reusable)/titles";
+
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
-import { useModalState } from "@/hooks/(dashboard)/useModalState";
+
+import { LogItem } from "./clockOutBtn";
+import useModalState from "@/app/lib/hooks/useModalState";
 
 export default function ClockOutWidget({
   handleShowManagerButtons,

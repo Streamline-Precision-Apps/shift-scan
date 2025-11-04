@@ -14,9 +14,10 @@ import SubmittedFormsApproval from "./_components/SubmittedFormsApproval";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useTranslations } from "next-intl";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
-import { FormIndividualTemplate } from "@/app/v1/(routes)/admins/forms/[id]/_component/hooks/types";
+
 import { useUserStore } from "@/app/lib/store/userStore";
 import { saveDraftToPending } from "@/app/lib/actions/formActions";
+import { FormIndividualTemplate } from "../../_adminComponents/types";
 
 // Define FormFieldValue type to match RenderFields expectations
 type FormFieldValue =

@@ -20,6 +20,8 @@ import {
   updateClockOutController,
   getRecentReturnTimesheetController,
   getPreviousWorkController,
+  getContinueTimesheetController,
+  deleteRefuelLogController,
 } from "../controllers/timesheetController.js";
 
 const router = Router();
@@ -38,6 +40,12 @@ router.get("/user/:userId/clockOutComment", getClockOutCommentController);
 // Get today's timesheets and signature for a user
 import { getClockOutDetailsController } from "../controllers/timesheetController.js";
 router.get("/user/:userId/clock-out-details", getClockOutDetailsController);
+// check if there is an ongoing timesheet to continue
+router.get(
+  "/:id/user/:userId/continue-timesheet",
+  getContinueTimesheetController
+);
+
 // Update a timesheet
 router.put("/:id/clock-out", updateClockOutController);
 router.put("/:id", updateTimesheet);
@@ -68,6 +76,9 @@ router.delete("/equipment-log/:logId", deleteEmployeeEquipmentLogController);
 
 // Update an employee equipment log
 router.put("/equipment-log/:logId", updateEmployeeEquipmentLogController);
+
+// Delete a refuel log
+router.delete("/refuel-log/:refuelLogId", deleteRefuelLogController);
 
 // Get all timesheets for all users in a manager's crew
 router.get(

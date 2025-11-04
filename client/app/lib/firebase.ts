@@ -1,7 +1,8 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
-import { setFCMToken } from "./actions/NotificationActions";
+
 import { getStorage } from "firebase/storage";
+import { setFCMToken } from "./actions/NotificationActions";
 
 // Firebase project configuration
 const firebaseConfig = {

@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import TimeCardApprover from "./_Components/TimeCardApprover";
 import Spinner from "@/app/v1/components/(animations)/spinner";
 
-export default function TimeCards() {
+function TimeCardsContent() {
   const t = useTranslations("TimeCardSwiper");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -50,5 +50,36 @@ export default function TimeCards() {
         </Grids>
       </Contents>
     </Bases>
+  );
+}
+
+export default function TimeCards() {
+  return (
+    <Suspense
+      fallback={
+        <Bases>
+          <Contents>
+            <Grids
+              rows={"7"}
+              gap={"5"}
+              className="h-full bg-white rounded-[10px]"
+            >
+              <Holds className="row-span-1 h-full">
+                <TitleBoxes>
+                  <Holds className="h-full justify-end">
+                    <Titles size={"h2"}>Loading...</Titles>
+                  </Holds>
+                </TitleBoxes>
+              </Holds>
+              <Holds className="row-start-2 row-end-8 h-full w-full">
+                <Spinner />
+              </Holds>
+            </Grids>
+          </Contents>
+        </Bases>
+      }
+    >
+      <TimeCardsContent />
+    </Suspense>
   );
 }

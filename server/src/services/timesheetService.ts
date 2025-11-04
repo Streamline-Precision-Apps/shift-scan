@@ -1590,6 +1590,57 @@ export async function getPreviousTimesheet(userId: string) {
 
   return timesheet;
 }
+export async function getContinueTimesheetService(id: number, userId: string) {
+  const incompleteTimesheet = await prisma.timeSheet.findFirst({
+    where: {
+      id,
+      userId,
+      endTime: null, // Ensure it's still incomplete
+    },
+    include: {
+      Jobsite: {
+        select: {
+          id: true,
+          qrId: true,
+          name: true,
+        },
+      },
+      CostCode: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      TascoLogs: {
+        select: {
+          shiftType: true,
+          laborType: true,
+          materialType: true,
+          Equipment: {
+            select: {
+              qrId: true,
+              name: true,
+            },
+          },
+        },
+      },
+      TruckingLogs: {
+        select: {
+          laborType: true,
+          truckNumber: true,
+          startingMileage: true,
+          Equipment: {
+            select: {
+              qrId: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return incompleteTimesheet;
+}
 
 export async function returnToPreviousTimesheetService(id: number) {
   const PrevTimeSheet = await prisma.timeSheet.findUnique({
@@ -1640,4 +1691,28 @@ export async function returnToPreviousTimesheetService(id: number) {
   });
 
   return PrevTimeSheet;
+}
+
+/**
+ * Delete a refuel log for equipment logs
+ */
+export async function deleteRefuelLogService(refuelLogId: string) {
+  try {
+    const deletedRefuelLog = await prisma.refuelLog.delete({
+      where: {
+        id: refuelLogId,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Refuel log deleted successfully",
+      data: deletedRefuelLog,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to delete refuel log: ${error.message}`);
+    }
+    throw new Error("Failed to delete refuel log");
+  }
 }

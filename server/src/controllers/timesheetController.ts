@@ -23,6 +23,8 @@ import {
   updateClockOutService,
   getPreviousTimesheet,
   returnToPreviousTimesheetService,
+  getContinueTimesheetService,
+  deleteRefuelLogService,
 } from "../services/timesheetService.js";
 
 import Express from "express";
@@ -731,5 +733,65 @@ export async function getPreviousWorkController(
     return res.json({ success: true, data: previousWork });
   } catch (error) {
     return res.status(500).json({ error: "Failed to fetch previous work." });
+  }
+}
+
+// GET /v1/timesheet/:id/user/:userId/continue-timesheet
+export async function getContinueTimesheetController(
+  req: import("express").Request,
+  res: import("express").Response
+) {
+  try {
+    const id = Number(req.params.id);
+    const userId = req.params.userId;
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ error: "Timesheet ID parameter is required." });
+    }
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID parameter is required." });
+    }
+
+    const timesheet = await getContinueTimesheetService(id, userId);
+
+    if (!timesheet) {
+      return res.status(404).json({
+        error: "Incomplete timesheet not found or already completed.",
+      });
+    }
+
+    return res.json({ success: true, data: timesheet });
+  } catch (error) {
+    console.error("[getContinueTimesheetController] Error:", error);
+    return res.status(500).json({
+      error: "Failed to fetch continue timesheet.",
+      details: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+export async function deleteRefuelLogController(
+  req: Express.Request,
+  res: Express.Response
+): Promise<Express.Response> {
+  try {
+    const { refuelLogId } = req.params;
+
+    if (!refuelLogId) {
+      return res.status(400).json({ error: "Refuel log ID is required." });
+    }
+
+    const result = await deleteRefuelLogService(refuelLogId);
+
+    return res.json(result);
+  } catch (error) {
+    console.error("[deleteRefuelLogController] Error:", error);
+    return res.status(500).json({
+      error: "Failed to delete refuel log.",
+      details: error instanceof Error ? error.message : String(error),
+    });
   }
 }
