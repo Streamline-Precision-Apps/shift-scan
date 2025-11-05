@@ -48,6 +48,17 @@ async function main() {
     // Logging middleware
     app.use(morgan("combined"));
 
+    // CORS Origin logging middleware
+    app.use((req, res, next) => {
+      const origin = req.headers.origin || req.headers.referer || "unknown";
+      const method = req.method;
+      const url = req.url;
+      console.log(
+        `[CORS REQUEST] Origin: ${origin} | Method: ${method} | URL: ${url}`
+      );
+      next();
+    });
+
     // Body parsing middleware
     app.use(express.json({ limit: "10mb" }));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -78,8 +89,12 @@ async function main() {
     app.use(errorHandler);
 
     // Start server
-    const server = app.listen(config.port, () => {
+    const server = app.listen(config.port, "0.0.0.0", () => {
       console.log(`🌟 Server is running on port ${config.port}`);
+      console.log(`🌐 Accessible at http://0.0.0.0:${config.port}`);
+      console.log(
+        `📱 Accessible from Android at http://192.168.1.102:${config.port}`
+      );
       console.log(
         `📖 API documentation available at http://localhost:${config.port}/api-docs`
       );

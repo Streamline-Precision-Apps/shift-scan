@@ -1,5 +1,6 @@
 import { Router } from "express";
 import notificationRoutes from "./notificationsRoute.js";
+import pushNotificationsRoute from "./pushNotificationsRoute.js";
 import blobRoutes from "./blobRoute.js";
 import tokenRoutes from "./tokenRoutes.js";
 import locationRoutes from "./locationRoutes.js";
@@ -30,6 +31,7 @@ router.use("/v1/tasco-logs", tascoLogsRoutes);
 router.use("/v1", initRoutes);
 
 router.use("/notifications", notificationRoutes);
+router.use("/push-notifications", pushNotificationsRoute);
 router.use("/storage", blobRoutes);
 router.use("/tokens", tokenRoutes);
 router.use("/location", locationRoutes);

@@ -33,6 +33,20 @@ export declare function getUserByIdQuery(id: string, query: string): Promise<{
     [x: string]: {
         createdAt: Date;
         id: string;
+        userId: string;
+        token: string;
+        platform: string | null;
+        lastUsedAt: Date | null;
+        isValid: boolean;
+        updatedAt: Date;
+    }[] | {
+        topic: string;
+        createdAt: Date;
+        id: string;
+        userId: string;
+    }[] | {
+        createdAt: Date;
+        id: string;
         name: string;
         updatedAt: Date;
         description: string | null;
@@ -79,19 +93,10 @@ export declare function getUserByIdQuery(id: string, query: string): Promise<{
         radiusMeters: number | null;
         status: import("../../generated/prisma/index.js").$Enums.FormTemplateStatus;
     }[] | {
-        topic: string;
-        createdAt: Date;
-        id: string;
+        readAt: Date;
+        id: number;
         userId: string;
-    }[] | {
-        createdAt: Date;
-        id: string;
-        userId: string;
-        token: string;
-        platform: string | null;
-        lastUsedAt: Date | null;
-        isValid: boolean;
-        updatedAt: Date;
+        notificationId: number;
     }[] | {
         id: string;
         token: string;
@@ -151,11 +156,6 @@ export declare function getUserByIdQuery(id: string, query: string): Promise<{
         endTime: Date | null;
         timeSheetId: number;
         maintenanceId: string;
-    }[] | {
-        readAt: Date;
-        id: number;
-        userId: string;
-        notificationId: number;
     }[] | {
         id: number;
         userId: string;

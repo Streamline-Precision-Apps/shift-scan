@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="3394c3cf-c86e-5bbc-b594-1e5507cebc87")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="bd5d67d0-84f0-5be8-ac1a-49ec9c22c45a")}catch(e){}}();
 import "./instrument.mjs";
 import * as Sentry from "@sentry/node";
 import express from "express";
@@ -26,7 +26,10 @@ async function main() {
         app.use(helmet());
         // CORS middleware
         app.use(cors({
-            origin: process.env.CORS_ORIGIN || ["http://localhost:3000"],
+            origin: process.env.CORS_ORIGIN || [
+                "http://localhost:3000",
+                "http://192.168.1.102:3001",
+            ],
             credentials: true,
             methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             allowedHeaders: ["Content-Type", "Authorization"],
@@ -85,4 +88,4 @@ main().catch(async (error) => {
     process.exit(1);
 });
 //# sourceMappingURL=index.js.map
-//# debugId=3394c3cf-c86e-5bbc-b594-1e5507cebc87
+//# debugId=bd5d67d0-84f0-5be8-ac1a-49ec9c22c45a
