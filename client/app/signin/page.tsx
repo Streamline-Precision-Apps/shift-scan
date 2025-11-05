@@ -2,9 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { EyeIcon, EyeOff } from "lucide-react";
+import { EyeIcon, EyeOff, Fingerprint } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
+import {
+  BiometricAuth,
+  BiometryErrorType,
+} from "@aparajita/capacitor-biometric-auth";
 import { useTranslations } from "next-intl";
 import { useUserStore } from "../lib/store/userStore";
 import { useProfitStore } from "../lib/store/profitStore";
@@ -21,6 +25,8 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [error, setError] = useState("");
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
   const router = useRouter();
   const t = useTranslations("signIn");
 
@@ -33,6 +39,17 @@ export default function SignInPage() {
   useEffect(() => {
     const checkAndHideSplash = async () => {
       try {
+        // Check biometric availability on native platforms
+        if (isNative) {
+          try {
+            const biometryInfo = await BiometricAuth.checkBiometry();
+            setBiometricAvailable(biometryInfo.isAvailable);
+          } catch (err) {
+            console.log("Biometric check failed:", err);
+            setBiometricAvailable(false);
+          }
+        }
+
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const userId =
@@ -98,14 +115,9 @@ export default function SignInPage() {
     checkAndHideSplash();
   }, [redirectAfterAuth]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  const performLogin = async (username: string, password: string) => {
     try {
       const API_URL = getApiUrl();
-
-      // POST /auth/signin (assumption). Adjust path if your server uses a different route.
       const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -116,64 +128,136 @@ export default function SignInPage() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setError(
+        throw new Error(
           (data && (data.error || data.message)) ||
             res.statusText ||
             "Sign in failed"
         );
-      } else if (data && data.error) {
-        setError(data.error || "Sign in failed");
-      } else {
-        // Handle different response structures
-        const userId = data.user?.id || data.userId || data.id;
-
-        if (!data.token) {
-          setError("No token received from server");
-          return;
-        }
-
-        if (!userId) {
-          console.error("No user ID found in response:", data);
-          setError("User ID not found in response");
-          return;
-        }
-
-        // Store token and userId
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", String(userId));
-        const url = getApiUrl();
-        const response = await fetch(`${url}/api/v1/init`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${data.token}`,
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            token: data.token,
-            userId: String(userId),
-          }),
-        });
-        const dataJson = await response.json();
-        if (dataJson.user) {
-          useUserStore.getState().setUser(dataJson.user);
-        }
-        if (dataJson.jobsites) {
-          useProfitStore.getState().setJobsites(dataJson.jobsites);
-        }
-        if (dataJson.equipments) {
-          useEquipmentStore.getState().setEquipments(dataJson.equipments);
-        }
-        if (dataJson.costCodes) {
-          useCostCodeStore.getState().setCostCodes(dataJson.costCodes);
-        }
-
-        redirectAfterAuth();
       }
-    } catch (err) {
+
+      if (data && data.error) {
+        throw new Error(data.error || "Sign in failed");
+      }
+
+      const userId = data.user?.id || data.userId || data.id;
+
+      if (!data.token) {
+        throw new Error("No token received from server");
+      }
+
+      if (!userId) {
+        throw new Error("User ID not found in response");
+      }
+
+      // Store token and userId
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", String(userId));
+
+      // Save credentials for biometric login on native platforms
+      if (isNative && biometricAvailable) {
+        try {
+          // Store credentials securely using biometric auth
+          localStorage.setItem("shift_scan_username", username);
+          localStorage.setItem("shift_scan_password", password);
+        } catch (bioErr) {
+          console.log("Failed to save biometric credentials:", bioErr);
+        }
+      }
+
+      const url = getApiUrl();
+      const response = await fetch(`${url}/api/v1/init`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          token: data.token,
+          userId: String(userId),
+        }),
+      });
+      const dataJson = await response.json();
+      if (dataJson.user) {
+        useUserStore.getState().setUser(dataJson.user);
+      }
+      if (dataJson.jobsites) {
+        useProfitStore.getState().setJobsites(dataJson.jobsites);
+      }
+      if (dataJson.equipments) {
+        useEquipmentStore.getState().setEquipments(dataJson.equipments);
+      }
+      if (dataJson.costCodes) {
+        useCostCodeStore.getState().setCostCodes(dataJson.costCodes);
+      }
+
+      redirectAfterAuth();
+    } catch (err: any) {
+      throw err;
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    setBiometricLoading(true);
+    setError("");
+    try {
+      // Authenticate using biometry
+      await BiometricAuth.authenticate({
+        reason: "To access your Shift Scan account",
+        cancelTitle: "Cancel",
+        allowDeviceCredential: true,
+        iosFallbackTitle: "Use passcode",
+        androidTitle: "Biometric Sign In",
+        androidSubtitle: "Authenticate to sign in",
+        androidConfirmationRequired: false,
+      });
+
+      // Retrieve stored credentials
+      const savedUsername = localStorage.getItem("shift_scan_username");
+      const savedPassword = localStorage.getItem("shift_scan_password");
+
+      if (!savedUsername || !savedPassword) {
+        setError(
+          "No stored credentials found. Please sign in with username and password first."
+        );
+        setBiometricLoading(false);
+        return;
+      }
+
+      // Perform login with stored credentials
+      await performLogin(savedUsername, savedPassword);
+    } catch (err: any) {
+      // Handle biometric errors
+      if (err.code === BiometryErrorType.userCancel) {
+        // User cancelled - silent fail, don't show error
+        setError("");
+      } else if (err.code === BiometryErrorType.biometryLockout) {
+        setError("Too many failed attempts. Please try again later.");
+      } else if (err.code === BiometryErrorType.biometryNotEnrolled) {
+        setError(
+          "No biometric data found. Please sign in with username and password."
+        );
+      } else if (err.code === BiometryErrorType.passcodeNotSet) {
+        setError("Device passcode not set. Please set a device passcode.");
+      } else {
+        setError(err.message || "Biometric authentication failed.");
+      }
+      console.error("Biometric auth error:", err);
+    } finally {
+      setBiometricLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await performLogin(username, password);
+    } catch (err: any) {
       // Network or unexpected errors
       console.error("auth error:", err);
-      setError("An unexpected error occurred");
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -298,6 +382,18 @@ export default function SignInPage() {
             >
               {loading ? t("loading") : t("submit")}
             </button>
+
+            {isNative && biometricAvailable && (
+              <button
+                type="button"
+                onClick={handleBiometricLogin}
+                disabled={biometricLoading || loading}
+                className="w-full bg-app-blue hover:bg-app-blue/80 disabled:bg-app-blue/50 text-white font-bold py-3 px-8 rounded-xl shadow-lg text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-app-dark-blue flex items-center justify-center gap-2"
+              >
+                <Fingerprint className="w-5 h-5" />
+                {biometricLoading ? t("loading") : "Biometric Sign In"}
+              </button>
+            )}
           </form>
 
           <div className="mt-4 text-center">
