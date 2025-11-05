@@ -22,6 +22,7 @@ import { usePermissions } from "@/app/lib/context/permissionContext";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
 import { useProfitStore } from "@/app/lib/store/profitStore";
+import { Capacitor } from "@capacitor/core";
 
 type Option = {
   id: string;
@@ -67,6 +68,7 @@ export default function QRMultiRoles({
   setLaborType,
 }: QRStepProps) {
   const t = useTranslations("Clock");
+  const native = Capacitor.isNativePlatform();
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const { user } = useUserStore();
   const { costCodes: costcodeResults } = useCostCodeStore();
@@ -341,7 +343,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className="bg-app-blue text-center p-3 text-sm disabled:bg-app-blue"
+                          className=" h-10 bg-app-blue text-center p-3 text-sm disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -389,7 +391,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className="bg-app-blue text-center p-3 disabled:bg-app-blue"
+                          className="h-10 bg-app-blue text-center p-3 disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -418,7 +420,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className="bg-app-blue text-center p-3 disabled:bg-app-blue"
+                          className="bg-app-blue h-10 text-center p-3 disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -439,11 +441,11 @@ export default function QRMultiRoles({
               ) : null}
 
               {!startCamera ? (
-                <Holds className={"h-full w-full row-start-2 row-end-6"}>
+                <Holds className={"h-full w-full row-start-2 row-end-7"}>
                   <Contents width={"section"}>
                     <Holds
                       className={
-                        "h-full w-full row-start-2 row-end-6 border-[3px] border-black rounded-[10px] p-3 justify-center "
+                        "h-full w-full border-[3px] border-black rounded-[10px] p-3 justify-center "
                       }
                     >
                       <Images
@@ -460,41 +462,38 @@ export default function QRMultiRoles({
                         </Holds>
                       )}
                     </Holds>
+                    <Holds className="h-20 w-full  justify-center">
+                      <Buttons
+                        background={"none"}
+                        shadow={"none"}
+                        onClick={handleAlternativePath}
+                      >
+                        <Texts
+                          size={"p4"}
+                          className="underline underline-offset-4"
+                        >
+                          {t("TroubleScanning")}
+                        </Texts>
+                      </Buttons>
+                    </Holds>
                   </Contents>
                 </Holds>
               ) : (
                 <Holds className={"h-full w-full row-start-2 row-end-7"}>
                   <Contents width={"section"}>
-                    <Grids rows={"6"} gap={"2"}>
-                      <Holds className="h-full w-full row-start-1 row-end-6 justify-center ">
-                        <QR
-                          handleScanJobsite={handleScanJobsite}
-                          url={url}
-                          clockInRole={clockInRole}
-                          type={type}
-                          handleNextStep={handleNextStep}
-                          startCamera={startCamera}
-                          setStartCamera={setStartCamera}
-                          setFailedToScan={setFailedToScan}
-                          setJobsite={setJobsite}
-                        />
-                      </Holds>
-
-                      <Holds className="h-full w-full row-start-6 row-end-7 justify-center">
-                        <Buttons
-                          background={"none"}
-                          shadow={"none"}
-                          onClick={handleAlternativePath}
-                        >
-                          <Texts
-                            size={"p4"}
-                            className="underline underline-offset-4"
-                          >
-                            {t("TroubleScanning")}
-                          </Texts>
-                        </Buttons>
-                      </Holds>
-                    </Grids>
+                    <Holds className="h-full w-full  justify-center ">
+                      <QR
+                        handleScanJobsite={handleScanJobsite}
+                        url={url}
+                        clockInRole={clockInRole}
+                        type={type}
+                        handleNextStep={handleNextStep}
+                        startCamera={startCamera}
+                        setStartCamera={setStartCamera}
+                        setFailedToScan={setFailedToScan}
+                        setJobsite={setJobsite}
+                      />
+                    </Holds>
                   </Contents>
                 </Holds>
               )}

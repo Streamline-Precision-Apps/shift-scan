@@ -11,6 +11,7 @@ import { Images } from "../(reusable)/images";
 import { Contents } from "../(reusable)/contents";
 import { TitleBoxes } from "../(reusable)/titleBoxes";
 import { usePermissions } from "@/app/lib/context/permissionContext";
+import { Capacitor } from "@capacitor/core";
 
 type Option = {
   id: string;
@@ -47,6 +48,7 @@ export default function QRStep({
   setJobsite,
 }: QRStepProps) {
   const t = useTranslations("Clock");
+  const native = Capacitor.isNativePlatform();
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const [failedToScan, setFailedToScan] = useState(false);
   const {
@@ -97,9 +99,9 @@ export default function QRStep({
             </TitleBoxes>
           </Holds>
           {!startCamera ? (
-            <Holds className={"h-full w-full row-start-2 row-end-7 "}>
-              <Grids rows={"6"} gap={"2"} className="h-full w-full">
-                <Holds className="h-full w-full row-start-2 row-end-6 justify-center border-[3px] border-black rounded-[10px] p-3">
+            <Holds className={"h-full w-full row-start-2 row-end-7"}>
+              <Contents width={"section"}>
+                <Holds className="h-full w-full  justify-center border-[3px] border-black rounded-[10px] p-3">
                   <Images
                     titleImg="/camera.svg"
                     titleImgAlt="clockIn"
@@ -115,7 +117,23 @@ export default function QRStep({
                     </Holds>
                   )}
                 </Holds>
-              </Grids>
+
+                <Holds className="h-20 w-full  justify-center">
+                  <Buttons
+                    background={"none"}
+                    shadow={"none"}
+                    onClick={handleAlternativePath}
+                    className="underline text-app-dark-blue"
+                  >
+                    <Texts
+                      size={"md"}
+                      className="underline underline-offset-4 "
+                    >
+                      {t("TroubleScanning")}
+                    </Texts>
+                  </Buttons>
+                </Holds>
+              </Contents>
             </Holds>
           ) : (
             <Holds className={"h-full w-full row-start-2 row-end-7"}>
