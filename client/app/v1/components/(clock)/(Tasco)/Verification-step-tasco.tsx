@@ -2,7 +2,10 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { handleTascoTimeSheet } from "@/app/lib/actions/timeSheetActions"; // Updated import
+import {
+  createNewSession,
+  handleTascoTimeSheet,
+} from "@/app/lib/actions/timeSheetActions"; // Updated import
 
 import {
   setCurrentPageView,
@@ -31,6 +34,7 @@ import {
   startClockInTracking,
   getStoredCoordinates,
 } from "@/app/lib/client/locationTracking";
+import { useSessionStore } from "@/app/lib/store/sessionStore";
 
 type Option = {
   id: string;
@@ -80,6 +84,7 @@ export default function TascoVerificationStep({
   const router = useRouter();
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
   const { permissionStatus } = usePermissions();
+  const { currentSessionId, setCurrentSession } = useSessionStore();
 
   if (!user) return null; // Conditional rendering for session
   const id = user.id;
@@ -101,6 +106,42 @@ export default function TascoVerificationStep({
       // Get current coordinates
       const coordinates = await getStoredCoordinates();
 
+      // Check for session data
+      let sessionId = null;
+      if (currentSessionId === null) {
+        // No session exists, create a new one
+        sessionId = await createNewSession(id);
+        setCurrentSession(sessionId);
+      } else {
+        // Session exists, check if it's ended
+        const currentSession = useSessionStore
+          .getState()
+          .getSession(currentSessionId);
+        if (currentSession && currentSession.endTime) {
+          // Session has ended, check if 4+ hours have passed
+          const endTime = new Date(currentSession.endTime).getTime();
+          const currentTime = new Date().getTime();
+          const FOUR_HOURS_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+          if (currentTime - endTime > FOUR_HOURS_MS) {
+            // More than 4 hours have passed, clear sessions and create a new one
+            console.log(
+              "Session expired (4+ hours since end), clearing storage and creating new session"
+            );
+            useSessionStore.getState().clearSessions();
+            sessionId = await createNewSession(id);
+            setCurrentSession(sessionId);
+          } else {
+            // Less than 4 hours, create a new session but keep old one in history
+            sessionId = await createNewSession(id);
+            setCurrentSession(sessionId);
+          }
+        } else {
+          // Session is still active, reuse it
+          sessionId = currentSessionId;
+        }
+      }
+
       const payload: {
         date: string;
         jobsiteId: string;
@@ -120,6 +161,7 @@ export default function TascoVerificationStep({
         laborType?: string;
         materialType?: string;
         equipmentId?: string;
+        sessionId?: number | null;
       } = {
         date: new Date().toISOString(),
         jobsiteId: jobsite?.id || "",
@@ -129,6 +171,7 @@ export default function TascoVerificationStep({
         startTime: new Date().toISOString(),
         clockInLat: coordinates ? coordinates.lat : null,
         clockInLong: coordinates ? coordinates.lng : null,
+        sessionId,
       };
 
       if (clockInRoleTypes === "tascoAbcdEquipment") {
@@ -184,6 +227,19 @@ export default function TascoVerificationStep({
 
       // Use the new transaction-based function
       const responseAction = await handleTascoTimeSheet(payload);
+
+      // Add timesheet ID to session store after successful creation
+      if (
+        responseAction &&
+        responseAction.createdTimeSheet &&
+        responseAction.createdTimeSheet.id &&
+        sessionId
+      ) {
+        useSessionStore
+          .getState()
+          .setTimesheetId(sessionId, responseAction.createdTimeSheet.id);
+      }
+
       if (
         type === "switchJobs" &&
         responseAction &&
@@ -200,10 +256,9 @@ export default function TascoVerificationStep({
       }
 
       // Start location tracking for clock in
-      if (type !== "switchJobs") {
-        await startClockInTracking(id);
+      if (type !== "switchJobs" && sessionId) {
+        await startClockInTracking(id, sessionId);
       }
-
       setCommentData(null);
       localStorage.removeItem("savedCommentData");
 

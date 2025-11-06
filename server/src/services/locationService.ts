@@ -1,34 +1,67 @@
-import { firestoreDb } from "../lib/firebase.js";
-import type { Location } from "../models/location.js";
-
-// Helper to get collection reference
-function getLocationsCollection(userId: string) {
-  return firestoreDb.collection(`users/${userId}/locations`);
-}
-
-// No need for getFirestore; using firestoreDb from admin SDK
+import prisma from "../lib/prisma.js";
+import type { Location } from "../types/Location.js";
 
 export async function fetchLatestLocation(
   userId: string
 ): Promise<Location | null> {
-  const locationsRef = getLocationsCollection(userId);
-  const snapshot = await locationsRef.orderBy("ts", "desc").limit(1).get();
-  console.log(
-    `[Location] Fetching latest for user ${userId}: ${snapshot.size} docs found`
-  );
-  if (snapshot.empty || !snapshot.docs[0]) {
+  const marker = await prisma.locationMarker.findFirst({
+    where: {
+      Session: {
+        userId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!marker) {
     console.warn(`[Location] No location found for user ${userId}`);
     return null;
   }
-  return snapshot.docs[0].data() as Location;
+
+  console.log(`[Location] Fetching latest for user ${userId}: location found`);
+
+  return {
+    uid: userId,
+    ts: marker.createdAt,
+    coords: {
+      lat: marker.lat,
+      lng: marker.long,
+      accuracy: marker.accuracy,
+      speed: marker.speed,
+      heading: marker.heading,
+    },
+    device: {},
+  };
 }
 
 export async function fetchLocationHistory(
   userId: string
 ): Promise<Location[]> {
-  const locationsRef = getLocationsCollection(userId);
-  const snapshot = await locationsRef.orderBy("ts", "desc").get();
-  return snapshot.docs.map((doc) => doc.data() as Location);
+  const markers = await prisma.locationMarker.findMany({
+    where: {
+      Session: {
+        userId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return markers.map((marker) => ({
+    uid: userId,
+    ts: marker.createdAt,
+    coords: {
+      lat: marker.lat,
+      lng: marker.long,
+      accuracy: marker.accuracy,
+      speed: marker.speed,
+      heading: marker.heading,
+    },
+    device: {},
+  }));
 }
 
 export async function fetchAllUsersLatestLocations(): Promise<
@@ -39,9 +72,28 @@ export async function fetchAllUsersLatestLocations(): Promise<
   }>
 > {
   try {
-    // Get all users from the main users collection
-    const usersRef = firestoreDb.collection("users");
-    const usersSnapshot = await usersRef.get();
+    // Get all unique users who have location markers
+    const sessions = await prisma.session.findMany({
+      distinct: ["userId"],
+      orderBy: {
+        startTime: "desc",
+      },
+      include: {
+        User: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        locationMarkers: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 1,
+        },
+      },
+    });
 
     const allLocations: Array<{
       userId: string;
@@ -49,19 +101,28 @@ export async function fetchAllUsersLatestLocations(): Promise<
       userName?: string;
     }> = [];
 
-    // For each user, get their latest location
-    for (const userDoc of usersSnapshot.docs) {
-      const userId = userDoc.id;
-      const userData = userDoc.data();
-      const latestLocation = await fetchLatestLocation(userId);
+    for (const session of sessions) {
+      if (session.locationMarkers.length > 0) {
+        const marker = session.locationMarkers[0]!;
+        const userName = session.User
+          ? `${session.User.firstName} ${session.User.lastName || ""}`.trim()
+          : session.userId;
 
-      if (latestLocation) {
         allLocations.push({
-          userId,
-          location: latestLocation,
-          userName: userData.firstName
-            ? `${userData.firstName} ${userData.lastName || ""}`
-            : userId,
+          userId: session.userId,
+          location: {
+            uid: session.userId,
+            ts: marker.createdAt,
+            coords: {
+              lat: marker.lat,
+              lng: marker.long,
+              accuracy: marker.accuracy,
+              speed: marker.speed,
+              heading: marker.heading,
+            },
+            device: {},
+          },
+          userName,
         });
       }
     }
@@ -88,17 +149,24 @@ export function validateLocationPayload(
 
 export async function saveUserLocation(
   userId: string,
+  sessionId: number,
   coords: Location["coords"],
   device?: Location["device"]
 ): Promise<boolean> {
-  const payload: Location = {
-    uid: userId,
-    ts: new Date(),
-    coords,
-    device: device || {},
-  };
-  const locationsRef = getLocationsCollection(userId);
-  const docId = Date.now().toString();
-  await locationsRef.doc(docId).set(payload);
-  return true;
+  try {
+    await prisma.locationMarker.create({
+      data: {
+        sessionId,
+        lat: coords.lat,
+        long: coords.lng,
+        accuracy: coords.accuracy ?? null,
+        speed: coords.speed ?? null,
+        heading: coords.heading ?? null,
+      },
+    });
+    return true;
+  } catch (err) {
+    console.error("Error saving location marker:", err);
+    throw err;
+  }
 }

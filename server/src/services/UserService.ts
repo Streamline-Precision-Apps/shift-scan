@@ -490,3 +490,24 @@ export async function getUserOnlineStatus(userId: string) {
 
   return userStatus;
 }
+
+export async function createSession(userId: string) {
+  const newSession = await prisma.session.create({
+    data: {
+      userId,
+    },
+  });
+  return newSession;
+}
+
+export async function EndSession(id: number) {
+  const newSession = await prisma.session.update({
+    where: {
+      id,
+    },
+    data: {
+      endTime: new Date().toISOString(),
+    },
+  });
+  return newSession;
+}

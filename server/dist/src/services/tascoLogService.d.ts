@@ -63,6 +63,7 @@ export declare function getTascoLogById(tascoLogId: string): Promise<({
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
     RefuelLogs: {
         id: string;
@@ -277,6 +278,7 @@ export declare function updateTascoLogComment(tascoLogId: string, comment: strin
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
     RefuelLogs: {
         id: string;
@@ -447,6 +449,7 @@ export declare function getCompleteTascoLogData(tascoLogId: string): Promise<({
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
     RefuelLogs: {
         id: string;

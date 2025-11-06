@@ -5,6 +5,12 @@ import { apiRequest } from "../utils/api-Utils";
 //-------------------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------   General   CRUD  ---------------------------------------------------------------
 
+export async function createNewSession(userId: string): Promise<number> {
+  const response = await apiRequest("POST", `/api/v1/user/${userId}/session`);
+
+  return response.data.id;
+}
+
 export async function handleGeneralTimeSheet({
   date,
   jobsiteId,
@@ -20,6 +26,7 @@ export async function handleGeneralTimeSheet({
   previoustimeSheetComments,
   clockOutLat,
   clockOutLong,
+  sessionId,
 }: {
   date: string;
   jobsiteId: string;
@@ -35,6 +42,7 @@ export async function handleGeneralTimeSheet({
   previoustimeSheetComments?: string;
   clockOutLat?: number | null;
   clockOutLong?: number | null;
+  sessionId?: number | null;
 }) {
   const body: Record<string, any> = {
     date,
@@ -45,6 +53,7 @@ export async function handleGeneralTimeSheet({
     startTime,
     clockInLat,
     clockInLong,
+    sessionId,
   };
 
   // Only include switchJobs fields if type === "switchJobs"
@@ -77,6 +86,7 @@ export async function handleMechanicTimeSheet({
   previoustimeSheetComments,
   clockOutLat,
   clockOutLong,
+  sessionId,
 }: {
   date: string;
   jobsiteId: string;
@@ -92,6 +102,7 @@ export async function handleMechanicTimeSheet({
   previoustimeSheetComments?: string;
   clockOutLat?: number | null;
   clockOutLong?: number | null;
+  sessionId?: number | null;
 }) {
   const body: Record<string, string | number | null | undefined> = {
     date,
@@ -102,6 +113,7 @@ export async function handleMechanicTimeSheet({
     startTime,
     clockInLat,
     clockInLong,
+    sessionId,
   };
 
   // Only include switchJobs fields if type === "switchJobs"
@@ -138,6 +150,7 @@ export async function handleTascoTimeSheet({
   laborType,
   equipmentId,
   materialType,
+  sessionId,
 }: {
   date: string;
   jobsiteId: string;
@@ -157,6 +170,7 @@ export async function handleTascoTimeSheet({
   laborType?: string;
   equipmentId?: string;
   materialType?: string;
+  sessionId?: number | null;
 }) {
   const body: Record<string, string | number | null | undefined> = {
     date,
@@ -171,6 +185,7 @@ export async function handleTascoTimeSheet({
     laborType,
     equipmentId,
     materialType,
+    sessionId,
   };
 
   // Only include switchJobs fields if type === "switchJobs"
@@ -207,6 +222,7 @@ export async function handleTruckTimeSheet({
   laborType,
   truck,
   equipmentId,
+  sessionId,
 }: {
   date: string;
   jobsiteId: string;
@@ -226,6 +242,7 @@ export async function handleTruckTimeSheet({
   laborType: string;
   truck: string;
   equipmentId?: string;
+  sessionId?: number | null;
 }) {
   const body: Record<string, string | number | null | undefined> = {
     date,
@@ -240,6 +257,7 @@ export async function handleTruckTimeSheet({
     laborType,
     truck,
     equipmentId,
+    sessionId,
   };
 
   // Only include switchJobs fields if type === "switchJobs"

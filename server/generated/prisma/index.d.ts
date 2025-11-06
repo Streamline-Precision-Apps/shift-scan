@@ -89,6 +89,11 @@ export type FormApproval = $Result.DefaultSelection<Prisma.$FormApprovalPayload>
  */
 export type Jobsite = $Result.DefaultSelection<Prisma.$JobsitePayload>
 /**
+ * Model LocationMarker
+ * 
+ */
+export type LocationMarker = $Result.DefaultSelection<Prisma.$LocationMarkerPayload>
+/**
  * Model Report
  * 
  */
@@ -98,6 +103,11 @@ export type Report = $Result.DefaultSelection<Prisma.$ReportPayload>
  * 
  */
 export type ReportRun = $Result.DefaultSelection<Prisma.$ReportRunPayload>
+/**
+ * Model Session
+ * 
+ */
+export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
 /**
  * Model TimeSheet
  * 
@@ -794,6 +804,16 @@ export class PrismaClient<
   get jobsite(): Prisma.JobsiteDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.locationMarker`: Exposes CRUD operations for the **LocationMarker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LocationMarkers
+    * const locationMarkers = await prisma.locationMarker.findMany()
+    * ```
+    */
+  get locationMarker(): Prisma.LocationMarkerDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.report`: Exposes CRUD operations for the **Report** model.
     * Example usage:
     * ```ts
@@ -812,6 +832,16 @@ export class PrismaClient<
     * ```
     */
   get reportRun(): Prisma.ReportRunDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.session`: Exposes CRUD operations for the **Session** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sessions
+    * const sessions = await prisma.session.findMany()
+    * ```
+    */
+  get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.timeSheet`: Exposes CRUD operations for the **TimeSheet** model.
@@ -1508,8 +1538,10 @@ export namespace Prisma {
     FormSubmission: 'FormSubmission',
     FormApproval: 'FormApproval',
     Jobsite: 'Jobsite',
+    LocationMarker: 'LocationMarker',
     Report: 'Report',
     ReportRun: 'ReportRun',
+    Session: 'Session',
     TimeSheet: 'TimeSheet',
     mechanicProjects: 'mechanicProjects',
     MaintenanceLog: 'MaintenanceLog',
@@ -1552,7 +1584,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "costCode" | "cCTag" | "crew" | "pdfDocument" | "documentTag" | "equipment" | "employeeEquipmentLog" | "formTemplate" | "formGrouping" | "formField" | "formFieldOption" | "formSubmission" | "formApproval" | "jobsite" | "report" | "reportRun" | "timeSheet" | "mechanicProjects" | "maintenanceLog" | "maintenance" | "tascoLog" | "tascoFLoads" | "tascoMaterialTypes" | "truckingLog" | "stateMileage" | "material" | "refuelLog" | "equipmentHauled" | "timeSheetChangeLog" | "user" | "userSettings" | "contacts" | "passwordResetToken" | "accountSetupToken" | "address" | "fCMToken" | "topicSubscription" | "notification" | "notificationResponse" | "notificationRead"
+      modelProps: "company" | "costCode" | "cCTag" | "crew" | "pdfDocument" | "documentTag" | "equipment" | "employeeEquipmentLog" | "formTemplate" | "formGrouping" | "formField" | "formFieldOption" | "formSubmission" | "formApproval" | "jobsite" | "locationMarker" | "report" | "reportRun" | "session" | "timeSheet" | "mechanicProjects" | "maintenanceLog" | "maintenance" | "tascoLog" | "tascoFLoads" | "tascoMaterialTypes" | "truckingLog" | "stateMileage" | "material" | "refuelLog" | "equipmentHauled" | "timeSheetChangeLog" | "user" | "userSettings" | "contacts" | "passwordResetToken" | "accountSetupToken" | "address" | "fCMToken" | "topicSubscription" | "notification" | "notificationResponse" | "notificationRead"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2666,6 +2698,80 @@ export namespace Prisma {
           }
         }
       }
+      LocationMarker: {
+        payload: Prisma.$LocationMarkerPayload<ExtArgs>
+        fields: Prisma.LocationMarkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LocationMarkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LocationMarkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          findFirst: {
+            args: Prisma.LocationMarkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LocationMarkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          findMany: {
+            args: Prisma.LocationMarkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>[]
+          }
+          create: {
+            args: Prisma.LocationMarkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          createMany: {
+            args: Prisma.LocationMarkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LocationMarkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>[]
+          }
+          delete: {
+            args: Prisma.LocationMarkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          update: {
+            args: Prisma.LocationMarkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.LocationMarkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LocationMarkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LocationMarkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>[]
+          }
+          upsert: {
+            args: Prisma.LocationMarkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LocationMarkerPayload>
+          }
+          aggregate: {
+            args: Prisma.LocationMarkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLocationMarker>
+          }
+          groupBy: {
+            args: Prisma.LocationMarkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LocationMarkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LocationMarkerCountArgs<ExtArgs>
+            result: $Utils.Optional<LocationMarkerCountAggregateOutputType> | number
+          }
+        }
+      }
       Report: {
         payload: Prisma.$ReportPayload<ExtArgs>
         fields: Prisma.ReportFieldRefs
@@ -2811,6 +2917,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ReportRunCountArgs<ExtArgs>
             result: $Utils.Optional<ReportRunCountAggregateOutputType> | number
+          }
+        }
+      }
+      Session: {
+        payload: Prisma.$SessionPayload<ExtArgs>
+        fields: Prisma.SessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findFirst: {
+            args: Prisma.SessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          findMany: {
+            args: Prisma.SessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          create: {
+            args: Prisma.SessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          createMany: {
+            args: Prisma.SessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          delete: {
+            args: Prisma.SessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          update: {
+            args: Prisma.SessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.SessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.SessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SessionPayload>
+          }
+          aggregate: {
+            args: Prisma.SessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSession>
+          }
+          groupBy: {
+            args: Prisma.SessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SessionCountArgs<ExtArgs>
+            result: $Utils.Optional<SessionCountAggregateOutputType> | number
           }
         }
       }
@@ -4701,8 +4881,10 @@ export namespace Prisma {
     formSubmission?: FormSubmissionOmit
     formApproval?: FormApprovalOmit
     jobsite?: JobsiteOmit
+    locationMarker?: LocationMarkerOmit
     report?: ReportOmit
     reportRun?: ReportRunOmit
+    session?: SessionOmit
     timeSheet?: TimeSheetOmit
     mechanicProjects?: mechanicProjectsOmit
     maintenanceLog?: MaintenanceLogOmit
@@ -5350,6 +5532,46 @@ export namespace Prisma {
 
 
   /**
+   * Count Type SessionCountOutputType
+   */
+
+  export type SessionCountOutputType = {
+    TimeSheets: number
+    locationMarkers: number
+  }
+
+  export type SessionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    TimeSheets?: boolean | SessionCountOutputTypeCountTimeSheetsArgs
+    locationMarkers?: boolean | SessionCountOutputTypeCountLocationMarkersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SessionCountOutputType without action
+   */
+  export type SessionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SessionCountOutputType
+     */
+    select?: SessionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SessionCountOutputType without action
+   */
+  export type SessionCountOutputTypeCountTimeSheetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TimeSheetWhereInput
+  }
+
+  /**
+   * SessionCountOutputType without action
+   */
+  export type SessionCountOutputTypeCountLocationMarkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocationMarkerWhereInput
+  }
+
+
+  /**
    * Count Type TimeSheetCountOutputType
    */
 
@@ -5599,6 +5821,7 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    Session: number
     Equipment: number
     FCMToken: number
     FormApprovals: number
@@ -5615,6 +5838,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | UserCountOutputTypeCountSessionArgs
     Equipment?: boolean | UserCountOutputTypeCountEquipmentArgs
     FCMToken?: boolean | UserCountOutputTypeCountFCMTokenArgs
     FormApprovals?: boolean | UserCountOutputTypeCountFormApprovalsArgs
@@ -5639,6 +5863,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
   }
 
   /**
@@ -23600,6 +23831,1161 @@ export namespace Prisma {
 
 
   /**
+   * Model LocationMarker
+   */
+
+  export type AggregateLocationMarker = {
+    _count: LocationMarkerCountAggregateOutputType | null
+    _avg: LocationMarkerAvgAggregateOutputType | null
+    _sum: LocationMarkerSumAggregateOutputType | null
+    _min: LocationMarkerMinAggregateOutputType | null
+    _max: LocationMarkerMaxAggregateOutputType | null
+  }
+
+  export type LocationMarkerAvgAggregateOutputType = {
+    id: number | null
+    sessionId: number | null
+    lat: number | null
+    long: number | null
+    accuracy: number | null
+    speed: number | null
+    heading: number | null
+  }
+
+  export type LocationMarkerSumAggregateOutputType = {
+    id: number | null
+    sessionId: number | null
+    lat: number | null
+    long: number | null
+    accuracy: number | null
+    speed: number | null
+    heading: number | null
+  }
+
+  export type LocationMarkerMinAggregateOutputType = {
+    id: number | null
+    sessionId: number | null
+    lat: number | null
+    long: number | null
+    accuracy: number | null
+    speed: number | null
+    heading: number | null
+    createdAt: Date | null
+  }
+
+  export type LocationMarkerMaxAggregateOutputType = {
+    id: number | null
+    sessionId: number | null
+    lat: number | null
+    long: number | null
+    accuracy: number | null
+    speed: number | null
+    heading: number | null
+    createdAt: Date | null
+  }
+
+  export type LocationMarkerCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    lat: number
+    long: number
+    accuracy: number
+    speed: number
+    heading: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LocationMarkerAvgAggregateInputType = {
+    id?: true
+    sessionId?: true
+    lat?: true
+    long?: true
+    accuracy?: true
+    speed?: true
+    heading?: true
+  }
+
+  export type LocationMarkerSumAggregateInputType = {
+    id?: true
+    sessionId?: true
+    lat?: true
+    long?: true
+    accuracy?: true
+    speed?: true
+    heading?: true
+  }
+
+  export type LocationMarkerMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    lat?: true
+    long?: true
+    accuracy?: true
+    speed?: true
+    heading?: true
+    createdAt?: true
+  }
+
+  export type LocationMarkerMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    lat?: true
+    long?: true
+    accuracy?: true
+    speed?: true
+    heading?: true
+    createdAt?: true
+  }
+
+  export type LocationMarkerCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    lat?: true
+    long?: true
+    accuracy?: true
+    speed?: true
+    heading?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LocationMarkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LocationMarker to aggregate.
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocationMarkers to fetch.
+     */
+    orderBy?: LocationMarkerOrderByWithRelationInput | LocationMarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LocationMarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocationMarkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocationMarkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LocationMarkers
+    **/
+    _count?: true | LocationMarkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LocationMarkerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LocationMarkerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LocationMarkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LocationMarkerMaxAggregateInputType
+  }
+
+  export type GetLocationMarkerAggregateType<T extends LocationMarkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateLocationMarker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLocationMarker[P]>
+      : GetScalarType<T[P], AggregateLocationMarker[P]>
+  }
+
+
+
+
+  export type LocationMarkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LocationMarkerWhereInput
+    orderBy?: LocationMarkerOrderByWithAggregationInput | LocationMarkerOrderByWithAggregationInput[]
+    by: LocationMarkerScalarFieldEnum[] | LocationMarkerScalarFieldEnum
+    having?: LocationMarkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LocationMarkerCountAggregateInputType | true
+    _avg?: LocationMarkerAvgAggregateInputType
+    _sum?: LocationMarkerSumAggregateInputType
+    _min?: LocationMarkerMinAggregateInputType
+    _max?: LocationMarkerMaxAggregateInputType
+  }
+
+  export type LocationMarkerGroupByOutputType = {
+    id: number
+    sessionId: number
+    lat: number
+    long: number
+    accuracy: number | null
+    speed: number | null
+    heading: number | null
+    createdAt: Date
+    _count: LocationMarkerCountAggregateOutputType | null
+    _avg: LocationMarkerAvgAggregateOutputType | null
+    _sum: LocationMarkerSumAggregateOutputType | null
+    _min: LocationMarkerMinAggregateOutputType | null
+    _max: LocationMarkerMaxAggregateOutputType | null
+  }
+
+  type GetLocationMarkerGroupByPayload<T extends LocationMarkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LocationMarkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LocationMarkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LocationMarkerGroupByOutputType[P]>
+            : GetScalarType<T[P], LocationMarkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LocationMarkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    lat?: boolean
+    long?: boolean
+    accuracy?: boolean
+    speed?: boolean
+    heading?: boolean
+    createdAt?: boolean
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["locationMarker"]>
+
+  export type LocationMarkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    lat?: boolean
+    long?: boolean
+    accuracy?: boolean
+    speed?: boolean
+    heading?: boolean
+    createdAt?: boolean
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["locationMarker"]>
+
+  export type LocationMarkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    lat?: boolean
+    long?: boolean
+    accuracy?: boolean
+    speed?: boolean
+    heading?: boolean
+    createdAt?: boolean
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["locationMarker"]>
+
+  export type LocationMarkerSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    lat?: boolean
+    long?: boolean
+    accuracy?: boolean
+    speed?: boolean
+    heading?: boolean
+    createdAt?: boolean
+  }
+
+  export type LocationMarkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "lat" | "long" | "accuracy" | "speed" | "heading" | "createdAt", ExtArgs["result"]["locationMarker"]>
+  export type LocationMarkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }
+  export type LocationMarkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }
+  export type LocationMarkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | SessionDefaultArgs<ExtArgs>
+  }
+
+  export type $LocationMarkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LocationMarker"
+    objects: {
+      Session: Prisma.$SessionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      sessionId: number
+      lat: number
+      long: number
+      accuracy: number | null
+      speed: number | null
+      heading: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["locationMarker"]>
+    composites: {}
+  }
+
+  type LocationMarkerGetPayload<S extends boolean | null | undefined | LocationMarkerDefaultArgs> = $Result.GetResult<Prisma.$LocationMarkerPayload, S>
+
+  type LocationMarkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LocationMarkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LocationMarkerCountAggregateInputType | true
+    }
+
+  export interface LocationMarkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LocationMarker'], meta: { name: 'LocationMarker' } }
+    /**
+     * Find zero or one LocationMarker that matches the filter.
+     * @param {LocationMarkerFindUniqueArgs} args - Arguments to find a LocationMarker
+     * @example
+     * // Get one LocationMarker
+     * const locationMarker = await prisma.locationMarker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LocationMarkerFindUniqueArgs>(args: SelectSubset<T, LocationMarkerFindUniqueArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LocationMarker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LocationMarkerFindUniqueOrThrowArgs} args - Arguments to find a LocationMarker
+     * @example
+     * // Get one LocationMarker
+     * const locationMarker = await prisma.locationMarker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LocationMarkerFindUniqueOrThrowArgs>(args: SelectSubset<T, LocationMarkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LocationMarker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerFindFirstArgs} args - Arguments to find a LocationMarker
+     * @example
+     * // Get one LocationMarker
+     * const locationMarker = await prisma.locationMarker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LocationMarkerFindFirstArgs>(args?: SelectSubset<T, LocationMarkerFindFirstArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LocationMarker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerFindFirstOrThrowArgs} args - Arguments to find a LocationMarker
+     * @example
+     * // Get one LocationMarker
+     * const locationMarker = await prisma.locationMarker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LocationMarkerFindFirstOrThrowArgs>(args?: SelectSubset<T, LocationMarkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LocationMarkers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LocationMarkers
+     * const locationMarkers = await prisma.locationMarker.findMany()
+     * 
+     * // Get first 10 LocationMarkers
+     * const locationMarkers = await prisma.locationMarker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const locationMarkerWithIdOnly = await prisma.locationMarker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LocationMarkerFindManyArgs>(args?: SelectSubset<T, LocationMarkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LocationMarker.
+     * @param {LocationMarkerCreateArgs} args - Arguments to create a LocationMarker.
+     * @example
+     * // Create one LocationMarker
+     * const LocationMarker = await prisma.locationMarker.create({
+     *   data: {
+     *     // ... data to create a LocationMarker
+     *   }
+     * })
+     * 
+     */
+    create<T extends LocationMarkerCreateArgs>(args: SelectSubset<T, LocationMarkerCreateArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LocationMarkers.
+     * @param {LocationMarkerCreateManyArgs} args - Arguments to create many LocationMarkers.
+     * @example
+     * // Create many LocationMarkers
+     * const locationMarker = await prisma.locationMarker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LocationMarkerCreateManyArgs>(args?: SelectSubset<T, LocationMarkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LocationMarkers and returns the data saved in the database.
+     * @param {LocationMarkerCreateManyAndReturnArgs} args - Arguments to create many LocationMarkers.
+     * @example
+     * // Create many LocationMarkers
+     * const locationMarker = await prisma.locationMarker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LocationMarkers and only return the `id`
+     * const locationMarkerWithIdOnly = await prisma.locationMarker.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LocationMarkerCreateManyAndReturnArgs>(args?: SelectSubset<T, LocationMarkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LocationMarker.
+     * @param {LocationMarkerDeleteArgs} args - Arguments to delete one LocationMarker.
+     * @example
+     * // Delete one LocationMarker
+     * const LocationMarker = await prisma.locationMarker.delete({
+     *   where: {
+     *     // ... filter to delete one LocationMarker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LocationMarkerDeleteArgs>(args: SelectSubset<T, LocationMarkerDeleteArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LocationMarker.
+     * @param {LocationMarkerUpdateArgs} args - Arguments to update one LocationMarker.
+     * @example
+     * // Update one LocationMarker
+     * const locationMarker = await prisma.locationMarker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LocationMarkerUpdateArgs>(args: SelectSubset<T, LocationMarkerUpdateArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LocationMarkers.
+     * @param {LocationMarkerDeleteManyArgs} args - Arguments to filter LocationMarkers to delete.
+     * @example
+     * // Delete a few LocationMarkers
+     * const { count } = await prisma.locationMarker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LocationMarkerDeleteManyArgs>(args?: SelectSubset<T, LocationMarkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LocationMarkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LocationMarkers
+     * const locationMarker = await prisma.locationMarker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LocationMarkerUpdateManyArgs>(args: SelectSubset<T, LocationMarkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LocationMarkers and returns the data updated in the database.
+     * @param {LocationMarkerUpdateManyAndReturnArgs} args - Arguments to update many LocationMarkers.
+     * @example
+     * // Update many LocationMarkers
+     * const locationMarker = await prisma.locationMarker.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LocationMarkers and only return the `id`
+     * const locationMarkerWithIdOnly = await prisma.locationMarker.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LocationMarkerUpdateManyAndReturnArgs>(args: SelectSubset<T, LocationMarkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LocationMarker.
+     * @param {LocationMarkerUpsertArgs} args - Arguments to update or create a LocationMarker.
+     * @example
+     * // Update or create a LocationMarker
+     * const locationMarker = await prisma.locationMarker.upsert({
+     *   create: {
+     *     // ... data to create a LocationMarker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LocationMarker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LocationMarkerUpsertArgs>(args: SelectSubset<T, LocationMarkerUpsertArgs<ExtArgs>>): Prisma__LocationMarkerClient<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LocationMarkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerCountArgs} args - Arguments to filter LocationMarkers to count.
+     * @example
+     * // Count the number of LocationMarkers
+     * const count = await prisma.locationMarker.count({
+     *   where: {
+     *     // ... the filter for the LocationMarkers we want to count
+     *   }
+     * })
+    **/
+    count<T extends LocationMarkerCountArgs>(
+      args?: Subset<T, LocationMarkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LocationMarkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LocationMarker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LocationMarkerAggregateArgs>(args: Subset<T, LocationMarkerAggregateArgs>): Prisma.PrismaPromise<GetLocationMarkerAggregateType<T>>
+
+    /**
+     * Group by LocationMarker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LocationMarkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LocationMarkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LocationMarkerGroupByArgs['orderBy'] }
+        : { orderBy?: LocationMarkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LocationMarkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLocationMarkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LocationMarker model
+   */
+  readonly fields: LocationMarkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LocationMarker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LocationMarkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Session<T extends SessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SessionDefaultArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LocationMarker model
+   */
+  interface LocationMarkerFieldRefs {
+    readonly id: FieldRef<"LocationMarker", 'Int'>
+    readonly sessionId: FieldRef<"LocationMarker", 'Int'>
+    readonly lat: FieldRef<"LocationMarker", 'Float'>
+    readonly long: FieldRef<"LocationMarker", 'Float'>
+    readonly accuracy: FieldRef<"LocationMarker", 'Float'>
+    readonly speed: FieldRef<"LocationMarker", 'Float'>
+    readonly heading: FieldRef<"LocationMarker", 'Float'>
+    readonly createdAt: FieldRef<"LocationMarker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LocationMarker findUnique
+   */
+  export type LocationMarkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter, which LocationMarker to fetch.
+     */
+    where: LocationMarkerWhereUniqueInput
+  }
+
+  /**
+   * LocationMarker findUniqueOrThrow
+   */
+  export type LocationMarkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter, which LocationMarker to fetch.
+     */
+    where: LocationMarkerWhereUniqueInput
+  }
+
+  /**
+   * LocationMarker findFirst
+   */
+  export type LocationMarkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter, which LocationMarker to fetch.
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocationMarkers to fetch.
+     */
+    orderBy?: LocationMarkerOrderByWithRelationInput | LocationMarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LocationMarkers.
+     */
+    cursor?: LocationMarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocationMarkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocationMarkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LocationMarkers.
+     */
+    distinct?: LocationMarkerScalarFieldEnum | LocationMarkerScalarFieldEnum[]
+  }
+
+  /**
+   * LocationMarker findFirstOrThrow
+   */
+  export type LocationMarkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter, which LocationMarker to fetch.
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocationMarkers to fetch.
+     */
+    orderBy?: LocationMarkerOrderByWithRelationInput | LocationMarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LocationMarkers.
+     */
+    cursor?: LocationMarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocationMarkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocationMarkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LocationMarkers.
+     */
+    distinct?: LocationMarkerScalarFieldEnum | LocationMarkerScalarFieldEnum[]
+  }
+
+  /**
+   * LocationMarker findMany
+   */
+  export type LocationMarkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter, which LocationMarkers to fetch.
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LocationMarkers to fetch.
+     */
+    orderBy?: LocationMarkerOrderByWithRelationInput | LocationMarkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LocationMarkers.
+     */
+    cursor?: LocationMarkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LocationMarkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LocationMarkers.
+     */
+    skip?: number
+    distinct?: LocationMarkerScalarFieldEnum | LocationMarkerScalarFieldEnum[]
+  }
+
+  /**
+   * LocationMarker create
+   */
+  export type LocationMarkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LocationMarker.
+     */
+    data: XOR<LocationMarkerCreateInput, LocationMarkerUncheckedCreateInput>
+  }
+
+  /**
+   * LocationMarker createMany
+   */
+  export type LocationMarkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LocationMarkers.
+     */
+    data: LocationMarkerCreateManyInput | LocationMarkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LocationMarker createManyAndReturn
+   */
+  export type LocationMarkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * The data used to create many LocationMarkers.
+     */
+    data: LocationMarkerCreateManyInput | LocationMarkerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LocationMarker update
+   */
+  export type LocationMarkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LocationMarker.
+     */
+    data: XOR<LocationMarkerUpdateInput, LocationMarkerUncheckedUpdateInput>
+    /**
+     * Choose, which LocationMarker to update.
+     */
+    where: LocationMarkerWhereUniqueInput
+  }
+
+  /**
+   * LocationMarker updateMany
+   */
+  export type LocationMarkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LocationMarkers.
+     */
+    data: XOR<LocationMarkerUpdateManyMutationInput, LocationMarkerUncheckedUpdateManyInput>
+    /**
+     * Filter which LocationMarkers to update
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * Limit how many LocationMarkers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LocationMarker updateManyAndReturn
+   */
+  export type LocationMarkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * The data used to update LocationMarkers.
+     */
+    data: XOR<LocationMarkerUpdateManyMutationInput, LocationMarkerUncheckedUpdateManyInput>
+    /**
+     * Filter which LocationMarkers to update
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * Limit how many LocationMarkers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LocationMarker upsert
+   */
+  export type LocationMarkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LocationMarker to update in case it exists.
+     */
+    where: LocationMarkerWhereUniqueInput
+    /**
+     * In case the LocationMarker found by the `where` argument doesn't exist, create a new LocationMarker with this data.
+     */
+    create: XOR<LocationMarkerCreateInput, LocationMarkerUncheckedCreateInput>
+    /**
+     * In case the LocationMarker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LocationMarkerUpdateInput, LocationMarkerUncheckedUpdateInput>
+  }
+
+  /**
+   * LocationMarker delete
+   */
+  export type LocationMarkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    /**
+     * Filter which LocationMarker to delete.
+     */
+    where: LocationMarkerWhereUniqueInput
+  }
+
+  /**
+   * LocationMarker deleteMany
+   */
+  export type LocationMarkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LocationMarkers to delete
+     */
+    where?: LocationMarkerWhereInput
+    /**
+     * Limit how many LocationMarkers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LocationMarker without action
+   */
+  export type LocationMarkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Report
    */
 
@@ -25941,6 +27327,1143 @@ export namespace Prisma {
 
 
   /**
+   * Model Session
+   */
+
+  export type AggregateSession = {
+    _count: SessionCountAggregateOutputType | null
+    _avg: SessionAvgAggregateOutputType | null
+    _sum: SessionSumAggregateOutputType | null
+    _min: SessionMinAggregateOutputType | null
+    _max: SessionMaxAggregateOutputType | null
+  }
+
+  export type SessionAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SessionSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SessionMinAggregateOutputType = {
+    id: number | null
+    userId: string | null
+    startTime: Date | null
+    endTime: Date | null
+  }
+
+  export type SessionMaxAggregateOutputType = {
+    id: number | null
+    userId: string | null
+    startTime: Date | null
+    endTime: Date | null
+  }
+
+  export type SessionCountAggregateOutputType = {
+    id: number
+    userId: number
+    startTime: number
+    endTime: number
+    _all: number
+  }
+
+
+  export type SessionAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SessionSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SessionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    startTime?: true
+    endTime?: true
+  }
+
+  export type SessionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    startTime?: true
+    endTime?: true
+  }
+
+  export type SessionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    startTime?: true
+    endTime?: true
+    _all?: true
+  }
+
+  export type SessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Session to aggregate.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Sessions
+    **/
+    _count?: true | SessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SessionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SessionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SessionMaxAggregateInputType
+  }
+
+  export type GetSessionAggregateType<T extends SessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateSession]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSession[P]>
+      : GetScalarType<T[P], AggregateSession[P]>
+  }
+
+
+
+
+  export type SessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithAggregationInput | SessionOrderByWithAggregationInput[]
+    by: SessionScalarFieldEnum[] | SessionScalarFieldEnum
+    having?: SessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SessionCountAggregateInputType | true
+    _avg?: SessionAvgAggregateInputType
+    _sum?: SessionSumAggregateInputType
+    _min?: SessionMinAggregateInputType
+    _max?: SessionMaxAggregateInputType
+  }
+
+  export type SessionGroupByOutputType = {
+    id: number
+    userId: string
+    startTime: Date
+    endTime: Date | null
+    _count: SessionCountAggregateOutputType | null
+    _avg: SessionAvgAggregateOutputType | null
+    _sum: SessionSumAggregateOutputType | null
+    _min: SessionMinAggregateOutputType | null
+    _max: SessionMaxAggregateOutputType | null
+  }
+
+  type GetSessionGroupByPayload<T extends SessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SessionGroupByOutputType[P]>
+            : GetScalarType<T[P], SessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    TimeSheets?: boolean | Session$TimeSheetsArgs<ExtArgs>
+    locationMarkers?: boolean | Session$locationMarkersArgs<ExtArgs>
+    User?: boolean | UserDefaultArgs<ExtArgs>
+    _count?: boolean | SessionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    User?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    User?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["session"]>
+
+  export type SessionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+  }
+
+  export type SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "startTime" | "endTime", ExtArgs["result"]["session"]>
+  export type SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    TimeSheets?: boolean | Session$TimeSheetsArgs<ExtArgs>
+    locationMarkers?: boolean | Session$locationMarkersArgs<ExtArgs>
+    User?: boolean | UserDefaultArgs<ExtArgs>
+    _count?: boolean | SessionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    User?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    User?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Session"
+    objects: {
+      TimeSheets: Prisma.$TimeSheetPayload<ExtArgs>[]
+      locationMarkers: Prisma.$LocationMarkerPayload<ExtArgs>[]
+      User: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: string
+      startTime: Date
+      endTime: Date | null
+    }, ExtArgs["result"]["session"]>
+    composites: {}
+  }
+
+  type SessionGetPayload<S extends boolean | null | undefined | SessionDefaultArgs> = $Result.GetResult<Prisma.$SessionPayload, S>
+
+  type SessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SessionCountAggregateInputType | true
+    }
+
+  export interface SessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Session'], meta: { name: 'Session' } }
+    /**
+     * Find zero or one Session that matches the filter.
+     * @param {SessionFindUniqueArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SessionFindUniqueArgs>(args: SelectSubset<T, SessionFindUniqueArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Session that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SessionFindUniqueOrThrowArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SessionFindUniqueOrThrowArgs>(args: SelectSubset<T, SessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindFirstArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SessionFindFirstArgs>(args?: SelectSubset<T, SessionFindFirstArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindFirstOrThrowArgs} args - Arguments to find a Session
+     * @example
+     * // Get one Session
+     * const session = await prisma.session.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SessionFindFirstOrThrowArgs>(args?: SelectSubset<T, SessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sessions
+     * const sessions = await prisma.session.findMany()
+     * 
+     * // Get first 10 Sessions
+     * const sessions = await prisma.session.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sessionWithIdOnly = await prisma.session.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SessionFindManyArgs>(args?: SelectSubset<T, SessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Session.
+     * @param {SessionCreateArgs} args - Arguments to create a Session.
+     * @example
+     * // Create one Session
+     * const Session = await prisma.session.create({
+     *   data: {
+     *     // ... data to create a Session
+     *   }
+     * })
+     * 
+     */
+    create<T extends SessionCreateArgs>(args: SelectSubset<T, SessionCreateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sessions.
+     * @param {SessionCreateManyArgs} args - Arguments to create many Sessions.
+     * @example
+     * // Create many Sessions
+     * const session = await prisma.session.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SessionCreateManyArgs>(args?: SelectSubset<T, SessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sessions and returns the data saved in the database.
+     * @param {SessionCreateManyAndReturnArgs} args - Arguments to create many Sessions.
+     * @example
+     * // Create many Sessions
+     * const session = await prisma.session.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sessions and only return the `id`
+     * const sessionWithIdOnly = await prisma.session.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SessionCreateManyAndReturnArgs>(args?: SelectSubset<T, SessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Session.
+     * @param {SessionDeleteArgs} args - Arguments to delete one Session.
+     * @example
+     * // Delete one Session
+     * const Session = await prisma.session.delete({
+     *   where: {
+     *     // ... filter to delete one Session
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SessionDeleteArgs>(args: SelectSubset<T, SessionDeleteArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Session.
+     * @param {SessionUpdateArgs} args - Arguments to update one Session.
+     * @example
+     * // Update one Session
+     * const session = await prisma.session.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SessionUpdateArgs>(args: SelectSubset<T, SessionUpdateArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sessions.
+     * @param {SessionDeleteManyArgs} args - Arguments to filter Sessions to delete.
+     * @example
+     * // Delete a few Sessions
+     * const { count } = await prisma.session.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SessionDeleteManyArgs>(args?: SelectSubset<T, SessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sessions
+     * const session = await prisma.session.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SessionUpdateManyArgs>(args: SelectSubset<T, SessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sessions and returns the data updated in the database.
+     * @param {SessionUpdateManyAndReturnArgs} args - Arguments to update many Sessions.
+     * @example
+     * // Update many Sessions
+     * const session = await prisma.session.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sessions and only return the `id`
+     * const sessionWithIdOnly = await prisma.session.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SessionUpdateManyAndReturnArgs>(args: SelectSubset<T, SessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Session.
+     * @param {SessionUpsertArgs} args - Arguments to update or create a Session.
+     * @example
+     * // Update or create a Session
+     * const session = await prisma.session.upsert({
+     *   create: {
+     *     // ... data to create a Session
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Session we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SessionUpsertArgs>(args: SelectSubset<T, SessionUpsertArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionCountArgs} args - Arguments to filter Sessions to count.
+     * @example
+     * // Count the number of Sessions
+     * const count = await prisma.session.count({
+     *   where: {
+     *     // ... the filter for the Sessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends SessionCountArgs>(
+      args?: Subset<T, SessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SessionAggregateArgs>(args: Subset<T, SessionAggregateArgs>): Prisma.PrismaPromise<GetSessionAggregateType<T>>
+
+    /**
+     * Group by Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SessionGroupByArgs['orderBy'] }
+        : { orderBy?: SessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Session model
+   */
+  readonly fields: SessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Session.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    TimeSheets<T extends Session$TimeSheetsArgs<ExtArgs> = {}>(args?: Subset<T, Session$TimeSheetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TimeSheetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    locationMarkers<T extends Session$locationMarkersArgs<ExtArgs> = {}>(args?: Subset<T, Session$locationMarkersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationMarkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    User<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Session model
+   */
+  interface SessionFieldRefs {
+    readonly id: FieldRef<"Session", 'Int'>
+    readonly userId: FieldRef<"Session", 'String'>
+    readonly startTime: FieldRef<"Session", 'DateTime'>
+    readonly endTime: FieldRef<"Session", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Session findUnique
+   */
+  export type SessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session findUniqueOrThrow
+   */
+  export type SessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session findFirst
+   */
+  export type SessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session findFirstOrThrow
+   */
+  export type SessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which Session to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session findMany
+   */
+  export type SessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which Sessions to fetch.
+     */
+    where?: SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sessions to fetch.
+     */
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Sessions.
+     */
+    cursor?: SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sessions.
+     */
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * Session create
+   */
+  export type SessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Session.
+     */
+    data: XOR<SessionCreateInput, SessionUncheckedCreateInput>
+  }
+
+  /**
+   * Session createMany
+   */
+  export type SessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Sessions.
+     */
+    data: SessionCreateManyInput | SessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Session createManyAndReturn
+   */
+  export type SessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Sessions.
+     */
+    data: SessionCreateManyInput | SessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Session update
+   */
+  export type SessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Session.
+     */
+    data: XOR<SessionUpdateInput, SessionUncheckedUpdateInput>
+    /**
+     * Choose, which Session to update.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session updateMany
+   */
+  export type SessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Sessions.
+     */
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which Sessions to update
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session updateManyAndReturn
+   */
+  export type SessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * The data used to update Sessions.
+     */
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which Sessions to update
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Session upsert
+   */
+  export type SessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Session to update in case it exists.
+     */
+    where: SessionWhereUniqueInput
+    /**
+     * In case the Session found by the `where` argument doesn't exist, create a new Session with this data.
+     */
+    create: XOR<SessionCreateInput, SessionUncheckedCreateInput>
+    /**
+     * In case the Session was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SessionUpdateInput, SessionUncheckedUpdateInput>
+  }
+
+  /**
+   * Session delete
+   */
+  export type SessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    /**
+     * Filter which Session to delete.
+     */
+    where: SessionWhereUniqueInput
+  }
+
+  /**
+   * Session deleteMany
+   */
+  export type SessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Sessions to delete
+     */
+    where?: SessionWhereInput
+    /**
+     * Limit how many Sessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session.TimeSheets
+   */
+  export type Session$TimeSheetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TimeSheet
+     */
+    select?: TimeSheetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TimeSheet
+     */
+    omit?: TimeSheetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TimeSheetInclude<ExtArgs> | null
+    where?: TimeSheetWhereInput
+    orderBy?: TimeSheetOrderByWithRelationInput | TimeSheetOrderByWithRelationInput[]
+    cursor?: TimeSheetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TimeSheetScalarFieldEnum | TimeSheetScalarFieldEnum[]
+  }
+
+  /**
+   * Session.locationMarkers
+   */
+  export type Session$locationMarkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LocationMarker
+     */
+    select?: LocationMarkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LocationMarker
+     */
+    omit?: LocationMarkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationMarkerInclude<ExtArgs> | null
+    where?: LocationMarkerWhereInput
+    orderBy?: LocationMarkerOrderByWithRelationInput | LocationMarkerOrderByWithRelationInput[]
+    cursor?: LocationMarkerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LocationMarkerScalarFieldEnum | LocationMarkerScalarFieldEnum[]
+  }
+
+  /**
+   * Session without action
+   */
+  export type SessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model TimeSheet
    */
 
@@ -25958,6 +28481,7 @@ export namespace Prisma {
     clockOutLat: number | null
     clockOutLng: number | null
     id: number | null
+    sessionId: number | null
   }
 
   export type TimeSheetSumAggregateOutputType = {
@@ -25966,6 +28490,7 @@ export namespace Prisma {
     clockOutLat: number | null
     clockOutLng: number | null
     id: number | null
+    sessionId: number | null
   }
 
   export type TimeSheetMinAggregateOutputType = {
@@ -25995,6 +28520,7 @@ export namespace Prisma {
     withinFenceOut: boolean | null
     wasInjured: boolean | null
     id: number | null
+    sessionId: number | null
   }
 
   export type TimeSheetMaxAggregateOutputType = {
@@ -26024,6 +28550,7 @@ export namespace Prisma {
     withinFenceOut: boolean | null
     wasInjured: boolean | null
     id: number | null
+    sessionId: number | null
   }
 
   export type TimeSheetCountAggregateOutputType = {
@@ -26053,6 +28580,7 @@ export namespace Prisma {
     withinFenceOut: number
     wasInjured: number
     id: number
+    sessionId: number
     _all: number
   }
 
@@ -26063,6 +28591,7 @@ export namespace Prisma {
     clockOutLat?: true
     clockOutLng?: true
     id?: true
+    sessionId?: true
   }
 
   export type TimeSheetSumAggregateInputType = {
@@ -26071,6 +28600,7 @@ export namespace Prisma {
     clockOutLat?: true
     clockOutLng?: true
     id?: true
+    sessionId?: true
   }
 
   export type TimeSheetMinAggregateInputType = {
@@ -26100,6 +28630,7 @@ export namespace Prisma {
     withinFenceOut?: true
     wasInjured?: true
     id?: true
+    sessionId?: true
   }
 
   export type TimeSheetMaxAggregateInputType = {
@@ -26129,6 +28660,7 @@ export namespace Prisma {
     withinFenceOut?: true
     wasInjured?: true
     id?: true
+    sessionId?: true
   }
 
   export type TimeSheetCountAggregateInputType = {
@@ -26158,6 +28690,7 @@ export namespace Prisma {
     withinFenceOut?: true
     wasInjured?: true
     id?: true
+    sessionId?: true
     _all?: true
   }
 
@@ -26274,6 +28807,7 @@ export namespace Prisma {
     withinFenceOut: boolean | null
     wasInjured: boolean | null
     id: number
+    sessionId: number | null
     _count: TimeSheetCountAggregateOutputType | null
     _avg: TimeSheetAvgAggregateOutputType | null
     _sum: TimeSheetSumAggregateOutputType | null
@@ -26322,6 +28856,8 @@ export namespace Prisma {
     withinFenceOut?: boolean
     wasInjured?: boolean
     id?: boolean
+    sessionId?: boolean
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     EmployeeEquipmentLogs?: boolean | TimeSheet$EmployeeEquipmentLogsArgs<ExtArgs>
     MaintenanceLogs?: boolean | TimeSheet$MaintenanceLogsArgs<ExtArgs>
     TascoLogs?: boolean | TimeSheet$TascoLogsArgs<ExtArgs>
@@ -26361,6 +28897,8 @@ export namespace Prisma {
     withinFenceOut?: boolean
     wasInjured?: boolean
     id?: boolean
+    sessionId?: boolean
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     CostCode?: boolean | CostCodeDefaultArgs<ExtArgs>
     Jobsite?: boolean | JobsiteDefaultArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
@@ -26393,6 +28931,8 @@ export namespace Prisma {
     withinFenceOut?: boolean
     wasInjured?: boolean
     id?: boolean
+    sessionId?: boolean
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     CostCode?: boolean | CostCodeDefaultArgs<ExtArgs>
     Jobsite?: boolean | JobsiteDefaultArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
@@ -26425,10 +28965,12 @@ export namespace Prisma {
     withinFenceOut?: boolean
     wasInjured?: boolean
     id?: boolean
+    sessionId?: boolean
   }
 
-  export type TimeSheetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"date" | "userId" | "jobsiteId" | "costcode" | "nu" | "Fp" | "startTime" | "endTime" | "comment" | "statusComment" | "location" | "status" | "workType" | "editedByUserId" | "newTimeSheetId" | "createdByAdmin" | "createdAt" | "updatedAt" | "clockInLat" | "clockInLng" | "clockOutLat" | "clockOutLng" | "withinFenceIn" | "withinFenceOut" | "wasInjured" | "id", ExtArgs["result"]["timeSheet"]>
+  export type TimeSheetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"date" | "userId" | "jobsiteId" | "costcode" | "nu" | "Fp" | "startTime" | "endTime" | "comment" | "statusComment" | "location" | "status" | "workType" | "editedByUserId" | "newTimeSheetId" | "createdByAdmin" | "createdAt" | "updatedAt" | "clockInLat" | "clockInLng" | "clockOutLat" | "clockOutLng" | "withinFenceIn" | "withinFenceOut" | "wasInjured" | "id" | "sessionId", ExtArgs["result"]["timeSheet"]>
   export type TimeSheetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     EmployeeEquipmentLogs?: boolean | TimeSheet$EmployeeEquipmentLogsArgs<ExtArgs>
     MaintenanceLogs?: boolean | TimeSheet$MaintenanceLogsArgs<ExtArgs>
     TascoLogs?: boolean | TimeSheet$TascoLogsArgs<ExtArgs>
@@ -26441,11 +28983,13 @@ export namespace Prisma {
     _count?: boolean | TimeSheetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TimeSheetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     CostCode?: boolean | CostCodeDefaultArgs<ExtArgs>
     Jobsite?: boolean | JobsiteDefaultArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TimeSheetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | TimeSheet$SessionArgs<ExtArgs>
     CostCode?: boolean | CostCodeDefaultArgs<ExtArgs>
     Jobsite?: boolean | JobsiteDefaultArgs<ExtArgs>
     User?: boolean | UserDefaultArgs<ExtArgs>
@@ -26454,6 +28998,7 @@ export namespace Prisma {
   export type $TimeSheetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TimeSheet"
     objects: {
+      Session: Prisma.$SessionPayload<ExtArgs> | null
       EmployeeEquipmentLogs: Prisma.$EmployeeEquipmentLogPayload<ExtArgs>[]
       MaintenanceLogs: Prisma.$MaintenanceLogPayload<ExtArgs>[]
       TascoLogs: Prisma.$TascoLogPayload<ExtArgs>[]
@@ -26491,6 +29036,7 @@ export namespace Prisma {
       withinFenceOut: boolean | null
       wasInjured: boolean | null
       id: number
+      sessionId: number | null
     }, ExtArgs["result"]["timeSheet"]>
     composites: {}
   }
@@ -26885,6 +29431,7 @@ export namespace Prisma {
    */
   export interface Prisma__TimeSheetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    Session<T extends TimeSheet$SessionArgs<ExtArgs> = {}>(args?: Subset<T, TimeSheet$SessionArgs<ExtArgs>>): Prisma__SessionClient<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     EmployeeEquipmentLogs<T extends TimeSheet$EmployeeEquipmentLogsArgs<ExtArgs> = {}>(args?: Subset<T, TimeSheet$EmployeeEquipmentLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeEquipmentLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     MaintenanceLogs<T extends TimeSheet$MaintenanceLogsArgs<ExtArgs> = {}>(args?: Subset<T, TimeSheet$MaintenanceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaintenanceLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     TascoLogs<T extends TimeSheet$TascoLogsArgs<ExtArgs> = {}>(args?: Subset<T, TimeSheet$TascoLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TascoLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -26949,6 +29496,7 @@ export namespace Prisma {
     readonly withinFenceOut: FieldRef<"TimeSheet", 'Boolean'>
     readonly wasInjured: FieldRef<"TimeSheet", 'Boolean'>
     readonly id: FieldRef<"TimeSheet", 'Int'>
+    readonly sessionId: FieldRef<"TimeSheet", 'Int'>
   }
     
 
@@ -27342,6 +29890,25 @@ export namespace Prisma {
      * Limit how many TimeSheets to delete.
      */
     limit?: number
+  }
+
+  /**
+   * TimeSheet.Session
+   */
+  export type TimeSheet$SessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
   }
 
   /**
@@ -41821,6 +44388,7 @@ export namespace Prisma {
     middleName?: boolean
     secondLastName?: boolean
     lastSeen?: boolean
+    Session?: boolean | User$SessionArgs<ExtArgs>
     accountSetupToken?: boolean | User$accountSetupTokenArgs<ExtArgs>
     Contact?: boolean | User$ContactArgs<ExtArgs>
     Equipment?: boolean | User$EquipmentArgs<ExtArgs>
@@ -41926,6 +44494,7 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "username" | "email" | "password" | "signature" | "DOB" | "truckView" | "tascoView" | "laborView" | "mechanicView" | "permission" | "image" | "startDate" | "terminationDate" | "accountSetup" | "clockedIn" | "companyId" | "passwordResetTokenId" | "workTypeId" | "middleName" | "secondLastName" | "lastSeen", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Session?: boolean | User$SessionArgs<ExtArgs>
     accountSetupToken?: boolean | User$accountSetupTokenArgs<ExtArgs>
     Contact?: boolean | User$ContactArgs<ExtArgs>
     Equipment?: boolean | User$EquipmentArgs<ExtArgs>
@@ -41955,6 +44524,7 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      Session: Prisma.$SessionPayload<ExtArgs>[]
       accountSetupToken: Prisma.$AccountSetupTokenPayload<ExtArgs> | null
       Contact: Prisma.$ContactsPayload<ExtArgs> | null
       Equipment: Prisma.$EquipmentPayload<ExtArgs>[]
@@ -42392,6 +44962,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    Session<T extends User$SessionArgs<ExtArgs> = {}>(args?: Subset<T, User$SessionArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accountSetupToken<T extends User$accountSetupTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$accountSetupTokenArgs<ExtArgs>>): Prisma__AccountSetupTokenClient<$Result.GetResult<Prisma.$AccountSetupTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     Contact<T extends User$ContactArgs<ExtArgs> = {}>(args?: Subset<T, User$ContactArgs<ExtArgs>>): Prisma__ContactsClient<$Result.GetResult<Prisma.$ContactsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     Equipment<T extends User$EquipmentArgs<ExtArgs> = {}>(args?: Subset<T, User$EquipmentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -42855,6 +45426,30 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.Session
+   */
+  export type User$SessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
   /**
@@ -54444,6 +57039,20 @@ export namespace Prisma {
   export type JobsiteScalarFieldEnum = (typeof JobsiteScalarFieldEnum)[keyof typeof JobsiteScalarFieldEnum]
 
 
+  export const LocationMarkerScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    lat: 'lat',
+    long: 'long',
+    accuracy: 'accuracy',
+    speed: 'speed',
+    heading: 'heading',
+    createdAt: 'createdAt'
+  };
+
+  export type LocationMarkerScalarFieldEnum = (typeof LocationMarkerScalarFieldEnum)[keyof typeof LocationMarkerScalarFieldEnum]
+
+
   export const ReportScalarFieldEnum: {
     name: 'name',
     description: 'description',
@@ -54477,6 +57086,16 @@ export namespace Prisma {
   export type ReportRunScalarFieldEnum = (typeof ReportRunScalarFieldEnum)[keyof typeof ReportRunScalarFieldEnum]
 
 
+  export const SessionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    startTime: 'startTime',
+    endTime: 'endTime'
+  };
+
+  export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
   export const TimeSheetScalarFieldEnum: {
     date: 'date',
     userId: 'userId',
@@ -54503,7 +57122,8 @@ export namespace Prisma {
     withinFenceIn: 'withinFenceIn',
     withinFenceOut: 'withinFenceOut',
     wasInjured: 'wasInjured',
-    id: 'id'
+    id: 'id',
+    sessionId: 'sessionId'
   };
 
   export type TimeSheetScalarFieldEnum = (typeof TimeSheetScalarFieldEnum)[keyof typeof TimeSheetScalarFieldEnum]
@@ -56418,6 +59038,78 @@ export namespace Prisma {
     status?: EnumFormTemplateStatusWithAggregatesFilter<"Jobsite"> | $Enums.FormTemplateStatus
   }
 
+  export type LocationMarkerWhereInput = {
+    AND?: LocationMarkerWhereInput | LocationMarkerWhereInput[]
+    OR?: LocationMarkerWhereInput[]
+    NOT?: LocationMarkerWhereInput | LocationMarkerWhereInput[]
+    id?: IntFilter<"LocationMarker"> | number
+    sessionId?: IntFilter<"LocationMarker"> | number
+    lat?: FloatFilter<"LocationMarker"> | number
+    long?: FloatFilter<"LocationMarker"> | number
+    accuracy?: FloatNullableFilter<"LocationMarker"> | number | null
+    speed?: FloatNullableFilter<"LocationMarker"> | number | null
+    heading?: FloatNullableFilter<"LocationMarker"> | number | null
+    createdAt?: DateTimeFilter<"LocationMarker"> | Date | string
+    Session?: XOR<SessionScalarRelationFilter, SessionWhereInput>
+  }
+
+  export type LocationMarkerOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrderInput | SortOrder
+    speed?: SortOrderInput | SortOrder
+    heading?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    Session?: SessionOrderByWithRelationInput
+  }
+
+  export type LocationMarkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: LocationMarkerWhereInput | LocationMarkerWhereInput[]
+    OR?: LocationMarkerWhereInput[]
+    NOT?: LocationMarkerWhereInput | LocationMarkerWhereInput[]
+    sessionId?: IntFilter<"LocationMarker"> | number
+    lat?: FloatFilter<"LocationMarker"> | number
+    long?: FloatFilter<"LocationMarker"> | number
+    accuracy?: FloatNullableFilter<"LocationMarker"> | number | null
+    speed?: FloatNullableFilter<"LocationMarker"> | number | null
+    heading?: FloatNullableFilter<"LocationMarker"> | number | null
+    createdAt?: DateTimeFilter<"LocationMarker"> | Date | string
+    Session?: XOR<SessionScalarRelationFilter, SessionWhereInput>
+  }, "id">
+
+  export type LocationMarkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrderInput | SortOrder
+    speed?: SortOrderInput | SortOrder
+    heading?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: LocationMarkerCountOrderByAggregateInput
+    _avg?: LocationMarkerAvgOrderByAggregateInput
+    _max?: LocationMarkerMaxOrderByAggregateInput
+    _min?: LocationMarkerMinOrderByAggregateInput
+    _sum?: LocationMarkerSumOrderByAggregateInput
+  }
+
+  export type LocationMarkerScalarWhereWithAggregatesInput = {
+    AND?: LocationMarkerScalarWhereWithAggregatesInput | LocationMarkerScalarWhereWithAggregatesInput[]
+    OR?: LocationMarkerScalarWhereWithAggregatesInput[]
+    NOT?: LocationMarkerScalarWhereWithAggregatesInput | LocationMarkerScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"LocationMarker"> | number
+    sessionId?: IntWithAggregatesFilter<"LocationMarker"> | number
+    lat?: FloatWithAggregatesFilter<"LocationMarker"> | number
+    long?: FloatWithAggregatesFilter<"LocationMarker"> | number
+    accuracy?: FloatNullableWithAggregatesFilter<"LocationMarker"> | number | null
+    speed?: FloatNullableWithAggregatesFilter<"LocationMarker"> | number | null
+    heading?: FloatNullableWithAggregatesFilter<"LocationMarker"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"LocationMarker"> | Date | string
+  }
+
   export type ReportWhereInput = {
     AND?: ReportWhereInput | ReportWhereInput[]
     OR?: ReportWhereInput[]
@@ -56590,6 +59282,64 @@ export namespace Prisma {
     reportId?: IntWithAggregatesFilter<"ReportRun"> | number
   }
 
+  export type SessionWhereInput = {
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    id?: IntFilter<"Session"> | number
+    userId?: StringFilter<"Session"> | string
+    startTime?: DateTimeFilter<"Session"> | Date | string
+    endTime?: DateTimeNullableFilter<"Session"> | Date | string | null
+    TimeSheets?: TimeSheetListRelationFilter
+    locationMarkers?: LocationMarkerListRelationFilter
+    User?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SessionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrderInput | SortOrder
+    TimeSheets?: TimeSheetOrderByRelationAggregateInput
+    locationMarkers?: LocationMarkerOrderByRelationAggregateInput
+    User?: UserOrderByWithRelationInput
+  }
+
+  export type SessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: SessionWhereInput | SessionWhereInput[]
+    OR?: SessionWhereInput[]
+    NOT?: SessionWhereInput | SessionWhereInput[]
+    userId?: StringFilter<"Session"> | string
+    startTime?: DateTimeFilter<"Session"> | Date | string
+    endTime?: DateTimeNullableFilter<"Session"> | Date | string | null
+    TimeSheets?: TimeSheetListRelationFilter
+    locationMarkers?: LocationMarkerListRelationFilter
+    User?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type SessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrderInput | SortOrder
+    _count?: SessionCountOrderByAggregateInput
+    _avg?: SessionAvgOrderByAggregateInput
+    _max?: SessionMaxOrderByAggregateInput
+    _min?: SessionMinOrderByAggregateInput
+    _sum?: SessionSumOrderByAggregateInput
+  }
+
+  export type SessionScalarWhereWithAggregatesInput = {
+    AND?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    OR?: SessionScalarWhereWithAggregatesInput[]
+    NOT?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Session"> | number
+    userId?: StringWithAggregatesFilter<"Session"> | string
+    startTime?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+    endTime?: DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
+  }
+
   export type TimeSheetWhereInput = {
     AND?: TimeSheetWhereInput | TimeSheetWhereInput[]
     OR?: TimeSheetWhereInput[]
@@ -56620,6 +59370,8 @@ export namespace Prisma {
     withinFenceOut?: BoolNullableFilter<"TimeSheet"> | boolean | null
     wasInjured?: BoolNullableFilter<"TimeSheet"> | boolean | null
     id?: IntFilter<"TimeSheet"> | number
+    sessionId?: IntNullableFilter<"TimeSheet"> | number | null
+    Session?: XOR<SessionNullableScalarRelationFilter, SessionWhereInput> | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogListRelationFilter
     MaintenanceLogs?: MaintenanceLogListRelationFilter
     TascoLogs?: TascoLogListRelationFilter
@@ -56658,6 +59410,8 @@ export namespace Prisma {
     withinFenceOut?: SortOrderInput | SortOrder
     wasInjured?: SortOrderInput | SortOrder
     id?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    Session?: SessionOrderByWithRelationInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogOrderByRelationAggregateInput
     MaintenanceLogs?: MaintenanceLogOrderByRelationAggregateInput
     TascoLogs?: TascoLogOrderByRelationAggregateInput
@@ -56699,6 +59453,8 @@ export namespace Prisma {
     withinFenceIn?: BoolNullableFilter<"TimeSheet"> | boolean | null
     withinFenceOut?: BoolNullableFilter<"TimeSheet"> | boolean | null
     wasInjured?: BoolNullableFilter<"TimeSheet"> | boolean | null
+    sessionId?: IntNullableFilter<"TimeSheet"> | number | null
+    Session?: XOR<SessionNullableScalarRelationFilter, SessionWhereInput> | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogListRelationFilter
     MaintenanceLogs?: MaintenanceLogListRelationFilter
     TascoLogs?: TascoLogListRelationFilter
@@ -56737,6 +59493,7 @@ export namespace Prisma {
     withinFenceOut?: SortOrderInput | SortOrder
     wasInjured?: SortOrderInput | SortOrder
     id?: SortOrder
+    sessionId?: SortOrderInput | SortOrder
     _count?: TimeSheetCountOrderByAggregateInput
     _avg?: TimeSheetAvgOrderByAggregateInput
     _max?: TimeSheetMaxOrderByAggregateInput
@@ -56774,6 +59531,7 @@ export namespace Prisma {
     withinFenceOut?: BoolNullableWithAggregatesFilter<"TimeSheet"> | boolean | null
     wasInjured?: BoolNullableWithAggregatesFilter<"TimeSheet"> | boolean | null
     id?: IntWithAggregatesFilter<"TimeSheet"> | number
+    sessionId?: IntNullableWithAggregatesFilter<"TimeSheet"> | number | null
   }
 
   export type mechanicProjectsWhereInput = {
@@ -57686,6 +60444,7 @@ export namespace Prisma {
     middleName?: StringNullableFilter<"User"> | string | null
     secondLastName?: StringNullableFilter<"User"> | string | null
     lastSeen?: DateTimeNullableFilter<"User"> | Date | string | null
+    Session?: SessionListRelationFilter
     accountSetupToken?: XOR<AccountSetupTokenNullableScalarRelationFilter, AccountSetupTokenWhereInput> | null
     Contact?: XOR<ContactsNullableScalarRelationFilter, ContactsWhereInput> | null
     Equipment?: EquipmentListRelationFilter
@@ -57730,6 +60489,7 @@ export namespace Prisma {
     middleName?: SortOrderInput | SortOrder
     secondLastName?: SortOrderInput | SortOrder
     lastSeen?: SortOrderInput | SortOrder
+    Session?: SessionOrderByRelationAggregateInput
     accountSetupToken?: AccountSetupTokenOrderByWithRelationInput
     Contact?: ContactsOrderByWithRelationInput
     Equipment?: EquipmentOrderByRelationAggregateInput
@@ -57778,6 +60538,7 @@ export namespace Prisma {
     middleName?: StringNullableFilter<"User"> | string | null
     secondLastName?: StringNullableFilter<"User"> | string | null
     lastSeen?: DateTimeNullableFilter<"User"> | Date | string | null
+    Session?: SessionListRelationFilter
     accountSetupToken?: XOR<AccountSetupTokenNullableScalarRelationFilter, AccountSetupTokenWhereInput> | null
     Contact?: XOR<ContactsNullableScalarRelationFilter, ContactsWhereInput> | null
     Equipment?: EquipmentListRelationFilter
@@ -59837,6 +62598,79 @@ export namespace Prisma {
     status?: EnumFormTemplateStatusFieldUpdateOperationsInput | $Enums.FormTemplateStatus
   }
 
+  export type LocationMarkerCreateInput = {
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+    Session: SessionCreateNestedOneWithoutLocationMarkersInput
+  }
+
+  export type LocationMarkerUncheckedCreateInput = {
+    id?: number
+    sessionId: number
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+  }
+
+  export type LocationMarkerUpdateInput = {
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Session?: SessionUpdateOneRequiredWithoutLocationMarkersNestedInput
+  }
+
+  export type LocationMarkerUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationMarkerCreateManyInput = {
+    id?: number
+    sessionId: number
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+  }
+
+  export type LocationMarkerUpdateManyMutationInput = {
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationMarkerUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    sessionId?: IntFieldUpdateOperationsInput | number
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ReportCreateInput = {
     name: string
     description: string
@@ -60028,6 +62862,59 @@ export namespace Prisma {
     reportId?: IntFieldUpdateOperationsInput | number
   }
 
+  export type SessionCreateInput = {
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetCreateNestedManyWithoutSessionInput
+    locationMarkers?: LocationMarkerCreateNestedManyWithoutSessionInput
+    User: UserCreateNestedOneWithoutSessionInput
+  }
+
+  export type SessionUncheckedCreateInput = {
+    id?: number
+    userId: string
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetUncheckedCreateNestedManyWithoutSessionInput
+    locationMarkers?: LocationMarkerUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type SessionUpdateInput = {
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUpdateManyWithoutSessionNestedInput
+    locationMarkers?: LocationMarkerUpdateManyWithoutSessionNestedInput
+    User?: UserUpdateOneRequiredWithoutSessionNestedInput
+  }
+
+  export type SessionUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUncheckedUpdateManyWithoutSessionNestedInput
+    locationMarkers?: LocationMarkerUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type SessionCreateManyInput = {
+    id?: number
+    userId: string
+    startTime?: Date | string
+    endTime?: Date | string | null
+  }
+
+  export type SessionUpdateManyMutationInput = {
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type SessionUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type TimeSheetCreateInput = {
     date: Date | string
     nu?: string
@@ -60051,6 +62938,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -60089,6 +62977,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -60120,6 +63009,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -60158,6 +63048,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -60193,6 +63084,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
   }
 
   export type TimeSheetUpdateManyMutationInput = {
@@ -60247,6 +63139,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mechanicProjectsCreateInput = {
@@ -61148,6 +64041,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -61192,6 +64086,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -61234,6 +64129,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -61278,6 +64174,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -63383,6 +66280,91 @@ export namespace Prisma {
     radiusMeters?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type SessionScalarRelationFilter = {
+    is?: SessionWhereInput
+    isNot?: SessionWhereInput
+  }
+
+  export type LocationMarkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrder
+    speed?: SortOrder
+    heading?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocationMarkerAvgOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrder
+    speed?: SortOrder
+    heading?: SortOrder
+  }
+
+  export type LocationMarkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrder
+    speed?: SortOrder
+    heading?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocationMarkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrder
+    speed?: SortOrder
+    heading?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LocationMarkerSumOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    lat?: SortOrder
+    long?: SortOrder
+    accuracy?: SortOrder
+    speed?: SortOrder
+    heading?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type EnumReportVisibilityFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportVisibility | EnumReportVisibilityFieldRefInput<$PrismaModel>
     in?: $Enums.ReportVisibility[] | ListEnumReportVisibilityFieldRefInput<$PrismaModel>
@@ -63529,6 +66511,50 @@ export namespace Prisma {
     _max?: NestedEnumReportStatusFilter<$PrismaModel>
   }
 
+  export type LocationMarkerListRelationFilter = {
+    every?: LocationMarkerWhereInput
+    some?: LocationMarkerWhereInput
+    none?: LocationMarkerWhereInput
+  }
+
+  export type LocationMarkerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+  }
+
+  export type SessionAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+  }
+
+  export type SessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+  }
+
+  export type SessionSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SessionNullableScalarRelationFilter = {
+    is?: SessionWhereInput | null
+    isNot?: SessionWhereInput | null
+  }
+
   export type MaintenanceLogListRelationFilter = {
     every?: MaintenanceLogWhereInput
     some?: MaintenanceLogWhereInput
@@ -63586,6 +66612,7 @@ export namespace Prisma {
     withinFenceOut?: SortOrder
     wasInjured?: SortOrder
     id?: SortOrder
+    sessionId?: SortOrder
   }
 
   export type TimeSheetAvgOrderByAggregateInput = {
@@ -63594,6 +66621,7 @@ export namespace Prisma {
     clockOutLat?: SortOrder
     clockOutLng?: SortOrder
     id?: SortOrder
+    sessionId?: SortOrder
   }
 
   export type TimeSheetMaxOrderByAggregateInput = {
@@ -63623,6 +66651,7 @@ export namespace Prisma {
     withinFenceOut?: SortOrder
     wasInjured?: SortOrder
     id?: SortOrder
+    sessionId?: SortOrder
   }
 
   export type TimeSheetMinOrderByAggregateInput = {
@@ -63652,6 +66681,7 @@ export namespace Prisma {
     withinFenceOut?: SortOrder
     wasInjured?: SortOrder
     id?: SortOrder
+    sessionId?: SortOrder
   }
 
   export type TimeSheetSumOrderByAggregateInput = {
@@ -63660,6 +66690,7 @@ export namespace Prisma {
     clockOutLat?: SortOrder
     clockOutLng?: SortOrder
     id?: SortOrder
+    sessionId?: SortOrder
   }
 
   export type EquipmentScalarRelationFilter = {
@@ -64327,6 +67358,12 @@ export namespace Prisma {
     not?: NestedEnumPermissionFilter<$PrismaModel> | $Enums.Permission
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
   export type AccountSetupTokenNullableScalarRelationFilter = {
     is?: AccountSetupTokenWhereInput | null
     isNot?: AccountSetupTokenWhereInput | null
@@ -64376,6 +67413,10 @@ export namespace Prisma {
     every?: CrewWhereInput
     some?: CrewWhereInput
     none?: CrewWhereInput
+  }
+
+  export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type FCMTokenOrderByRelationAggregateInput = {
@@ -66321,6 +69362,28 @@ export namespace Prisma {
     deleteMany?: CCTagScalarWhereInput | CCTagScalarWhereInput[]
   }
 
+  export type SessionCreateNestedOneWithoutLocationMarkersInput = {
+    create?: XOR<SessionCreateWithoutLocationMarkersInput, SessionUncheckedCreateWithoutLocationMarkersInput>
+    connectOrCreate?: SessionCreateOrConnectWithoutLocationMarkersInput
+    connect?: SessionWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type SessionUpdateOneRequiredWithoutLocationMarkersNestedInput = {
+    create?: XOR<SessionCreateWithoutLocationMarkersInput, SessionUncheckedCreateWithoutLocationMarkersInput>
+    connectOrCreate?: SessionCreateOrConnectWithoutLocationMarkersInput
+    upsert?: SessionUpsertWithoutLocationMarkersInput
+    connect?: SessionWhereUniqueInput
+    update?: XOR<XOR<SessionUpdateToOneWithWhereWithoutLocationMarkersInput, SessionUpdateWithoutLocationMarkersInput>, SessionUncheckedUpdateWithoutLocationMarkersInput>
+  }
+
   export type ReportCreatetagsInput = {
     set: string[]
   }
@@ -66415,6 +69478,110 @@ export namespace Prisma {
     upsert?: ReportUpsertWithoutReportRunsInput
     connect?: ReportWhereUniqueInput
     update?: XOR<XOR<ReportUpdateToOneWithWhereWithoutReportRunsInput, ReportUpdateWithoutReportRunsInput>, ReportUncheckedUpdateWithoutReportRunsInput>
+  }
+
+  export type TimeSheetCreateNestedManyWithoutSessionInput = {
+    create?: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput> | TimeSheetCreateWithoutSessionInput[] | TimeSheetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: TimeSheetCreateOrConnectWithoutSessionInput | TimeSheetCreateOrConnectWithoutSessionInput[]
+    createMany?: TimeSheetCreateManySessionInputEnvelope
+    connect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+  }
+
+  export type LocationMarkerCreateNestedManyWithoutSessionInput = {
+    create?: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput> | LocationMarkerCreateWithoutSessionInput[] | LocationMarkerUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: LocationMarkerCreateOrConnectWithoutSessionInput | LocationMarkerCreateOrConnectWithoutSessionInput[]
+    createMany?: LocationMarkerCreateManySessionInputEnvelope
+    connect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutSessionInput = {
+    create?: XOR<UserCreateWithoutSessionInput, UserUncheckedCreateWithoutSessionInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSessionInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TimeSheetUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput> | TimeSheetCreateWithoutSessionInput[] | TimeSheetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: TimeSheetCreateOrConnectWithoutSessionInput | TimeSheetCreateOrConnectWithoutSessionInput[]
+    createMany?: TimeSheetCreateManySessionInputEnvelope
+    connect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+  }
+
+  export type LocationMarkerUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput> | LocationMarkerCreateWithoutSessionInput[] | LocationMarkerUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: LocationMarkerCreateOrConnectWithoutSessionInput | LocationMarkerCreateOrConnectWithoutSessionInput[]
+    createMany?: LocationMarkerCreateManySessionInputEnvelope
+    connect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+  }
+
+  export type TimeSheetUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput> | TimeSheetCreateWithoutSessionInput[] | TimeSheetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: TimeSheetCreateOrConnectWithoutSessionInput | TimeSheetCreateOrConnectWithoutSessionInput[]
+    upsert?: TimeSheetUpsertWithWhereUniqueWithoutSessionInput | TimeSheetUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: TimeSheetCreateManySessionInputEnvelope
+    set?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    disconnect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    delete?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    connect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    update?: TimeSheetUpdateWithWhereUniqueWithoutSessionInput | TimeSheetUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: TimeSheetUpdateManyWithWhereWithoutSessionInput | TimeSheetUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: TimeSheetScalarWhereInput | TimeSheetScalarWhereInput[]
+  }
+
+  export type LocationMarkerUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput> | LocationMarkerCreateWithoutSessionInput[] | LocationMarkerUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: LocationMarkerCreateOrConnectWithoutSessionInput | LocationMarkerCreateOrConnectWithoutSessionInput[]
+    upsert?: LocationMarkerUpsertWithWhereUniqueWithoutSessionInput | LocationMarkerUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: LocationMarkerCreateManySessionInputEnvelope
+    set?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    disconnect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    delete?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    connect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    update?: LocationMarkerUpdateWithWhereUniqueWithoutSessionInput | LocationMarkerUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: LocationMarkerUpdateManyWithWhereWithoutSessionInput | LocationMarkerUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: LocationMarkerScalarWhereInput | LocationMarkerScalarWhereInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutSessionNestedInput = {
+    create?: XOR<UserCreateWithoutSessionInput, UserUncheckedCreateWithoutSessionInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSessionInput
+    upsert?: UserUpsertWithoutSessionInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionInput, UserUpdateWithoutSessionInput>, UserUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type TimeSheetUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput> | TimeSheetCreateWithoutSessionInput[] | TimeSheetUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: TimeSheetCreateOrConnectWithoutSessionInput | TimeSheetCreateOrConnectWithoutSessionInput[]
+    upsert?: TimeSheetUpsertWithWhereUniqueWithoutSessionInput | TimeSheetUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: TimeSheetCreateManySessionInputEnvelope
+    set?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    disconnect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    delete?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    connect?: TimeSheetWhereUniqueInput | TimeSheetWhereUniqueInput[]
+    update?: TimeSheetUpdateWithWhereUniqueWithoutSessionInput | TimeSheetUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: TimeSheetUpdateManyWithWhereWithoutSessionInput | TimeSheetUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: TimeSheetScalarWhereInput | TimeSheetScalarWhereInput[]
+  }
+
+  export type LocationMarkerUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput> | LocationMarkerCreateWithoutSessionInput[] | LocationMarkerUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: LocationMarkerCreateOrConnectWithoutSessionInput | LocationMarkerCreateOrConnectWithoutSessionInput[]
+    upsert?: LocationMarkerUpsertWithWhereUniqueWithoutSessionInput | LocationMarkerUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: LocationMarkerCreateManySessionInputEnvelope
+    set?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    disconnect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    delete?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    connect?: LocationMarkerWhereUniqueInput | LocationMarkerWhereUniqueInput[]
+    update?: LocationMarkerUpdateWithWhereUniqueWithoutSessionInput | LocationMarkerUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: LocationMarkerUpdateManyWithWhereWithoutSessionInput | LocationMarkerUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: LocationMarkerScalarWhereInput | LocationMarkerScalarWhereInput[]
+  }
+
+  export type SessionCreateNestedOneWithoutTimeSheetsInput = {
+    create?: XOR<SessionCreateWithoutTimeSheetsInput, SessionUncheckedCreateWithoutTimeSheetsInput>
+    connectOrCreate?: SessionCreateOrConnectWithoutTimeSheetsInput
+    connect?: SessionWhereUniqueInput
   }
 
   export type EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput = {
@@ -66517,6 +69684,16 @@ export namespace Prisma {
     connectOrCreate?: mechanicProjectsCreateOrConnectWithoutTimeSheetInput | mechanicProjectsCreateOrConnectWithoutTimeSheetInput[]
     createMany?: mechanicProjectsCreateManyTimeSheetInputEnvelope
     connect?: mechanicProjectsWhereUniqueInput | mechanicProjectsWhereUniqueInput[]
+  }
+
+  export type SessionUpdateOneWithoutTimeSheetsNestedInput = {
+    create?: XOR<SessionCreateWithoutTimeSheetsInput, SessionUncheckedCreateWithoutTimeSheetsInput>
+    connectOrCreate?: SessionCreateOrConnectWithoutTimeSheetsInput
+    upsert?: SessionUpsertWithoutTimeSheetsInput
+    disconnect?: SessionWhereInput | boolean
+    delete?: SessionWhereInput | boolean
+    connect?: SessionWhereUniqueInput
+    update?: XOR<XOR<SessionUpdateToOneWithWhereWithoutTimeSheetsInput, SessionUpdateWithoutTimeSheetsInput>, SessionUncheckedUpdateWithoutTimeSheetsInput>
   }
 
   export type EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput = {
@@ -67443,6 +70620,13 @@ export namespace Prisma {
     update?: XOR<XOR<TimeSheetUpdateToOneWithWhereWithoutChangeLogsInput, TimeSheetUpdateWithoutChangeLogsInput>, TimeSheetUncheckedUpdateWithoutChangeLogsInput>
   }
 
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
   export type AccountSetupTokenCreateNestedOneWithoutUserInput = {
     create?: XOR<AccountSetupTokenCreateWithoutUserInput, AccountSetupTokenUncheckedCreateWithoutUserInput>
     connectOrCreate?: AccountSetupTokenCreateOrConnectWithoutUserInput
@@ -67557,6 +70741,13 @@ export namespace Prisma {
     connect?: CrewWhereUniqueInput | CrewWhereUniqueInput[]
   }
 
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
   export type AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<AccountSetupTokenCreateWithoutUserInput, AccountSetupTokenUncheckedCreateWithoutUserInput>
     connectOrCreate?: AccountSetupTokenCreateOrConnectWithoutUserInput
@@ -67667,6 +70858,20 @@ export namespace Prisma {
 
   export type EnumPermissionFieldUpdateOperationsInput = {
     set?: $Enums.Permission
+  }
+
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type AccountSetupTokenUpdateOneWithoutUserNestedInput = {
@@ -67886,6 +71091,20 @@ export namespace Prisma {
     update?: CrewUpdateWithWhereUniqueWithoutUsersInput | CrewUpdateWithWhereUniqueWithoutUsersInput[]
     updateMany?: CrewUpdateManyWithWhereWithoutUsersInput | CrewUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: CrewScalarWhereInput | CrewScalarWhereInput[]
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput = {
@@ -68854,6 +72073,22 @@ export namespace Prisma {
     _max?: NestedEnumFormStatusFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedEnumReportVisibilityFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportVisibility | EnumReportVisibilityFieldRefInput<$PrismaModel>
     in?: $Enums.ReportVisibility[] | ListEnumReportVisibilityFieldRefInput<$PrismaModel>
@@ -69102,6 +72337,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -69144,6 +72380,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -69336,6 +72573,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -69372,6 +72610,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -69455,6 +72694,7 @@ export namespace Prisma {
     withinFenceOut?: BoolNullableFilter<"TimeSheet"> | boolean | null
     wasInjured?: BoolNullableFilter<"TimeSheet"> | boolean | null
     id?: IntFilter<"TimeSheet"> | number
+    sessionId?: IntNullableFilter<"TimeSheet"> | number | null
   }
 
   export type CCTagUpsertWithWhereUniqueWithoutCostCodesInput = {
@@ -69648,6 +72888,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -69691,6 +72932,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -70022,6 +73264,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     FCMToken?: FCMTokenCreateNestedManyWithoutUserInput
@@ -70065,6 +73308,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     FCMToken?: FCMTokenUncheckedCreateNestedManyWithoutUserInput
@@ -70434,6 +73678,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     FCMToken?: FCMTokenUpdateManyWithoutUserNestedInput
@@ -70477,6 +73722,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     FCMToken?: FCMTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -70853,6 +74099,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
     CostCode: CostCodeCreateNestedOneWithoutTimesheetsInput
@@ -70890,6 +74137,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
     ChangeLogs?: TimeSheetChangeLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -71099,6 +74347,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
     CostCode?: CostCodeUpdateOneRequiredWithoutTimesheetsNestedInput
@@ -71136,6 +74385,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     ChangeLogs?: TimeSheetChangeLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -71714,6 +74964,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -71757,6 +75008,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -71882,6 +75134,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -71925,6 +75178,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -71996,6 +75250,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -72039,6 +75294,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -72132,6 +75388,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -72175,6 +75432,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -72241,6 +75499,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -72284,6 +75543,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -72329,6 +75589,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -72365,6 +75626,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -72468,6 +75730,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -72511,6 +75774,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -72558,6 +75822,52 @@ export namespace Prisma {
   export type CCTagUpdateManyWithWhereWithoutJobsitesInput = {
     where: CCTagScalarWhereInput
     data: XOR<CCTagUpdateManyMutationInput, CCTagUncheckedUpdateManyWithoutJobsitesInput>
+  }
+
+  export type SessionCreateWithoutLocationMarkersInput = {
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetCreateNestedManyWithoutSessionInput
+    User: UserCreateNestedOneWithoutSessionInput
+  }
+
+  export type SessionUncheckedCreateWithoutLocationMarkersInput = {
+    id?: number
+    userId: string
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type SessionCreateOrConnectWithoutLocationMarkersInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutLocationMarkersInput, SessionUncheckedCreateWithoutLocationMarkersInput>
+  }
+
+  export type SessionUpsertWithoutLocationMarkersInput = {
+    update: XOR<SessionUpdateWithoutLocationMarkersInput, SessionUncheckedUpdateWithoutLocationMarkersInput>
+    create: XOR<SessionCreateWithoutLocationMarkersInput, SessionUncheckedCreateWithoutLocationMarkersInput>
+    where?: SessionWhereInput
+  }
+
+  export type SessionUpdateToOneWithWhereWithoutLocationMarkersInput = {
+    where?: SessionWhereInput
+    data: XOR<SessionUpdateWithoutLocationMarkersInput, SessionUncheckedUpdateWithoutLocationMarkersInput>
+  }
+
+  export type SessionUpdateWithoutLocationMarkersInput = {
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUpdateManyWithoutSessionNestedInput
+    User?: UserUpdateOneRequiredWithoutSessionNestedInput
+  }
+
+  export type SessionUncheckedUpdateWithoutLocationMarkersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUncheckedUpdateManyWithoutSessionNestedInput
   }
 
   export type CompanyCreateWithoutReportsInput = {
@@ -72757,6 +76067,368 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
   }
 
+  export type TimeSheetCreateWithoutSessionInput = {
+    date: Date | string
+    nu?: string
+    Fp?: string
+    startTime: Date | string
+    endTime?: Date | string | null
+    comment?: string | null
+    statusComment?: string | null
+    location?: string | null
+    status?: $Enums.ApprovalStatus
+    workType: $Enums.WorkType
+    editedByUserId?: string | null
+    newTimeSheetId?: string | null
+    createdByAdmin?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clockInLat?: number | null
+    clockInLng?: number | null
+    clockOutLat?: number | null
+    clockOutLng?: number | null
+    withinFenceIn?: boolean | null
+    withinFenceOut?: boolean | null
+    wasInjured?: boolean | null
+    EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
+    MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
+    TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
+    CostCode: CostCodeCreateNestedOneWithoutTimesheetsInput
+    Jobsite: JobsiteCreateNestedOneWithoutTimeSheetsInput
+    User: UserCreateNestedOneWithoutTimeSheetsInput
+    ChangeLogs?: TimeSheetChangeLogCreateNestedManyWithoutTimeSheetInput
+    TruckingLogs?: TruckingLogCreateNestedManyWithoutTimeSheetInput
+    Maintenance?: mechanicProjectsCreateNestedManyWithoutTimeSheetInput
+  }
+
+  export type TimeSheetUncheckedCreateWithoutSessionInput = {
+    date: Date | string
+    userId: string
+    jobsiteId: string
+    costcode: string
+    nu?: string
+    Fp?: string
+    startTime: Date | string
+    endTime?: Date | string | null
+    comment?: string | null
+    statusComment?: string | null
+    location?: string | null
+    status?: $Enums.ApprovalStatus
+    workType: $Enums.WorkType
+    editedByUserId?: string | null
+    newTimeSheetId?: string | null
+    createdByAdmin?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clockInLat?: number | null
+    clockInLng?: number | null
+    clockOutLat?: number | null
+    clockOutLng?: number | null
+    withinFenceIn?: boolean | null
+    withinFenceOut?: boolean | null
+    wasInjured?: boolean | null
+    id?: number
+    EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
+    MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
+    TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
+    ChangeLogs?: TimeSheetChangeLogUncheckedCreateNestedManyWithoutTimeSheetInput
+    TruckingLogs?: TruckingLogUncheckedCreateNestedManyWithoutTimeSheetInput
+    Maintenance?: mechanicProjectsUncheckedCreateNestedManyWithoutTimeSheetInput
+  }
+
+  export type TimeSheetCreateOrConnectWithoutSessionInput = {
+    where: TimeSheetWhereUniqueInput
+    create: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput>
+  }
+
+  export type TimeSheetCreateManySessionInputEnvelope = {
+    data: TimeSheetCreateManySessionInput | TimeSheetCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LocationMarkerCreateWithoutSessionInput = {
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+  }
+
+  export type LocationMarkerUncheckedCreateWithoutSessionInput = {
+    id?: number
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+  }
+
+  export type LocationMarkerCreateOrConnectWithoutSessionInput = {
+    where: LocationMarkerWhereUniqueInput
+    create: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput>
+  }
+
+  export type LocationMarkerCreateManySessionInputEnvelope = {
+    data: LocationMarkerCreateManySessionInput | LocationMarkerCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutSessionInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    username: string
+    email?: string | null
+    password: string
+    signature?: string | null
+    DOB?: Date | string | null
+    truckView: boolean
+    tascoView: boolean
+    laborView: boolean
+    mechanicView: boolean
+    permission?: $Enums.Permission
+    image?: string | null
+    startDate?: Date | string | null
+    terminationDate?: Date | string | null
+    accountSetup?: boolean
+    clockedIn?: boolean
+    passwordResetTokenId?: string | null
+    workTypeId?: string | null
+    middleName?: string | null
+    secondLastName?: string | null
+    lastSeen?: Date | string | null
+    accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
+    Contact?: ContactsCreateNestedOneWithoutUserInput
+    Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
+    FCMToken?: FCMTokenCreateNestedManyWithoutUserInput
+    FormApprovals?: FormApprovalCreateNestedManyWithoutApproverInput
+    FormSubmissions?: FormSubmissionCreateNestedManyWithoutUserInput
+    Jobsite?: JobsiteCreateNestedManyWithoutCreatedByInput
+    MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutUserInput
+    NotificationRead?: NotificationReadCreateNestedManyWithoutUserInput
+    NotificationResponse?: NotificationResponseCreateNestedManyWithoutUserInput
+    PasswordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    TimeSheets?: TimeSheetCreateNestedManyWithoutUserInput
+    TimeSheetChanges?: TimeSheetChangeLogCreateNestedManyWithoutUserInput
+    topicSubscriptions?: TopicSubscriptionCreateNestedManyWithoutUserInput
+    Company: CompanyCreateNestedOneWithoutUsersInput
+    UserSettings?: UserSettingsCreateNestedOneWithoutUserInput
+    Crews?: CrewCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutSessionInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    username: string
+    email?: string | null
+    password: string
+    signature?: string | null
+    DOB?: Date | string | null
+    truckView: boolean
+    tascoView: boolean
+    laborView: boolean
+    mechanicView: boolean
+    permission?: $Enums.Permission
+    image?: string | null
+    startDate?: Date | string | null
+    terminationDate?: Date | string | null
+    accountSetup?: boolean
+    clockedIn?: boolean
+    companyId: string
+    passwordResetTokenId?: string | null
+    workTypeId?: string | null
+    middleName?: string | null
+    secondLastName?: string | null
+    lastSeen?: Date | string | null
+    accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
+    Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
+    Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
+    FCMToken?: FCMTokenUncheckedCreateNestedManyWithoutUserInput
+    FormApprovals?: FormApprovalUncheckedCreateNestedManyWithoutApproverInput
+    FormSubmissions?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    Jobsite?: JobsiteUncheckedCreateNestedManyWithoutCreatedByInput
+    MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutUserInput
+    NotificationRead?: NotificationReadUncheckedCreateNestedManyWithoutUserInput
+    NotificationResponse?: NotificationResponseUncheckedCreateNestedManyWithoutUserInput
+    PasswordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    TimeSheets?: TimeSheetUncheckedCreateNestedManyWithoutUserInput
+    TimeSheetChanges?: TimeSheetChangeLogUncheckedCreateNestedManyWithoutUserInput
+    topicSubscriptions?: TopicSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    UserSettings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    Crews?: CrewUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutSessionInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSessionInput, UserUncheckedCreateWithoutSessionInput>
+  }
+
+  export type TimeSheetUpsertWithWhereUniqueWithoutSessionInput = {
+    where: TimeSheetWhereUniqueInput
+    update: XOR<TimeSheetUpdateWithoutSessionInput, TimeSheetUncheckedUpdateWithoutSessionInput>
+    create: XOR<TimeSheetCreateWithoutSessionInput, TimeSheetUncheckedCreateWithoutSessionInput>
+  }
+
+  export type TimeSheetUpdateWithWhereUniqueWithoutSessionInput = {
+    where: TimeSheetWhereUniqueInput
+    data: XOR<TimeSheetUpdateWithoutSessionInput, TimeSheetUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type TimeSheetUpdateManyWithWhereWithoutSessionInput = {
+    where: TimeSheetScalarWhereInput
+    data: XOR<TimeSheetUpdateManyMutationInput, TimeSheetUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type LocationMarkerUpsertWithWhereUniqueWithoutSessionInput = {
+    where: LocationMarkerWhereUniqueInput
+    update: XOR<LocationMarkerUpdateWithoutSessionInput, LocationMarkerUncheckedUpdateWithoutSessionInput>
+    create: XOR<LocationMarkerCreateWithoutSessionInput, LocationMarkerUncheckedCreateWithoutSessionInput>
+  }
+
+  export type LocationMarkerUpdateWithWhereUniqueWithoutSessionInput = {
+    where: LocationMarkerWhereUniqueInput
+    data: XOR<LocationMarkerUpdateWithoutSessionInput, LocationMarkerUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type LocationMarkerUpdateManyWithWhereWithoutSessionInput = {
+    where: LocationMarkerScalarWhereInput
+    data: XOR<LocationMarkerUpdateManyMutationInput, LocationMarkerUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type LocationMarkerScalarWhereInput = {
+    AND?: LocationMarkerScalarWhereInput | LocationMarkerScalarWhereInput[]
+    OR?: LocationMarkerScalarWhereInput[]
+    NOT?: LocationMarkerScalarWhereInput | LocationMarkerScalarWhereInput[]
+    id?: IntFilter<"LocationMarker"> | number
+    sessionId?: IntFilter<"LocationMarker"> | number
+    lat?: FloatFilter<"LocationMarker"> | number
+    long?: FloatFilter<"LocationMarker"> | number
+    accuracy?: FloatNullableFilter<"LocationMarker"> | number | null
+    speed?: FloatNullableFilter<"LocationMarker"> | number | null
+    heading?: FloatNullableFilter<"LocationMarker"> | number | null
+    createdAt?: DateTimeFilter<"LocationMarker"> | Date | string
+  }
+
+  export type UserUpsertWithoutSessionInput = {
+    update: XOR<UserUpdateWithoutSessionInput, UserUncheckedUpdateWithoutSessionInput>
+    create: XOR<UserCreateWithoutSessionInput, UserUncheckedCreateWithoutSessionInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSessionInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSessionInput, UserUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type UserUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
+    DOB?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    truckView?: BoolFieldUpdateOperationsInput | boolean
+    tascoView?: BoolFieldUpdateOperationsInput | boolean
+    laborView?: BoolFieldUpdateOperationsInput | boolean
+    mechanicView?: BoolFieldUpdateOperationsInput | boolean
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountSetup?: BoolFieldUpdateOperationsInput | boolean
+    clockedIn?: BoolFieldUpdateOperationsInput | boolean
+    passwordResetTokenId?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
+    Contact?: ContactsUpdateOneWithoutUserNestedInput
+    Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
+    FCMToken?: FCMTokenUpdateManyWithoutUserNestedInput
+    FormApprovals?: FormApprovalUpdateManyWithoutApproverNestedInput
+    FormSubmissions?: FormSubmissionUpdateManyWithoutUserNestedInput
+    Jobsite?: JobsiteUpdateManyWithoutCreatedByNestedInput
+    MaintenanceLogs?: MaintenanceLogUpdateManyWithoutUserNestedInput
+    NotificationRead?: NotificationReadUpdateManyWithoutUserNestedInput
+    NotificationResponse?: NotificationResponseUpdateManyWithoutUserNestedInput
+    PasswordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    TimeSheets?: TimeSheetUpdateManyWithoutUserNestedInput
+    TimeSheetChanges?: TimeSheetChangeLogUpdateManyWithoutUserNestedInput
+    topicSubscriptions?: TopicSubscriptionUpdateManyWithoutUserNestedInput
+    Company?: CompanyUpdateOneRequiredWithoutUsersNestedInput
+    UserSettings?: UserSettingsUpdateOneWithoutUserNestedInput
+    Crews?: CrewUpdateManyWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    signature?: NullableStringFieldUpdateOperationsInput | string | null
+    DOB?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    truckView?: BoolFieldUpdateOperationsInput | boolean
+    tascoView?: BoolFieldUpdateOperationsInput | boolean
+    laborView?: BoolFieldUpdateOperationsInput | boolean
+    mechanicView?: BoolFieldUpdateOperationsInput | boolean
+    permission?: EnumPermissionFieldUpdateOperationsInput | $Enums.Permission
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountSetup?: BoolFieldUpdateOperationsInput | boolean
+    clockedIn?: BoolFieldUpdateOperationsInput | boolean
+    companyId?: StringFieldUpdateOperationsInput | string
+    passwordResetTokenId?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypeId?: NullableStringFieldUpdateOperationsInput | string | null
+    middleName?: NullableStringFieldUpdateOperationsInput | string | null
+    secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
+    Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
+    Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
+    FCMToken?: FCMTokenUncheckedUpdateManyWithoutUserNestedInput
+    FormApprovals?: FormApprovalUncheckedUpdateManyWithoutApproverNestedInput
+    FormSubmissions?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    Jobsite?: JobsiteUncheckedUpdateManyWithoutCreatedByNestedInput
+    MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutUserNestedInput
+    NotificationRead?: NotificationReadUncheckedUpdateManyWithoutUserNestedInput
+    NotificationResponse?: NotificationResponseUncheckedUpdateManyWithoutUserNestedInput
+    PasswordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    TimeSheets?: TimeSheetUncheckedUpdateManyWithoutUserNestedInput
+    TimeSheetChanges?: TimeSheetChangeLogUncheckedUpdateManyWithoutUserNestedInput
+    topicSubscriptions?: TopicSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    UserSettings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    Crews?: CrewUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
+  export type SessionCreateWithoutTimeSheetsInput = {
+    startTime?: Date | string
+    endTime?: Date | string | null
+    locationMarkers?: LocationMarkerCreateNestedManyWithoutSessionInput
+    User: UserCreateNestedOneWithoutSessionInput
+  }
+
+  export type SessionUncheckedCreateWithoutTimeSheetsInput = {
+    id?: number
+    userId: string
+    startTime?: Date | string
+    endTime?: Date | string | null
+    locationMarkers?: LocationMarkerUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type SessionCreateOrConnectWithoutTimeSheetsInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutTimeSheetsInput, SessionUncheckedCreateWithoutTimeSheetsInput>
+  }
+
   export type EmployeeEquipmentLogCreateWithoutTimeSheetInput = {
     id?: string
     startTime?: Date | string
@@ -72949,6 +76621,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -72992,6 +76665,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -73107,6 +76781,32 @@ export namespace Prisma {
   export type mechanicProjectsCreateManyTimeSheetInputEnvelope = {
     data: mechanicProjectsCreateManyTimeSheetInput | mechanicProjectsCreateManyTimeSheetInput[]
     skipDuplicates?: boolean
+  }
+
+  export type SessionUpsertWithoutTimeSheetsInput = {
+    update: XOR<SessionUpdateWithoutTimeSheetsInput, SessionUncheckedUpdateWithoutTimeSheetsInput>
+    create: XOR<SessionCreateWithoutTimeSheetsInput, SessionUncheckedCreateWithoutTimeSheetsInput>
+    where?: SessionWhereInput
+  }
+
+  export type SessionUpdateToOneWithWhereWithoutTimeSheetsInput = {
+    where?: SessionWhereInput
+    data: XOR<SessionUpdateWithoutTimeSheetsInput, SessionUncheckedUpdateWithoutTimeSheetsInput>
+  }
+
+  export type SessionUpdateWithoutTimeSheetsInput = {
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locationMarkers?: LocationMarkerUpdateManyWithoutSessionNestedInput
+    User?: UserUpdateOneRequiredWithoutSessionNestedInput
+  }
+
+  export type SessionUncheckedUpdateWithoutTimeSheetsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locationMarkers?: LocationMarkerUncheckedUpdateManyWithoutSessionNestedInput
   }
 
   export type EmployeeEquipmentLogUpsertWithWhereUniqueWithoutTimeSheetInput = {
@@ -73291,6 +76991,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -73334,6 +77035,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -73519,6 +77221,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -73556,6 +77259,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -73691,6 +77395,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -73728,6 +77433,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -73805,6 +77511,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
     CostCode: CostCodeCreateNestedOneWithoutTimesheetsInput
@@ -73842,6 +77549,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
     ChangeLogs?: TimeSheetChangeLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -73878,6 +77586,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -73921,6 +77630,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -74030,6 +77740,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
     CostCode?: CostCodeUpdateOneRequiredWithoutTimesheetsNestedInput
@@ -74067,6 +77778,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     ChangeLogs?: TimeSheetChangeLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -74109,6 +77821,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -74152,6 +77865,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -74601,6 +78315,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     CostCode: CostCodeCreateNestedOneWithoutTimesheetsInput
@@ -74638,6 +78353,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     ChangeLogs?: TimeSheetChangeLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -74848,6 +78564,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     CostCode?: CostCodeUpdateOneRequiredWithoutTimesheetsNestedInput
@@ -74885,6 +78602,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     ChangeLogs?: TimeSheetChangeLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -75222,6 +78940,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -75259,6 +78978,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -75649,6 +79369,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -75686,6 +79407,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -76511,6 +80233,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -76554,6 +80277,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -76599,6 +80323,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -76636,6 +80361,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -76683,6 +80409,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -76726,6 +80453,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -76777,6 +80505,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -76814,11 +80543,37 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TruckingLogs?: TruckingLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     Maintenance?: mechanicProjectsUncheckedUpdateManyWithoutTimeSheetNestedInput
+  }
+
+  export type SessionCreateWithoutUserInput = {
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetCreateNestedManyWithoutSessionInput
+    locationMarkers?: LocationMarkerCreateNestedManyWithoutSessionInput
+  }
+
+  export type SessionUncheckedCreateWithoutUserInput = {
+    id?: number
+    startTime?: Date | string
+    endTime?: Date | string | null
+    TimeSheets?: TimeSheetUncheckedCreateNestedManyWithoutSessionInput
+    locationMarkers?: LocationMarkerUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type AccountSetupTokenCreateWithoutUserInput = {
@@ -77215,6 +80970,7 @@ export namespace Prisma {
     withinFenceIn?: boolean | null
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
+    Session?: SessionCreateNestedOneWithoutTimeSheetsInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogCreateNestedManyWithoutTimeSheetInput
@@ -77251,6 +81007,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedCreateNestedManyWithoutTimeSheetInput
     MaintenanceLogs?: MaintenanceLogUncheckedCreateNestedManyWithoutTimeSheetInput
     TascoLogs?: TascoLogUncheckedCreateNestedManyWithoutTimeSheetInput
@@ -77398,6 +81155,32 @@ export namespace Prisma {
   export type CrewCreateOrConnectWithoutUsersInput = {
     where: CrewWhereUniqueInput
     create: XOR<CrewCreateWithoutUsersInput, CrewUncheckedCreateWithoutUsersInput>
+  }
+
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: IntFilter<"Session"> | number
+    userId?: StringFilter<"Session"> | string
+    startTime?: DateTimeFilter<"Session"> | Date | string
+    endTime?: DateTimeNullableFilter<"Session"> | Date | string | null
   }
 
   export type AccountSetupTokenUpsertWithoutUserInput = {
@@ -77821,6 +81604,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -77864,6 +81648,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -77921,6 +81706,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -77964,6 +81750,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -78005,6 +81792,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
     FCMToken?: FCMTokenCreateNestedManyWithoutUserInput
@@ -78048,6 +81836,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
     FCMToken?: FCMTokenUncheckedCreateNestedManyWithoutUserInput
@@ -78105,6 +81894,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
     FCMToken?: FCMTokenUpdateManyWithoutUserNestedInput
@@ -78148,6 +81938,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
     FCMToken?: FCMTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -78189,6 +81980,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -78232,6 +82024,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -78289,6 +82082,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -78332,6 +82126,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -78373,6 +82168,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
     FCMToken?: FCMTokenCreateNestedManyWithoutUserInput
@@ -78416,6 +82212,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
     FCMToken?: FCMTokenUncheckedCreateNestedManyWithoutUserInput
@@ -78473,6 +82270,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
     FCMToken?: FCMTokenUpdateManyWithoutUserNestedInput
@@ -78516,6 +82314,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
     FCMToken?: FCMTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -78687,6 +82486,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -78730,6 +82530,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -78787,6 +82588,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -78830,6 +82632,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -78871,6 +82674,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -78914,6 +82718,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -78971,6 +82776,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -79014,6 +82820,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -79168,6 +82975,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -79211,6 +83019,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -79308,6 +83117,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -79351,6 +83161,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -79426,6 +83237,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenCreateNestedOneWithoutUserInput
     Contact?: ContactsCreateNestedOneWithoutUserInput
     Equipment?: EquipmentCreateNestedManyWithoutCreatedByInput
@@ -79469,6 +83281,7 @@ export namespace Prisma {
     middleName?: string | null
     secondLastName?: string | null
     lastSeen?: Date | string | null
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
     accountSetupToken?: AccountSetupTokenUncheckedCreateNestedOneWithoutUserInput
     Contact?: ContactsUncheckedCreateNestedOneWithoutUserInput
     Equipment?: EquipmentUncheckedCreateNestedManyWithoutCreatedByInput
@@ -79566,6 +83379,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -79609,6 +83423,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -79778,6 +83593,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -79820,6 +83636,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -79890,6 +83707,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
   }
 
   export type TimeSheetUpdateWithoutCostCodeInput = {
@@ -79915,6 +83733,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -79951,6 +83770,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -79985,6 +83805,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CCTagUpdateWithoutCostCodesInput = {
@@ -80125,6 +83946,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUpdateOneWithoutUserNestedInput
     Contact?: ContactsUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUpdateManyWithoutCreatedByNestedInput
@@ -80168,6 +83990,7 @@ export namespace Prisma {
     middleName?: NullableStringFieldUpdateOperationsInput | string | null
     secondLastName?: NullableStringFieldUpdateOperationsInput | string | null
     lastSeen?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accountSetupToken?: AccountSetupTokenUncheckedUpdateOneWithoutUserNestedInput
     Contact?: ContactsUncheckedUpdateOneWithoutUserNestedInput
     Equipment?: EquipmentUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -81045,6 +84868,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
   }
 
   export type TimeSheetUpdateWithoutJobsiteInput = {
@@ -81070,6 +84894,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -81106,6 +84931,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -81140,6 +84966,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CCTagUpdateWithoutJobsitesInput = {
@@ -81212,6 +85039,172 @@ export namespace Prisma {
     customParams?: NullableJsonNullValueInput | InputJsonValue
     exportFormats?: ReportRunUpdateexportFormatsInput | string[]
     lastExportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TimeSheetCreateManySessionInput = {
+    date: Date | string
+    userId: string
+    jobsiteId: string
+    costcode: string
+    nu?: string
+    Fp?: string
+    startTime: Date | string
+    endTime?: Date | string | null
+    comment?: string | null
+    statusComment?: string | null
+    location?: string | null
+    status?: $Enums.ApprovalStatus
+    workType: $Enums.WorkType
+    editedByUserId?: string | null
+    newTimeSheetId?: string | null
+    createdByAdmin?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clockInLat?: number | null
+    clockInLng?: number | null
+    clockOutLat?: number | null
+    clockOutLng?: number | null
+    withinFenceIn?: boolean | null
+    withinFenceOut?: boolean | null
+    wasInjured?: boolean | null
+    id?: number
+  }
+
+  export type LocationMarkerCreateManySessionInput = {
+    id?: number
+    lat: number
+    long: number
+    accuracy?: number | null
+    speed?: number | null
+    heading?: number | null
+    createdAt?: Date | string
+  }
+
+  export type TimeSheetUpdateWithoutSessionInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    nu?: StringFieldUpdateOperationsInput | string
+    Fp?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    statusComment?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    editedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    newTimeSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByAdmin?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clockInLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockInLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
+    MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
+    TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
+    CostCode?: CostCodeUpdateOneRequiredWithoutTimesheetsNestedInput
+    Jobsite?: JobsiteUpdateOneRequiredWithoutTimeSheetsNestedInput
+    User?: UserUpdateOneRequiredWithoutTimeSheetsNestedInput
+    ChangeLogs?: TimeSheetChangeLogUpdateManyWithoutTimeSheetNestedInput
+    TruckingLogs?: TruckingLogUpdateManyWithoutTimeSheetNestedInput
+    Maintenance?: mechanicProjectsUpdateManyWithoutTimeSheetNestedInput
+  }
+
+  export type TimeSheetUncheckedUpdateWithoutSessionInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    jobsiteId?: StringFieldUpdateOperationsInput | string
+    costcode?: StringFieldUpdateOperationsInput | string
+    nu?: StringFieldUpdateOperationsInput | string
+    Fp?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    statusComment?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    editedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    newTimeSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByAdmin?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clockInLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockInLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    id?: IntFieldUpdateOperationsInput | number
+    EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
+    MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
+    TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
+    ChangeLogs?: TimeSheetChangeLogUncheckedUpdateManyWithoutTimeSheetNestedInput
+    TruckingLogs?: TruckingLogUncheckedUpdateManyWithoutTimeSheetNestedInput
+    Maintenance?: mechanicProjectsUncheckedUpdateManyWithoutTimeSheetNestedInput
+  }
+
+  export type TimeSheetUncheckedUpdateManyWithoutSessionInput = {
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    jobsiteId?: StringFieldUpdateOperationsInput | string
+    costcode?: StringFieldUpdateOperationsInput | string
+    nu?: StringFieldUpdateOperationsInput | string
+    Fp?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    statusComment?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    workType?: EnumWorkTypeFieldUpdateOperationsInput | $Enums.WorkType
+    editedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    newTimeSheetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdByAdmin?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clockInLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockInLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLat?: NullableFloatFieldUpdateOperationsInput | number | null
+    clockOutLng?: NullableFloatFieldUpdateOperationsInput | number | null
+    withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    id?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LocationMarkerUpdateWithoutSessionInput = {
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationMarkerUncheckedUpdateWithoutSessionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationMarkerUncheckedUpdateManyWithoutSessionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    lat?: FloatFieldUpdateOperationsInput | number
+    long?: FloatFieldUpdateOperationsInput | number
+    accuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    speed?: NullableFloatFieldUpdateOperationsInput | number | null
+    heading?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmployeeEquipmentLogCreateManyTimeSheetInput = {
@@ -81776,6 +85769,12 @@ export namespace Prisma {
     stateLineMileage?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type SessionCreateManyUserInput = {
+    id?: number
+    startTime?: Date | string
+    endTime?: Date | string | null
+  }
+
   export type EquipmentCreateManyCreatedByInput = {
     id?: string
     qrId: string
@@ -81911,6 +85910,7 @@ export namespace Prisma {
     withinFenceOut?: boolean | null
     wasInjured?: boolean | null
     id?: number
+    sessionId?: number | null
   }
 
   export type TimeSheetChangeLogCreateManyUserInput = {
@@ -81927,6 +85927,27 @@ export namespace Prisma {
     id?: string
     topic: string
     createdAt?: Date | string
+  }
+
+  export type SessionUpdateWithoutUserInput = {
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUpdateManyWithoutSessionNestedInput
+    locationMarkers?: LocationMarkerUpdateManyWithoutSessionNestedInput
+  }
+
+  export type SessionUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TimeSheets?: TimeSheetUncheckedUpdateManyWithoutSessionNestedInput
+    locationMarkers?: LocationMarkerUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EquipmentUpdateWithoutCreatedByInput = {
@@ -82300,6 +86321,7 @@ export namespace Prisma {
     withinFenceIn?: NullableBoolFieldUpdateOperationsInput | boolean | null
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    Session?: SessionUpdateOneWithoutTimeSheetsNestedInput
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUpdateManyWithoutTimeSheetNestedInput
@@ -82336,6 +86358,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
     EmployeeEquipmentLogs?: EmployeeEquipmentLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     MaintenanceLogs?: MaintenanceLogUncheckedUpdateManyWithoutTimeSheetNestedInput
     TascoLogs?: TascoLogUncheckedUpdateManyWithoutTimeSheetNestedInput
@@ -82370,6 +86393,7 @@ export namespace Prisma {
     withinFenceOut?: NullableBoolFieldUpdateOperationsInput | boolean | null
     wasInjured?: NullableBoolFieldUpdateOperationsInput | boolean | null
     id?: IntFieldUpdateOperationsInput | number
+    sessionId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TimeSheetChangeLogUpdateWithoutUserInput = {

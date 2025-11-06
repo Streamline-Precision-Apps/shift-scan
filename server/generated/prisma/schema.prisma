@@ -256,6 +256,19 @@ model Jobsite {
   @@index([qrId])
 }
 
+// modal that stores all the location markers pings
+model LocationMarker {
+  id        Int      @id @default(autoincrement())
+  sessionId Int
+  lat       Float
+  long      Float
+  accuracy  Float?
+  speed     Float?
+  heading   Float?
+  createdAt DateTime @default(now())
+  Session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
 model Report {
   name        String           @unique
   description String
@@ -286,6 +299,16 @@ model ReportRun {
   Report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
 }
 
+model Session {
+  id              Int              @id @default(autoincrement())
+  userId          String
+  startTime       DateTime         @default(now()) //determine the date of the shift 
+  endTime         DateTime? // null when session is active
+  TimeSheets      TimeSheet[]
+  locationMarkers LocationMarker[]
+  User            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model TimeSheet {
   date                  DateTime
   userId                String
@@ -313,6 +336,8 @@ model TimeSheet {
   withinFenceOut        Boolean?
   wasInjured            Boolean?               @default(false)
   id                    Int                    @id @default(autoincrement())
+  sessionId             Int?
+  Session               Session?               @relation(fields: [sessionId], references: [id])
   EmployeeEquipmentLogs EmployeeEquipmentLog[]
   MaintenanceLogs       MaintenanceLog[]
   TascoLogs             TascoLog[]
@@ -514,6 +539,7 @@ model User {
   middleName           String?
   secondLastName       String?
   lastSeen             DateTime?
+  Session              Session[] // hold groups of timesheets and location markers
   accountSetupToken    AccountSetupToken?
   Contact              Contacts?
   Equipment            Equipment[]

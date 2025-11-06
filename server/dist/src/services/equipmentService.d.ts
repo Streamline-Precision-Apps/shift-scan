@@ -92,6 +92,7 @@ export declare function getEquipmentMileageService(equipmentId: string): Promise
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
 } & {
     id: string;

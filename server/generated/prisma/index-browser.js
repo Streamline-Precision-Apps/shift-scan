@@ -297,6 +297,17 @@ exports.Prisma.JobsiteScalarFieldEnum = {
   status: 'status'
 };
 
+exports.Prisma.LocationMarkerScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  lat: 'lat',
+  long: 'long',
+  accuracy: 'accuracy',
+  speed: 'speed',
+  heading: 'heading',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ReportScalarFieldEnum = {
   name: 'name',
   description: 'description',
@@ -322,6 +333,13 @@ exports.Prisma.ReportRunScalarFieldEnum = {
   exportFormats: 'exportFormats',
   lastExportedAt: 'lastExportedAt',
   reportId: 'reportId'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  startTime: 'startTime',
+  endTime: 'endTime'
 };
 
 exports.Prisma.TimeSheetScalarFieldEnum = {
@@ -350,7 +368,8 @@ exports.Prisma.TimeSheetScalarFieldEnum = {
   withinFenceIn: 'withinFenceIn',
   withinFenceOut: 'withinFenceOut',
   wasInjured: 'wasInjured',
-  id: 'id'
+  id: 'id',
+  sessionId: 'sessionId'
 };
 
 exports.Prisma.MechanicProjectsScalarFieldEnum = {
@@ -772,8 +791,10 @@ exports.Prisma.ModelName = {
   FormSubmission: 'FormSubmission',
   FormApproval: 'FormApproval',
   Jobsite: 'Jobsite',
+  LocationMarker: 'LocationMarker',
   Report: 'Report',
   ReportRun: 'ReportRun',
+  Session: 'Session',
   TimeSheet: 'TimeSheet',
   mechanicProjects: 'mechanicProjects',
   MaintenanceLog: 'MaintenanceLog',

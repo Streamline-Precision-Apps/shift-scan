@@ -1,11 +1,10 @@
-// look of the location data model stored in Firestore
 export interface Location {
   uid: string;
   ts: Date;
   coords: {
     lat: number;
     lng: number;
-    accuracy?: number;
+    accuracy?: number | null;
     speed?: number | null;
     heading?: number | null;
   };
@@ -13,3 +12,4 @@ export interface Location {
     platform?: string | null;
   };
 }
+

@@ -16,9 +16,15 @@ import {
   getCrewOnlineStatus,
   getUserOnlineStatus,
   getUserInfo,
+  sessionController,
+  endSessionController,
 } from "../controllers/userController.js";
 
 const router = Router();
+
+router.post("/:id/session", sessionController);
+router.put("/:id/session/:sessionId", endSessionController);
+
 /**
  * @swagger
  * /api/v1/user/{userId}/online:

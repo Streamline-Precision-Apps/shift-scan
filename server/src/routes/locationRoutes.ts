@@ -21,7 +21,7 @@ router.get("/:userId", verifyToken, getUserLocations);
 // Get location history for any user
 router.get("/:userId/history", verifyToken, getUserLocationHistory);
 
-// Post a new location log
-router.post("/user", verifyToken, postUserLocation);
+// Post a new location log (expects userId and sessionId in body)
+router.post("/", postUserLocation);
 
 export default router;

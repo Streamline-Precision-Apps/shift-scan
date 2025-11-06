@@ -27,12 +27,17 @@ import { useUserStore } from "@/app/lib/store/userStore";
 import { useTimeSheetData } from "@/app/lib/context/TimeSheetIdContext";
 import { useSavedCostCode } from "@/app/lib/context/CostCodeContext";
 import { useCommentData } from "@/app/lib/context/CommentContext";
-import { handleMechanicTimeSheet } from "@/app/lib/actions/timeSheetActions";
+import {
+  createNewSession,
+  handleMechanicTimeSheet,
+} from "@/app/lib/actions/timeSheetActions";
 import { sendNotification } from "@/app/lib/actions/generatorActions";
 import {
   startClockInTracking,
   getStoredCoordinates,
 } from "@/app/lib/client/locationTracking";
+import { useSessionStore } from "@/app/lib/store/sessionStore";
+import { set } from "lodash";
 
 type Option = {
   id: string;
@@ -72,6 +77,7 @@ export default function MechanicVerificationStep({
   const costCode = "#00.50 Mechanics";
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
   const { permissionStatus } = usePermissions();
+  const { currentSessionId, setCurrentSession } = useSessionStore();
 
   useEffect(() => {
     setCostCode(costCode);
@@ -96,6 +102,42 @@ export default function MechanicVerificationStep({
       // Get current coordinates
       const coordinates = await getStoredCoordinates();
 
+      // Check for session data
+      let sessionId = null;
+      if (currentSessionId === null) {
+        // No session exists, create a new one
+        sessionId = await createNewSession(id);
+        setCurrentSession(sessionId);
+      } else {
+        // Session exists, check if it's ended
+        const currentSession = useSessionStore
+          .getState()
+          .getSession(currentSessionId);
+        if (currentSession && currentSession.endTime) {
+          // Session has ended, check if 4+ hours have passed
+          const endTime = new Date(currentSession.endTime).getTime();
+          const currentTime = new Date().getTime();
+          const FOUR_HOURS_MS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+          if (currentTime - endTime > FOUR_HOURS_MS) {
+            // More than 4 hours have passed, clear sessions and create a new one
+            console.log(
+              "Session expired (4+ hours since end), clearing storage and creating new session"
+            );
+            useSessionStore.getState().clearSessions();
+            sessionId = await createNewSession(id);
+            setCurrentSession(sessionId);
+          } else {
+            // Less than 4 hours, create a new session but keep old one in history
+            sessionId = await createNewSession(id);
+            setCurrentSession(sessionId);
+          }
+        } else {
+          // Session is still active, reuse it
+          sessionId = currentSessionId;
+        }
+      }
+
       const payload: {
         date: string;
         jobsiteId: string;
@@ -109,6 +151,7 @@ export default function MechanicVerificationStep({
         previousTimeSheetId?: number;
         endTime?: string;
         previoustimeSheetComments?: string;
+        sessionId?: number | null;
         clockOutLat?: number | null;
         clockOutLong?: number | null;
       } = {
@@ -118,6 +161,7 @@ export default function MechanicVerificationStep({
         userId: id?.toString() || "",
         costCode: costCode || "",
         startTime: new Date().toISOString(),
+        sessionId,
         clockInLat: coordinates ? coordinates.lat : null,
         clockInLong: coordinates ? coordinates.lng : null,
       };
@@ -150,6 +194,20 @@ export default function MechanicVerificationStep({
       }
 
       const responseAction = await handleMechanicTimeSheet(payload);
+
+      // Add timesheet ID to session store after successful creation
+      if (
+        responseAction &&
+        responseAction.createdTimeSheet &&
+        responseAction.createdTimeSheet.id &&
+        sessionId
+      ) {
+        useSessionStore
+          .getState()
+          .setTimesheetId(sessionId, responseAction.createdTimeSheet.id);
+      }
+
+      // Send notification to admins for approval if switching jobs
       if (
         type === "switchJobs" &&
         responseAction &&
@@ -166,8 +224,8 @@ export default function MechanicVerificationStep({
       }
 
       // Start location tracking for clock in
-      if (type !== "switchJobs") {
-        await startClockInTracking(id);
+      if (type !== "switchJobs" && sessionId) {
+        await startClockInTracking(id, sessionId);
       }
 
       // Update state and redirect

@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="010201f3-4d75-5674-95a1-997d5501954b")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b515b2f6-1a79-555a-ac8e-829fdb235b2e")}catch(e){}}();
 import { fetchLatestLocation, fetchLocationHistory, fetchAllUsersLatestLocations, saveUserLocation, validateLocationPayload, } from "../services/locationService.js";
 // get the latest location for a user
 export async function getUserLocations(req, res) {
@@ -47,7 +47,8 @@ export async function getUserLocationHistory(req, res) {
 }
 // Handle POST location from client
 export async function postUserLocation(req, res) {
-    const userId = req.user?.id;
+    // Try to get userId from authenticated token first, then from X-User-ID header
+    const userId = req.headers["x-user-id"];
     if (!userId) {
         return res.status(400).json({ error: "Missing userId" });
     }
@@ -66,4 +67,4 @@ export async function postUserLocation(req, res) {
     }
 }
 //# sourceMappingURL=locationController.js.map
-//# debugId=010201f3-4d75-5674-95a1-997d5501954b
+//# debugId=b515b2f6-1a79-555a-ac8e-829fdb235b2e

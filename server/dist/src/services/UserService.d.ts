@@ -129,6 +129,7 @@ export declare function getUserByIdQuery(id: string, query: string): Promise<{
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     }[] | {
         data: Prisma.JsonValue | null;
         title: string | null;
@@ -140,6 +141,10 @@ export declare function getUserByIdQuery(id: string, query: string): Promise<{
         formTemplateId: string;
         formType: string | null;
         submittedAt: Date | null;
+    }[] | {
+        createdAt: Date;
+        id: number;
+        userId: string;
     }[] | {
         id: string;
         updatedAt: Date;
@@ -277,6 +282,7 @@ export declare function getUsersTimeSheetByDate(userId: string, dateParam: strin
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 })[]>;
 export declare function getTeamsByUserId(userId: string): Promise<{
     id: string;

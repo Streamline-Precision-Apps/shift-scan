@@ -2,8 +2,9 @@ import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
 import { BackgroundGeolocation } from "@capgo/background-geolocation";
 import { getApiUrl } from "../utils/api-Utils";
-
 export interface LocationLog {
+  userId: string;
+  sessionId: number;
   coords: {
     lat: number;
     lng: number;
@@ -29,6 +30,9 @@ let isUserClockedIn = false;
 
 // Store the current user ID for use in callbacks
 let currentUserId: string | null = null;
+
+// Store the current session ID for use in callbacks
+let currentSessionId: number | null = null;
 
 // add a variable to track the last time a write to FireStore occurred
 let lastFirestoreWriteTime: number = 0;
@@ -94,15 +98,17 @@ export function hasLocationPermissionBeenRequested(): boolean {
  * Starts BOTH foreground (Geolocation) and background (BackgroundGeolocation) tracking simultaneously
  * Only tracks if user is clocked in
  * @param userId - The authenticated user's ID (pass from the component that has access to the user)
+ * @param sessionId - The current session ID (from the shift)
  */
-export async function startClockInTracking(userId: string) {
+export async function startClockInTracking(userId: string, sessionId: number) {
   try {
-    if (!userId) {
-      throw new Error("User ID is required to start tracking");
+    if (!userId || !sessionId) {
+      throw new Error("User ID and Session ID are required to start tracking");
     }
 
-    // Store the user ID for use in callbacks
+    // Store the user ID and session ID for use in callbacks
     currentUserId = userId;
+    currentSessionId = sessionId;
 
     // Mark user as clocked in
     isUserClockedIn = true;
@@ -121,6 +127,7 @@ export async function startClockInTracking(userId: string) {
     console.error("Failed to start tracking on clock in:", err);
     isUserClockedIn = false;
     currentUserId = null;
+    currentSessionId = null;
     return { success: false, error: err };
   }
 }
@@ -133,6 +140,7 @@ export async function stopClockOutTracking() {
   try {
     isUserClockedIn = false;
     currentUserId = null;
+    currentSessionId = null;
     console.log("User clocked out - stopping location tracking");
 
     // Stop both tracking methods
@@ -204,13 +212,17 @@ async function startForegroundLocationWatch() {
       }
 
       try {
-        // Use stored user ID instead of auth.currentUser
-        if (!currentUserId) {
-          console.error("User ID not available for location tracking");
+        // Use stored user ID and session ID
+        if (!currentUserId || !currentSessionId) {
+          console.error(
+            "User ID or Session ID not available for location tracking"
+          );
           return;
         }
 
         const payload: LocationLog = {
+          userId: currentUserId,
+          sessionId: currentSessionId,
           coords: {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
@@ -224,11 +236,10 @@ async function startForegroundLocationWatch() {
           },
         };
         const url = getApiUrl();
-        await fetch(`${url}/api/location/user`, {
+        await fetch(`${url}/api/location`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-User-ID": currentUserId,
           },
           body: JSON.stringify(payload),
         });
@@ -306,14 +317,18 @@ export async function startBackgroundLocationWatch() {
         }
 
         try {
-          // Use stored user ID instead of auth.currentUser
-          if (!currentUserId) {
-            console.error("User ID not available for location tracking");
+          // Use stored user ID and session ID
+          if (!currentUserId || !currentSessionId) {
+            console.error(
+              "User ID or Session ID not available for location tracking"
+            );
             return;
           }
 
           // Use Location interface properties
           const payload: LocationLog = {
+            userId: currentUserId,
+            sessionId: currentSessionId,
             coords: {
               lat: location.latitude, // Range: -90.0 to +90.0
               lng: location.longitude, // Range: -180.0 to +180.0
@@ -327,11 +342,10 @@ export async function startBackgroundLocationWatch() {
             },
           };
           const url = getApiUrl();
-          await fetch(`${url}/api/location/user`, {
+          await fetch(`${url}/api/location`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-User-ID": currentUserId,
             },
             body: JSON.stringify(payload),
           });

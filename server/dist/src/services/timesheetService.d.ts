@@ -83,6 +83,7 @@ export declare function updateTimesheetService({ id, editorId, changes, changeRe
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
     editorLog: ({
         User: {
@@ -304,6 +305,7 @@ export declare function createGeneralTimesheetService({ data, type, }: {
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 }>;
 export declare function createMechanicTimesheetService({ data, type, }: {
     data: MechanicTimesheetInput;
@@ -340,6 +342,7 @@ export declare function createMechanicTimesheetService({ data, type, }: {
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 }>;
 export declare function createTruckDriverTimesheetService({ data, type, }: {
     data: TruckTimesheetInput;
@@ -376,6 +379,7 @@ export declare function createTruckDriverTimesheetService({ data, type, }: {
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 }>;
 export declare function createTascoTimesheetService({ data, type, }: {
     data: TascoTimesheetInput;
@@ -412,6 +416,7 @@ export declare function createTascoTimesheetService({ data, type, }: {
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 }>;
 export declare function getRecentTimeSheetForUser(userId: string): Promise<{
     id: number;
@@ -689,6 +694,7 @@ export declare function getClockOutDetailsService(userId: string): Promise<{
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     })[];
     signature: string;
     comment: string;
@@ -727,6 +733,7 @@ export declare function updateClockOutService(timeSheetId: string, userId: strin
         withinFenceIn: boolean | null;
         withinFenceOut: boolean | null;
         wasInjured: boolean | null;
+        sessionId: number | null;
     };
     error?: never;
 } | {
@@ -793,6 +800,7 @@ export declare function getContinueTimesheetService(id: number, userId: string):
     withinFenceIn: boolean | null;
     withinFenceOut: boolean | null;
     wasInjured: boolean | null;
+    sessionId: number | null;
 }) | null>;
 export declare function returnToPreviousTimesheetService(id: number): Promise<{
     id: number;

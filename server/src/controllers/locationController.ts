@@ -64,18 +64,22 @@ export async function postUserLocation(
   req: AuthenticatedRequest,
   res: Response
 ) {
-  // Try to get userId from authenticated token first, then from X-User-ID header
-  const userId = req.headers["x-user-id"] as string;
-  if (!userId) {
-    return res.status(400).json({ error: "Missing userId" });
+  // Extract userId, sessionId, and location data from request body
+  const { userId, sessionId, coords, device } = req.body;
+
+  if (!userId || !sessionId || !coords) {
+    return res
+      .status(400)
+      .json({ error: "Missing userId, sessionId, or coordinates" });
   }
-  const { coords, device } = req.body;
+
   const validationError = validateLocationPayload({ coords });
   if (validationError) {
     return res.status(400).json({ error: validationError });
   }
+
   try {
-    await saveUserLocation(userId, coords, device);
+    await saveUserLocation(userId, parseInt(sessionId), coords, device);
     return res.status(201).json({ success: true });
   } catch (err) {
     console.error("Error posting user location:", err);

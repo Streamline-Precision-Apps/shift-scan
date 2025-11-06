@@ -1,7 +1,7 @@
 // modal that stores all the location markers pings
 model LocationMarker {
-    id int @id @default(autoincrement())
-    sessionId int
+    id Int @id @default(autoincrement())
+    sessionId Int
     lat Float
     long Float
     accuracy Float? 

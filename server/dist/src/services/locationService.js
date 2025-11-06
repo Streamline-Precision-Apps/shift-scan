@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="a7e0f227-7e31-5244-8430-82ac689db331")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="cc06cae8-03e1-560b-90cc-0851a3f10a25")}catch(e){}}();
 import { firestoreDb } from "../lib/firebase.js";
 // Helper to get collection reference
 function getLocationsCollection(userId) {
@@ -9,8 +9,11 @@ function getLocationsCollection(userId) {
 export async function fetchLatestLocation(userId) {
     const locationsRef = getLocationsCollection(userId);
     const snapshot = await locationsRef.orderBy("ts", "desc").limit(1).get();
-    if (snapshot.empty || !snapshot.docs[0])
+    console.log(`[Location] Fetching latest for user ${userId}: ${snapshot.size} docs found`);
+    if (snapshot.empty || !snapshot.docs[0]) {
+        console.warn(`[Location] No location found for user ${userId}`);
         return null;
+    }
     return snapshot.docs[0].data();
 }
 export async function fetchLocationHistory(userId) {
@@ -67,4 +70,4 @@ export async function saveUserLocation(userId, coords, device) {
     return true;
 }
 //# sourceMappingURL=locationService.js.map
-//# debugId=a7e0f227-7e31-5244-8430-82ac689db331
+//# debugId=cc06cae8-03e1-560b-90cc-0851a3f10a25

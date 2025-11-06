@@ -663,3 +663,53 @@ export async function getUserInfo(req: Request, res: Response) {
     });
   }
 }
+
+export async function sessionController(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        error: "User ID is required",
+        message: "Failed to create session",
+      });
+    }
+    const session = await UserService.createSession(id);
+    res.status(201).json({
+      success: true,
+      data: session,
+      message: "Session created successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+      message: "Failed to create session",
+    });
+  }
+}
+
+export async function endSessionController(req: Request, res: Response) {
+  try {
+    const { sessionId } = req.params;
+    if (!sessionId) {
+      return res.status(400).json({
+        success: false,
+        error: "Session ID is required",
+        message: "Failed to end session",
+      });
+    }
+    const session = await UserService.EndSession(Number(sessionId));
+    res.status(200).json({
+      success: true,
+      data: session,
+      message: "Session ended successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+      message: "Failed to end session",
+    });
+  }
+}
