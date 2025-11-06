@@ -23,8 +23,6 @@ import { useRouter } from "next/navigation";
 import Spinner from "../(animations)/spinner";
 import { TitleBoxes } from "../(reusable)/titleBoxes";
 import { Texts } from "../(reusable)/texts";
-
-import { get } from "lodash";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { useCommentData } from "@/app/lib/context/CommentContext";
 import { usePermissions } from "@/app/lib/context/permissionContext";
@@ -188,6 +186,8 @@ export default function VerificationStep({
       }
 
       const responseAction = await handleGeneralTimeSheet(payload);
+
+      console.log("TimeSheet action response:", responseAction);
 
       // Add timesheet ID to session store after successful creation
       if (

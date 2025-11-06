@@ -109,7 +109,7 @@ export default function MultipleRoles({
                 {numberOfRoles > 1 && (
                   <Holds className="p-1 justify-center ">
                     <Selects
-                      className="bg-app-blue text-center text-sm p-3"
+                      className="bg-app-blue h-12 text-center text-sm p-2"
                       value={clockInRoleTypes}
                       onChange={(e) => selectView(e.target.value)}
                     >

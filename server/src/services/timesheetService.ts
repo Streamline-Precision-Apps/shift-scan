@@ -471,9 +471,13 @@ export async function createGeneralTimesheetService({
       clockInLat: data.clockInLat || null,
       clockInLng: data.clockInLong || null,
     };
-    
+
     if (data.sessionId !== null && data.sessionId !== undefined) {
-      createData.sessionId = data.sessionId;
+      createData.Session = {
+        connect: {
+          id: data.sessionId,
+        },
+      };
     }
 
     // Step 1: Create a new TimeSheet
@@ -536,9 +540,13 @@ export async function createMechanicTimesheetService({
       clockInLat: data.clockInLat || null,
       clockInLng: data.clockInLong || null,
     };
-    
+
     if (data.sessionId !== null && data.sessionId !== undefined) {
-      createData.sessionId = data.sessionId;
+      createData.Session = {
+        connect: {
+          id: data.sessionId,
+        },
+      };
     }
 
     // Step 1: Create a new TimeSheet
@@ -610,9 +618,13 @@ export async function createTruckDriverTimesheetService({
         },
       },
     };
-    
+
     if (data.sessionId !== null && data.sessionId !== undefined) {
-      createData.sessionId = data.sessionId;
+      createData.Session = {
+        connect: {
+          id: data.sessionId,
+        },
+      };
     }
 
     // Step 1: Create a new TimeSheet
@@ -686,9 +698,13 @@ export async function createTascoTimesheetService({
         },
       },
     };
-    
+
     if (data.sessionId !== null && data.sessionId !== undefined) {
-      createData.sessionId = data.sessionId;
+      createData.Session = {
+        connect: {
+          id: data.sessionId,
+        },
+      };
     }
 
     // Step 1: Create a new TimeSheet

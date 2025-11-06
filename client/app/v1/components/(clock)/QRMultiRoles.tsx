@@ -343,7 +343,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className=" h-10 bg-app-blue text-center p-3 text-sm disabled:bg-app-blue"
+                          className=" h-12 bg-app-blue text-center p-2 text-sm disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}

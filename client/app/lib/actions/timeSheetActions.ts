@@ -6,7 +6,7 @@ import { apiRequest } from "../utils/api-Utils";
 //-----------------------------------------------   General   CRUD  ---------------------------------------------------------------
 
 export async function createNewSession(userId: string): Promise<number> {
-  const response = await apiRequest("POST", `/api/v1/user/${userId}/session`);
+  const response = await apiRequest(`/api/v1/user/${userId}/session`, "POST");
 
   return response.data.id;
 }

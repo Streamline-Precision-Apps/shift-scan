@@ -34,7 +34,7 @@ async function main() {
     // CORS middleware
     app.use(
       cors({
-        origin: process.env.CORS_ORIGIN || ["http://localhost:3000"],
+        origin: process.env.CORS_ORIGIN_LOCAL, // change this later to process.env.CORS_ORIGIN for ios/android testing
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
