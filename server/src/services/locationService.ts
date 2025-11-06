@@ -1,13 +1,36 @@
 import prisma from "../lib/prisma.js";
 import type { Location } from "../types/Location.js";
 
+// Helper function to get start and end of day in user's local timezone
+function getDayRange(date: Date = new Date()) {
+  // Parse ISO string and create date in local timezone
+  const isoString = date.toISOString();
+  const dateStr = isoString.split("T")[0] || "2025-01-01";
+  const parts = dateStr.split("-");
+  const year = parseInt(parts[0]!);
+  const month = parseInt(parts[1]!);
+  const day = parseInt(parts[2]!);
+
+  const startOfDay = new Date(year, month - 1, day, 0, 0, 0, 0);
+  const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
+
+  return { startOfDay, endOfDay };
+}
+
 export async function fetchLatestLocation(
-  userId: string
+  userId: string,
+  date: Date = new Date()
 ): Promise<Location | null> {
+  const { startOfDay, endOfDay } = getDayRange(date);
+
   const marker = await prisma.locationMarker.findFirst({
     where: {
       Session: {
         userId,
+      },
+      createdAt: {
+        gte: startOfDay,
+        lte: endOfDay,
       },
     },
     orderBy: {
@@ -37,12 +60,19 @@ export async function fetchLatestLocation(
 }
 
 export async function fetchLocationHistory(
-  userId: string
+  userId: string,
+  date: Date = new Date()
 ): Promise<Location[]> {
+  const { startOfDay, endOfDay } = getDayRange(date);
+
   const markers = await prisma.locationMarker.findMany({
     where: {
       Session: {
         userId,
+      },
+      createdAt: {
+        gte: startOfDay,
+        lte: endOfDay,
       },
     },
     orderBy: {
@@ -50,7 +80,7 @@ export async function fetchLocationHistory(
     },
   });
 
-  return markers.map((marker) => ({
+  let locations = markers.map((marker) => ({
     uid: userId,
     ts: marker.createdAt,
     coords: {
@@ -62,9 +92,177 @@ export async function fetchLocationHistory(
     },
     device: {},
   }));
+
+  // Add fake history for Emily Wilson (test-user-4)
+  if (userId === "test-user-4") {
+    const baseTime = new Date();
+    const fakeHistory = [
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 3600000), // 1 hour ago
+        coords: {
+          lat: 42.5395,
+          lng: -113.782,
+          accuracy: 5,
+          speed: 0,
+          heading: 0,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 3300000), // 55 min ago
+        coords: {
+          lat: 42.5397,
+          lng: -113.7825,
+          accuracy: 6,
+          speed: 1.2,
+          heading: 45,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 3000000), // 50 min ago
+        coords: {
+          lat: 42.54,
+          lng: -113.783,
+          accuracy: 5,
+          speed: 1.5,
+          heading: 90,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 2700000), // 45 min ago
+        coords: {
+          lat: 42.5402,
+          lng: -113.7835,
+          accuracy: 7,
+          speed: 2.0,
+          heading: 45,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 2400000), // 40 min ago
+        coords: {
+          lat: 42.5405,
+          lng: -113.784,
+          accuracy: 6,
+          speed: 1.8,
+          heading: 0,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 2100000), // 35 min ago
+        coords: {
+          lat: 42.5408,
+          lng: -113.7838,
+          accuracy: 5,
+          speed: 1.2,
+          heading: 315,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 1800000), // 30 min ago
+        coords: {
+          lat: 42.541,
+          lng: -113.7833,
+          accuracy: 8,
+          speed: 0.5,
+          heading: 270,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 1500000), // 25 min ago
+        coords: {
+          lat: 42.5408,
+          lng: -113.7828,
+          accuracy: 6,
+          speed: 1.0,
+          heading: 180,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 1200000), // 20 min ago
+        coords: {
+          lat: 42.5405,
+          lng: -113.7822,
+          accuracy: 5,
+          speed: 1.5,
+          heading: 225,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 900000), // 15 min ago
+        coords: {
+          lat: 42.54,
+          lng: -113.7815,
+          accuracy: 7,
+          speed: 2.0,
+          heading: 270,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 600000), // 10 min ago
+        coords: {
+          lat: 42.5397,
+          lng: -113.781,
+          accuracy: 6,
+          speed: 1.8,
+          heading: 225,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: new Date(baseTime.getTime() - 300000), // 5 min ago
+        coords: {
+          lat: 42.5393,
+          lng: -113.7818,
+          accuracy: 5,
+          speed: 1.2,
+          heading: 90,
+        },
+        device: {},
+      },
+      {
+        uid: userId,
+        ts: baseTime, // now
+        coords: {
+          lat: 42.5393,
+          lng: -113.7823,
+          accuracy: 5,
+          speed: 0,
+          heading: 0,
+        },
+        device: {},
+      },
+    ];
+    locations = [...fakeHistory, ...locations];
+  }
+
+  return locations;
 }
 
-export async function fetchAllUsersLatestLocations(): Promise<
+export async function fetchAllUsersLatestLocations(
+  date: Date = new Date()
+): Promise<
   Array<{
     userId: string;
     location: Location;
@@ -74,7 +272,9 @@ export async function fetchAllUsersLatestLocations(): Promise<
   }>
 > {
   try {
-    // Get all unique users who have location markers
+    const { startOfDay, endOfDay } = getDayRange(date);
+
+    // Get all unique users who have location markers on the specified day
     const sessions = await prisma.session.findMany({
       distinct: ["userId"],
       orderBy: {
@@ -93,6 +293,12 @@ export async function fetchAllUsersLatestLocations(): Promise<
           },
         },
         locationMarkers: {
+          where: {
+            createdAt: {
+              gte: startOfDay,
+              lte: endOfDay,
+            },
+          },
           orderBy: {
             createdAt: "desc",
           },

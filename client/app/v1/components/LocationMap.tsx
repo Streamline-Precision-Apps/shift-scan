@@ -62,6 +62,8 @@ const LocationMap: React.FC = () => {
   const clusterCountRef = useRef<{ [key: string]: number }>({});
   const locationsRef = useRef<UserLocation[]>([]);
   const pathPolylineRef = useRef<L.Polyline | null>(null);
+  const pathOutlineRef = useRef<L.Polyline | null>(null);
+  const pathMarkersRef = useRef<L.CircleMarker[]>([]);
   const focusedMarkerIdRef = useRef<string | null>(null);
   const focusedClusterIdRef = useRef<string | null>(null);
   const [userLocations, setUserLocations] = useState<UserLocation[]>([]);
@@ -74,6 +76,17 @@ const LocationMap: React.FC = () => {
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [pathHistoryUserId, setPathHistoryUserId] = useState<string | null>(
+    null
+  );
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyStats, setHistoryStats] = useState<{
+    count: number;
+    avgAccuracy: number;
+  } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
 
   // Calculate distance between two coordinates in meters
   const getDistance = (
@@ -93,6 +106,222 @@ const LocationMap: React.FC = () => {
         Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
+  };
+
+  // Get routed path between two coordinates using OSRM
+  const getRoutedPath = async (
+    start: [number, number],
+    end: [number, number]
+  ): Promise<[number, number][]> => {
+    try {
+      // OSRM format is lng,lat (opposite of Leaflet)
+      const url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&overview=full`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.routes && data.routes.length > 0) {
+        // Convert GeoJSON coordinates (lng,lat) back to Leaflet format (lat,lng)
+        return data.routes[0].geometry.coordinates.map(
+          ([lng, lat]: [number, number]) => [lat, lng]
+        );
+      }
+      // Fallback to direct line if routing fails
+      return [start, end];
+    } catch (err) {
+      console.warn("OSRM routing failed, using direct path:", err);
+      // Fallback to direct line
+      return [start, end];
+    }
+  };
+
+  // Hide all markers
+  const hideAllMarkers = () => {
+    Object.keys(markersRef.current).forEach((markerId) => {
+      markersRef.current[markerId]
+        .getElement()
+        ?.style.setProperty("display", "none", "important");
+    });
+    Object.keys(clusterMarkersRef.current).forEach((clusterId) => {
+      clusterMarkersRef.current[clusterId]
+        .getElement()
+        ?.style.setProperty("display", "none", "important");
+    });
+  };
+
+  // Show all markers
+  const showAllMarkers = () => {
+    Object.keys(markersRef.current).forEach((markerId) => {
+      markersRef.current[markerId]
+        .getElement()
+        ?.style.removeProperty("display");
+    });
+    Object.keys(clusterMarkersRef.current).forEach((clusterId) => {
+      clusterMarkersRef.current[clusterId]
+        .getElement()
+        ?.style.removeProperty("display");
+    });
+  };
+
+  // Fetch and display user location history
+  const displayUserHistory = async (userId: string) => {
+    try {
+      setLoadingHistory(true);
+
+      // Clear existing paths if showing a different user
+      if (pathPolylineRef.current) {
+        map.current?.removeLayer(pathPolylineRef.current);
+        pathPolylineRef.current = null;
+      }
+      if (pathOutlineRef.current) {
+        map.current?.removeLayer(pathOutlineRef.current);
+        pathOutlineRef.current = null;
+      }
+      // Clear existing path markers
+      pathMarkersRef.current.forEach((marker) => {
+        if (map.current) {
+          map.current.removeLayer(marker);
+        }
+      });
+      pathMarkersRef.current = [];
+
+      // If clicking the same user, just toggle it off
+      if (pathHistoryUserId === userId) {
+        setPathHistoryUserId(null);
+        setHistoryStats(null);
+        showAllMarkers();
+        return;
+      }
+
+      // Fetch location history for the user
+      const historyData: Location[] = await apiRequest(
+        `/api/location/${userId}/history?date=${selectedDate}`,
+        "GET"
+      );
+
+      if (!map.current) return;
+
+      // Extract coordinates for the path
+      const coordinates = historyData
+        .sort((a, b) => new Date(a.ts).getTime() - new Date(b.ts).getTime())
+        .map((loc) => [loc.coords.lat, loc.coords.lng] as [number, number]);
+
+      if (coordinates.length > 0) {
+        // Consolidate clustered coordinates within 100 meters into single points
+        const consolidatedCoordinates: [number, number][] = [];
+        const processedIndices = new Set<number>();
+
+        coordinates.forEach((coord, index) => {
+          if (processedIndices.has(index)) return;
+
+          const cluster: [number, number][] = [coord];
+          processedIndices.add(index);
+
+          // Find all nearby coordinates within 100 meters
+          coordinates.forEach((otherCoord, otherIndex) => {
+            if (
+              index !== otherIndex &&
+              !processedIndices.has(otherIndex) &&
+              getDistance(coord[0], coord[1], otherCoord[0], otherCoord[1]) <=
+                100
+            ) {
+              cluster.push(otherCoord);
+              processedIndices.add(otherIndex);
+            }
+          });
+
+          // Calculate average position of the cluster
+          const avgLat =
+            cluster.reduce((sum, c) => sum + c[0], 0) / cluster.length;
+          const avgLng =
+            cluster.reduce((sum, c) => sum + c[1], 0) / cluster.length;
+          consolidatedCoordinates.push([avgLat, avgLng]);
+        });
+
+        // Calculate statistics
+        const validAccuracies = historyData
+          .filter(
+            (loc) =>
+              loc.coords.accuracy !== undefined && loc.coords.accuracy !== null
+          )
+          .map((loc) => loc.coords.accuracy as number);
+
+        const avgAccuracy =
+          validAccuracies.length > 0
+            ? validAccuracies.reduce((a, b) => a + b, 0) /
+              validAccuracies.length
+            : 0;
+
+        setHistoryStats({
+          count: historyData.length,
+          avgAccuracy: Math.round(avgAccuracy * 100) / 100,
+        });
+
+        // Hide all markers to show only the path
+        hideAllMarkers();
+
+        // Get routed path that follows roads
+        let routedCoordinates: [number, number][] = [];
+        for (let i = 0; i < consolidatedCoordinates.length - 1; i++) {
+          const segment = await getRoutedPath(
+            consolidatedCoordinates[i],
+            consolidatedCoordinates[i + 1]
+          );
+          // Add all coordinates except the last one (to avoid duplicates at segment junctions)
+          routedCoordinates.push(...segment.slice(0, -1));
+        }
+        // Add the final coordinate
+        if (consolidatedCoordinates.length > 0) {
+          routedCoordinates.push(
+            consolidatedCoordinates[consolidatedCoordinates.length - 1]
+          );
+        }
+
+        // Create polyline to show the routed path with outline effect
+        // First create a white outline layer for depth
+        pathOutlineRef.current = L.polyline(routedCoordinates, {
+          color: "#ffffff",
+          weight: 16,
+          opacity: 0.8,
+          dashArray: "10, 5",
+        }).addTo(map.current);
+
+        // Then create the main blue line on top
+        pathPolylineRef.current = L.polyline(routedCoordinates, {
+          color: "#3b82f6",
+          weight: 10,
+          opacity: 1,
+          dashArray: "10, 5",
+          lineCap: "round" as const,
+          lineJoin: "round" as const,
+        }).addTo(map.current);
+
+        // Add blue circle markers at each consolidated cluster point (not all routed points)
+        consolidatedCoordinates.forEach((coord) => {
+          const circleMarker = L.circleMarker(coord, {
+            radius: 8,
+            fillColor: "#3b82f6",
+            color: "#1e40af",
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.9,
+          }).addTo(map.current!);
+          pathMarkersRef.current.push(circleMarker);
+        });
+
+        // Fit map to show entire path
+        const group = new L.FeatureGroup(
+          consolidatedCoordinates.map((coord) => L.marker(coord))
+        );
+        map.current.fitBounds(group.getBounds().pad(0.1));
+
+        setPathHistoryUserId(userId);
+      }
+    } catch (err) {
+      console.error("Error fetching user history:", err);
+      alert("Failed to fetch user history");
+    } finally {
+      setLoadingHistory(false);
+    }
   };
 
   // Find clusters of nearby users (within 100 meters)
@@ -214,7 +443,7 @@ const LocationMap: React.FC = () => {
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 17,
+        maxZoom: 19,
       }).addTo(map.current);
 
       // Listen for zoom changes to update marker sizes
@@ -234,7 +463,10 @@ const LocationMap: React.FC = () => {
   const fetchLocations = async () => {
     try {
       setLoading(true);
-      const data: UserLocation[] = await apiRequest("/api/location/all", "GET"); ///api/location/all
+      const data: UserLocation[] = await apiRequest(
+        `/api/location/all?date=${selectedDate}`,
+        "GET"
+      );
       locationsRef.current = data;
       setUserLocations(data);
       setLastUpdate(new Date());
@@ -401,13 +633,13 @@ const LocationMap: React.FC = () => {
   // Initial fetch
   useEffect(() => {
     fetchLocations();
-  }, []);
+  }, [selectedDate]);
 
   // Auto-refresh every 5 minutes
   useEffect(() => {
     const interval = setInterval(fetchLocations, 300000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedDate]);
 
   // Update marker sizes when focus changes
   useEffect(() => {
@@ -448,13 +680,21 @@ const LocationMap: React.FC = () => {
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <button
-              onClick={fetchLocations}
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors text-sm font-medium"
-            >
-              {loading ? "Refreshing..." : "Refresh Now"}
-            </button>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={fetchLocations}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors text-sm font-medium"
+              >
+                {loading ? "Refreshing..." : "Refresh Now"}
+              </button>
+            </div>
             <p className="text-xs text-gray-500">
               Last updated: {lastUpdate.toLocaleTimeString()}
             </p>
@@ -498,6 +738,9 @@ const LocationMap: React.FC = () => {
                   onClick={() => {
                     setSidebarOpen(false);
                     setFocusedId(null);
+                    setPathHistoryUserId(null);
+                    setHistoryStats(null);
+                    showAllMarkers();
                   }}
                   className="text-white hover:bg-indigo-700 rounded p-0.5 transition text-lg leading-none"
                 >
@@ -553,9 +796,44 @@ const LocationMap: React.FC = () => {
                     </div>
 
                     {/* Timestamp */}
-                    <p className="text-xs text-gray-500 text-center">
+                    <p className="text-xs text-gray-500 text-center mb-3">
                       🕐 {timeString}
                     </p>
+
+                    {/* User History Button */}
+                    <button
+                      onClick={() => displayUserHistory(user.userId)}
+                      disabled={loadingHistory}
+                      className={`w-full py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
+                        pathHistoryUserId === user.userId
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {loadingHistory
+                        ? "Loading History..."
+                        : pathHistoryUserId === user.userId
+                        ? "Hide History"
+                        : "Show History"}
+                    </button>
+
+                    {/* History Stats - Show when history is active for this user */}
+                    {pathHistoryUserId === user.userId && historyStats && (
+                      <div className="mt-3 bg-blue-50 rounded p-3 border border-blue-200">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-700">
+                            <strong>Location Checks:</strong>{" "}
+                            {historyStats.count}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs mt-1">
+                          <span className="text-gray-700">
+                            <strong>Avg Accuracy:</strong>{" "}
+                            {historyStats.avgAccuracy} m
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -567,6 +845,9 @@ const LocationMap: React.FC = () => {
                 onClick={() => {
                   setSidebarOpen(false);
                   setFocusedId(null);
+                  setPathHistoryUserId(null);
+                  setHistoryStats(null);
+                  showAllMarkers();
                 }}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition text-sm"
               >

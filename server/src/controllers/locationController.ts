@@ -19,7 +19,11 @@ export async function getUserLocations(
     return res.status(400).json({ error: "Missing userId" });
   }
   try {
-    const location = await fetchLatestLocation(userId);
+    // Parse date from query parameter, default to today
+    const dateParam = req.query.date as string | undefined;
+    const date = dateParam ? new Date(dateParam) : new Date();
+
+    const location = await fetchLatestLocation(userId, date);
     if (!location) {
       return res.status(404).json({ error: "No location found for user" });
     }
@@ -36,7 +40,11 @@ export async function getAllUsersLocations(
   res: Response
 ) {
   try {
-    const locations = await fetchAllUsersLatestLocations();
+    // Parse date from query parameter, default to today
+    const dateParam = req.query.date as string | undefined;
+    const date = dateParam ? new Date(dateParam) : new Date();
+
+    const locations = await fetchAllUsersLatestLocations(date);
     return res.json(locations);
   } catch (err) {
     console.error("Error fetching all users locations:", err);
@@ -51,7 +59,11 @@ export async function getUserLocationHistory(req: Request, res: Response) {
     return res.status(400).json({ error: "Missing userId" });
   }
   try {
-    const locations = await fetchLocationHistory(userId);
+    // Parse date from query parameter, default to today
+    const dateParam = req.query.date as string | undefined;
+    const date = dateParam ? new Date(dateParam) : new Date();
+
+    const locations = await fetchLocationHistory(userId, date);
     return res.json(locations);
   } catch (err) {
     console.error("Error fetching user location history:", err);
