@@ -1,0 +1,12 @@
+// modal that stores all the location markers pings
+model LocationMarker {
+    id int @id @default(autoincrement())
+    sessionId int
+    lat Float
+    long Float
+    accuracy Float? 
+    speed Float?
+    heading Float?
+    createdAt DateTime @default(now())
+    Session Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}

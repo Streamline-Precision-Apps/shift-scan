@@ -1,0 +1,8 @@
+model Session{
+    id int @id @default(autoincrement())
+    userId String
+    createdAt DateTime @default(now()) //determine the date of the shift 
+    TimeSheets TimeSheet[]
+    locationMarkers LocationMarkers[] 
+    User  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

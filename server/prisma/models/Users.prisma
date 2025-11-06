@@ -23,6 +23,7 @@ model User {
   middleName           String?
   secondLastName       String?
   lastSeen             DateTime?
+  Session               Session[] // hold groups of timesheets and location markers
   accountSetupToken    AccountSetupToken?
   Contact              Contacts?
   Equipment            Equipment[]

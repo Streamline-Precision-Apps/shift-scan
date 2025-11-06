@@ -25,6 +25,8 @@ model TimeSheet {
   withinFenceOut        Boolean?
   wasInjured            Boolean?               @default(false)
   id                    Int                    @id @default(autoincrement())
+  sessionId               Int?
+  Session                 Session?                  @relation(fields: [sessionId], references: [id])
   EmployeeEquipmentLogs EmployeeEquipmentLog[]
   MaintenanceLogs       MaintenanceLog[]
   TascoLogs             TascoLog[]
