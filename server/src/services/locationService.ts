@@ -269,6 +269,8 @@ export async function fetchAllUsersLatestLocations(
     userName?: string;
     profilePicture?: string | undefined;
     phoneNumber?: string | undefined;
+    startTime?: string;
+    endTime?: string;
   }>
 > {
   try {
@@ -280,6 +282,7 @@ export async function fetchAllUsersLatestLocations(
       orderBy: {
         startTime: "desc",
       },
+
       include: {
         User: {
           select: {
@@ -313,6 +316,8 @@ export async function fetchAllUsersLatestLocations(
       userName?: string;
       profilePicture?: string | undefined;
       phoneNumber?: string | undefined;
+      startTime?: string;
+      endTime?: string;
     }> = [];
 
     for (const session of sessions) {
@@ -339,6 +344,10 @@ export async function fetchAllUsersLatestLocations(
           userName,
           profilePicture: session.User?.image || undefined,
           phoneNumber: session.User?.Contact?.phoneNumber || undefined,
+          ...(session.startTime && {
+            startTime: session.startTime.toISOString(),
+          }),
+          ...(session.endTime && { endTime: session.endTime.toISOString() }),
         });
       }
     }
@@ -362,6 +371,8 @@ export async function fetchAllUsersLatestLocations(
         userName: "John Smith",
         profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
         phoneNumber: "(208) 555-0101",
+        startTime: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), // 8 hours ago
+        endTime: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(), // 1 hour from now
       },
       {
         userId: "test-user-2",
@@ -380,6 +391,8 @@ export async function fetchAllUsersLatestLocations(
         userName: "Sarah Johnson",
         profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
         phoneNumber: "(208) 555-0102",
+        startTime: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+        endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
       },
       {
         userId: "test-user-3",
@@ -398,6 +411,8 @@ export async function fetchAllUsersLatestLocations(
         userName: "Mike Davis",
         profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
         phoneNumber: "(208) 555-0103",
+        startTime: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+        endTime: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // 4 hours from now
       },
       {
         userId: "test-user-4",
@@ -416,6 +431,8 @@ export async function fetchAllUsersLatestLocations(
         userName: "Emily Wilson",
         profilePicture: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
         phoneNumber: "(208) 555-0104",
+        startTime: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+        endTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(), // 3 hours from now
       },
       {
         userId: "test-user-5",
@@ -435,6 +452,8 @@ export async function fetchAllUsersLatestLocations(
         profilePicture:
           "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
         phoneNumber: "(208) 555-0105",
+        startTime: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString(), // 7 hours ago
+        endTime: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(), // 1 hour from now
       },
     ];
 

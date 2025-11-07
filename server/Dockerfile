@@ -21,7 +21,7 @@ COPY prisma/models ./prisma/models
 # Merge models into single schema before generating client
 RUN cat prisma/schema.prisma prisma/models/*.prisma > prisma/generated-schema.prisma
 
-# Generate Prisma client with output files for v11.6.2
+# Generate Prisma client with output files for v6.18.0
 RUN npx prisma generate --schema prisma/generated-schema.prisma
 
 # Set an env variable to skip Sentry during Docker build

@@ -52,6 +52,8 @@ interface UserLocation {
   profilePicture?: string;
   phoneNumber?: string;
   location: Location;
+  startTime?: string;
+  endTime?: string;
 }
 
 const LocationMap: React.FC = () => {

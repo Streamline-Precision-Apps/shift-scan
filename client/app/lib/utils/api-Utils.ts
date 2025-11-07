@@ -2,11 +2,8 @@ import { Capacitor } from "@capacitor/core";
 const isNative = Capacitor.isNativePlatform();
 
 export function getApiUrl() {
-  if (isNative) {
-    return process.env.NEXT_PUBLIC_API_LOCAL_URL || "http://localhost:3001";
-  } else {
-    return "http://localhost:3001";
-  }
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  return API_URL;
 }
 
 // Utility to get token from localStorage
