@@ -1,13 +1,25 @@
 "use client";
-
-import { useState } from "react";
-
-export default function DashboardLayout({
+import "@/app/globals.css";
+import { Toaster } from "@/app/v1/components/ui/sonner";
+import LeftSidebar from "./_pages/sidebar/leftSide";
+import { Sidebar, SidebarProvider } from "@/app/v1/components/ui/sidebar";
+import { FcmProvider } from "./_pages/sidebar/FcmContext";
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return <div className="flex w-screen h-screen">{children}</div>;
+  return (
+    <>
+      <FcmProvider>
+        <Toaster position="top-right" richColors closeButton />
+        <SidebarProvider>
+          <Sidebar variant={"sidebar"}>
+            <LeftSidebar />
+          </Sidebar>
+          {children}
+        </SidebarProvider>
+      </FcmProvider>
+    </>
+  );
 }

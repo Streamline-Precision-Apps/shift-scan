@@ -9,11 +9,11 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/app/v1/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import SignOutModal from "./SignOutModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/v1/components/ui/button";
 import { ChevronUp, ChevronDown, LogOut, BellPlus } from "lucide-react";
 import NotificationModal from "./NotificationModal";
 import { useDashboardData } from "./DashboardDataContext";
@@ -114,7 +114,11 @@ export default function LeftSidebar() {
                 return (
                   <SidebarMenuItem
                     key={item.id}
-                    className={`flex flex-row items-center  px-2 rounded-lg ${isActive ? "bg-app-dark-blue hover:bg-app-dark-blue/90 " : "hover:bg-white/20"} `}
+                    className={`flex flex-row items-center  px-2 rounded-lg ${
+                      isActive
+                        ? "bg-app-dark-blue hover:bg-app-dark-blue/90 "
+                        : "hover:bg-white/20"
+                    } `}
                   >
                     <SidebarMenuButton asChild>
                       <Link
@@ -128,7 +132,9 @@ export default function LeftSidebar() {
                           className="w-4 h-4"
                         />
                         <span
-                          className={`text-base ${isActive ? "text-white" : ""}`}
+                          className={`text-base ${
+                            isActive ? "text-white" : ""
+                          }`}
                         >
                           {item.title}
                         </span>

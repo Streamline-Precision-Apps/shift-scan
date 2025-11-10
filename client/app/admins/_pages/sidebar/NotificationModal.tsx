@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/v1/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/app/v1/components/ui/dialog";
 import {
   Bell,
   Clock,
@@ -16,11 +16,11 @@ import {
   Loader2,
   ClockAlert,
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Switch } from "@/app/v1/components/ui/switch";
+import { Label } from "@/app/v1/components/ui/label";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getUserTopicPreferences } from "@/actions/NotificationActions";
+import { Skeleton } from "@/app/v1/components/ui/skeleton";
+import { getUserTopicPreferences } from "@/app/lib/actions/NotificationActions";
 import { useFcmContext } from "./FcmContext";
 
 type Props = {
@@ -70,7 +70,7 @@ export default function NotificationModal({ open, setOpen }: Props) {
   // Simplified state - either we're showing settings or we have a permission issue
   const [showPermissionOverlay, setShowPermissionOverlay] = useState(false);
   const [permissionType, setPermissionType] = useState<"blocked" | "needed">(
-    "needed",
+    "needed"
   );
 
   // Load current preferences
@@ -129,7 +129,7 @@ export default function NotificationModal({ open, setOpen }: Props) {
         const prefsRecord: Record<string, boolean> = {};
         AVAILABLE_TOPICS.forEach((topic) => {
           prefsRecord[topic.id] = userPrefs.some(
-            (pref) => pref.topic === topic.id,
+            (pref) => pref.topic === topic.id
           );
         });
 
@@ -191,7 +191,7 @@ export default function NotificationModal({ open, setOpen }: Props) {
 
       const currentTopics = userPrefs.map((pref) => pref.topic);
       const topicsToUnsubscribe = currentTopics.filter(
-        (topic) => !topicsToSubscribe.includes(topic),
+        (topic) => !topicsToSubscribe.includes(topic)
       );
       // First, handle subscriptions if there are any
       if (topicsToSubscribe.length > 0) {
@@ -320,7 +320,7 @@ export default function NotificationModal({ open, setOpen }: Props) {
                     onClick={() => {
                       window.open(
                         "https://support.google.com/chrome/answer/3220216?hl=en",
-                        "_blank",
+                        "_blank"
                       );
                     }}
                   >
@@ -351,14 +351,14 @@ export default function NotificationModal({ open, setOpen }: Props) {
                         } else {
                           // Still denied, show appropriate message
                           setPermissionType(
-                            permission === "denied" ? "blocked" : "needed",
+                            permission === "denied" ? "blocked" : "needed"
                           );
                           setIsDataLoading(false);
                         }
                       } catch (error) {
                         console.error("Error requesting permission:", error);
                         toast.error(
-                          "Unable to request notification permission",
+                          "Unable to request notification permission"
                         );
                         setIsDataLoading(false);
                       }

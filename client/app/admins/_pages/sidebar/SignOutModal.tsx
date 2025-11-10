@@ -1,7 +1,7 @@
 "use client";
-import { signOut } from "next-auth/react";
+import { useSignOut } from "@/app/lib/hooks/useSignOut";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/v1/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/app/v1/components/ui/dialog";
 
 type Props = {
   open: boolean;
@@ -41,10 +41,7 @@ export default function SignOutModal({ open, setOpen }: Props) {
             variant="destructive"
             onClick={async () => {
               setOpen(false);
-              await signOut({
-                redirect: true,
-                redirectTo: "/signin",
-              });
+              useSignOut();
             }}
           >
             {t("Logout")}

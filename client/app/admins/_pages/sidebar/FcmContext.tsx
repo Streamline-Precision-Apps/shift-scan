@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext } from "react";
-import useFcmToken from "@/hooks/useFcmToken";
+import useFcmToken from "@/app/lib/hooks/useFcmToken";
 
 interface FcmContextValue {
   token: string | null;
@@ -9,7 +9,9 @@ interface FcmContextValue {
 
 const FcmContext = createContext<FcmContextValue | undefined>(undefined);
 
-export const FcmProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const FcmProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { token, notificationPermissionStatus } = useFcmToken();
 
   return (
