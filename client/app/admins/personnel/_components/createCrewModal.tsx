@@ -1,25 +1,27 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/app/v1/components/ui/button";
+import { Input } from "@/app/v1/components/ui/input";
+import { Label } from "@/app/v1/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/app/v1/components/ui/select";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { createCrew } from "@/actions/adminActions";
-import { WorkType } from "../../../../../../prisma/generated/prisma";
-import Spinner from "@/components/(animations)/spinner";
+
+import Spinner from "@/app/v1/components/(animations)/spinner";
 import { CrewMemberCheckboxList } from "./CrewMemberCheckboxList";
 import {
   SingleCombobox,
   ComboboxOption,
-} from "@/components/ui/single-combobox";
+} from "@/app/v1/components/ui/single-combobox";
+import { createCrew } from "@/app/lib/actions/adminActions";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
 
+type WorkType = "MECHANIC" | "TRUCK_DRIVER" | "LABOR" | "TASCO";
 type User = {
   id: string;
   firstName: string;
@@ -60,8 +62,10 @@ export default function CreateCrewModal({
     // Fetch users from the server or context
     const fetchUsers = async () => {
       try {
-        const response = await fetch("/api/getAllEmployees?filter=all");
-        const data = await response.json();
+        const data = await apiRequest(
+          "/api/v1/admins/personnel/getAllEmployees",
+          "GET"
+        );
         setUsers(data as User[]);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -76,8 +80,11 @@ export default function CreateCrewModal({
   // Create user options for the combobox
   const userOptions = users.map((user) => ({
     value: user.id,
-    label:
-      `${user.firstName ? `${user.firstName}` : ""}${user.middleName ? ` ${user.middleName}` : ""}${user.lastName ? ` ${user.lastName}` : ""}${user.secondLastName ? ` ${user.secondLastName}` : ""}`.trim(),
+    label: `${user.firstName ? `${user.firstName}` : ""}${
+      user.middleName ? ` ${user.middleName}` : ""
+    }${user.lastName ? ` ${user.lastName}` : ""}${
+      user.secondLastName ? ` ${user.secondLastName}` : ""
+    }`.trim(),
   }));
 
   // Helper to ensure lead is always in Users
@@ -251,19 +258,23 @@ export default function CreateCrewModal({
                       .map(
                         (user): ComboboxOption => ({
                           value: user.id,
-                          label: `${user.firstName} ${user.lastName}${user.middleName ? ` ${user.middleName}` : ""}${user.secondLastName ? ` ${user.secondLastName}` : ""}${user.permission ? ` (${user.permission})` : ""}`,
+                          label: `${user.firstName} ${user.lastName}${
+                            user.middleName ? ` ${user.middleName}` : ""
+                          }${
+                            user.secondLastName ? ` ${user.secondLastName}` : ""
+                          }${user.permission ? ` (${user.permission})` : ""}`,
                           firstName: user.firstName,
                           lastName: user.lastName,
                           middleName: user.middleName || "",
                           permission: user.permission,
-                        }),
+                        })
                       )}
                     value={formData.leadId}
                     onChange={(value) => {
                       setFormData((prev) => {
                         // Remove previous lead from Users if present
                         let updatedUsers = prev.Users.filter(
-                          (u) => u.id !== prev.leadId,
+                          (u) => u.id !== prev.leadId
                         );
                         // Add new lead if not present
                         if (value) {

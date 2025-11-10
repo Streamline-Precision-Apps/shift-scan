@@ -3,18 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { PersonnelSummary } from "./usePersonnelData";
 import { format } from "date-fns";
-import { formatPhoneNumber } from "@/utils/phoneNumberFormater";
+
 import { UserX } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
+} from "@/app/v1/components/ui/tooltip";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@/app/v1/components/ui/hover-card";
 import {
   Table,
   TableBody,
@@ -22,8 +22,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/app/v1/components/ui/table";
 import { bg } from "date-fns/locale";
+import { formatPhoneNumber } from "@/app/lib/utils/phoneNumberFormater";
 
 // Define the column configuration
 export const personnelTableColumns: ColumnDef<PersonnelSummary>[] = [
@@ -121,7 +122,11 @@ export const personnelTableColumns: ColumnDef<PersonnelSummary>[] = [
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
                 <span className="text-black text-sm truncate">
-                  {`${personnel.firstName} ${personnel.middleName ? personnel.middleName : ""} ${personnel.lastName} ${personnel.secondLastName ? personnel.secondLastName : ""}`
+                  {`${personnel.firstName} ${
+                    personnel.middleName ? personnel.middleName : ""
+                  } ${personnel.lastName} ${
+                    personnel.secondLastName ? personnel.secondLastName : ""
+                  }`
                     .replace(/\s+/g, " ")
                     .trim()}
                 </span>
@@ -207,7 +212,9 @@ export const personnelTableColumns: ColumnDef<PersonnelSummary>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-xs text-center">
-          {formatPhoneNumber(row.original.Contact.phoneNumber)}
+          {row.original.Contact && row.original.Contact.phoneNumber
+            ? formatPhoneNumber(row.original.Contact.phoneNumber)
+            : ""}
         </div>
       );
     },
@@ -230,9 +237,15 @@ export const personnelTableColumns: ColumnDef<PersonnelSummary>[] = [
     header: "Emergency Contact",
     cell: ({ row }) => {
       const personnel = row.original;
+      const contact = personnel.Contact;
       return (
         <div className="text-xs text-center">
-          {`${personnel.Contact.emergencyContact ? personnel.Contact.emergencyContact + "-" : ""} ${personnel.Contact.emergencyContactNumber ? formatPhoneNumber(personnel.Contact.emergencyContactNumber) : ""}`}
+          {contact && contact.emergencyContact
+            ? contact.emergencyContact + "-"
+            : ""}
+          {contact && contact.emergencyContactNumber
+            ? formatPhoneNumber(contact.emergencyContactNumber)
+            : ""}
         </div>
       );
     },
