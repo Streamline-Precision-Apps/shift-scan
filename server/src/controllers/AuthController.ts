@@ -54,15 +54,13 @@ export const loginUser = async (
     res.cookie("session", token, cookieOptions);
 
     // Return simplified user object with ID (full user will be fetched via /api/v1/init)
-    return res
-      .status(200)
-      .json({ 
-        message: "Login successful", 
-        token, 
-        user: {
-          id: user.id,
-        }
-      });
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+      },
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -74,11 +72,17 @@ export const signOutUser = async (
   res: express.Response
 ) => {
   try {
-    // Clear the session cookie
-    res.clearCookie("session", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+    // Get all cookies from the request
+    const cookies = req.cookies || {};
+    // Clear all cookies except 'locale'
+    Object.keys(cookies).forEach((cookieName) => {
+      if (cookieName !== "locale") {
+        res.clearCookie(cookieName, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "none",
+        });
+      }
     });
     return res.status(200).json({ message: "Sign out successful" });
   } catch (err) {

@@ -174,16 +174,34 @@ export default function SignInPage() {
         throw new Error("User ID not found in response");
       }
 
-      // Store token and userId
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", String(userId));
+      // Store token and userId with error handling
+      try {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", String(userId));
+        const storedToken = localStorage.getItem("token");
+        const storedUserId = localStorage.getItem("userId");
+        if (storedToken !== data.token || storedUserId !== String(userId)) {
+          console.error("❌ localStorage values do not match what was set", { storedToken, storedUserId });
+        } else {
+          console.log("✅ Token and userId set in localStorage:", { token: storedToken, userId: storedUserId });
+        }
+      } catch (storageErr) {
+        console.error("Failed to set token/userId in localStorage:", storageErr);
+        throw new Error("Failed to save credentials locally.");
+      }
 
       // Save credentials for biometric login on native platforms (with delay to ensure storage)
       if (isNative && biometricAvailable) {
         try {
           localStorage.setItem("shift_scan_username", username);
           localStorage.setItem("shift_scan_password", password);
-          console.log("✅ Biometric credentials saved");
+          const storedUsername = localStorage.getItem("shift_scan_username");
+          const storedPassword = localStorage.getItem("shift_scan_password");
+          if (storedUsername !== username || storedPassword !== password) {
+            console.error("❌ Biometric credentials in localStorage do not match what was set", { storedUsername, storedPassword });
+          } else {
+            console.log("✅ Biometric credentials set in localStorage:", { username: storedUsername, password: storedPassword });
+          }
           // Wait a bit to ensure credentials are persisted before continuing
           await new Promise((resolve) => setTimeout(resolve, 200));
         } catch (bioErr) {
@@ -220,6 +238,7 @@ export default function SignInPage() {
 
       redirectAfterAuth();
     } catch (err: any) {
+      console.error("performLogin error:", err);
       throw err;
     }
   };
