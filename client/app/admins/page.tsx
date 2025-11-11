@@ -157,6 +157,7 @@ export default function Admins() {
 
       <div className="flex flex-row h-[90vh] w-full gap-x-4 pt-4 ">
         <NotificationTable
+          userId={currentUserId}
           data={data || []}
           setData={setData}
           totalCount={totalCount}

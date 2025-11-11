@@ -12,7 +12,10 @@ import { markBrokenEquipmentNotificationsAsRead } from "@/app/lib/actions/Notifi
 import type { AdminNotification } from "@/app/admins/page";
 
 export const notificationTableColumns = (
-  setData: React.Dispatch<React.SetStateAction<AdminNotification[] | undefined>>
+  setData: React.Dispatch<
+    React.SetStateAction<AdminNotification[] | undefined>
+  >,
+  userId: string
 ): ColumnDef<AdminNotification>[] => [
   {
     accessorKey: "createdAt",
@@ -77,6 +80,7 @@ export const notificationTableColumns = (
                     onClick={async () => {
                       await markBrokenEquipmentNotificationsAsRead({
                         notificationId: row.original.id,
+                        userId,
                       });
                       setData((prev) =>
                         prev?.filter((n) => n.id !== row.original.id)

@@ -22,8 +22,10 @@ interface NotificationTableProps {
   data: AdminNotification[];
   totalCount: number;
   loading?: boolean;
-
-  setData: React.Dispatch<React.SetStateAction<AdminNotification[] | undefined>>;
+  userId: string;
+  setData: React.Dispatch<
+    React.SetStateAction<AdminNotification[] | undefined>
+  >;
 }
 
 export function NotificationTable({
@@ -31,8 +33,12 @@ export function NotificationTable({
   totalCount,
   loading,
   setData,
+  userId,
 }: NotificationTableProps) {
-  const columns = useMemo(() => notificationTableColumns(setData), [data]);
+  const columns = useMemo(
+    () => notificationTableColumns(setData, userId),
+    [data]
+  );
   const table = useReactTable({
     data,
     columns,

@@ -40,7 +40,10 @@ export default function NotificationActionsList({
   // Async function to mark notification as read
   const markNotificationAsRead = async (notificationId: number) => {
     try {
-      await updateNotificationReadStatus({ notificationId });
+      await updateNotificationReadStatus({
+        notificationId,
+        userId: currentUserId,
+      });
       setReadIds((prev) => {
         const updated = new Set(prev);
         updated.add(notificationId);
@@ -54,7 +57,9 @@ export default function NotificationActionsList({
   // Mark all visible unread notifications as read
   const markAllAsRead = async () => {
     try {
-      await markAllNotificationsAsRead();
+      await markAllNotificationsAsRead({
+        userId: currentUserId,
+      });
       // Update local state to mark all as read
       if (resolved) {
         setReadIds(new Set(resolved.map((item) => item.id)));
@@ -83,7 +88,7 @@ export default function NotificationActionsList({
               id="unread-notifications"
               checked={showOnlyUnread}
               onCheckedChange={setShowOnlyUnread}
-              className="data-[state=checked]:bg-blue-500"
+              className="data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-gray-200"
             />
             <Label
               htmlFor="unread-notifications"

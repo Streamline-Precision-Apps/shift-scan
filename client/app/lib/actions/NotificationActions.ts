@@ -63,44 +63,24 @@ export async function getUserTopicPreferences(
 
 export async function updateNotificationReadStatus({
   notificationId,
+  userId,
 }: {
   notificationId: number;
+  userId: string;
 }) {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-
   try {
-    // Check if the read record already exists
-    const existingRead = await prisma.notificationRead.findFirst({
-      where: {
-        notificationId: notificationId,
-        userId: userId,
-      },
-    });
-
-    if (!existingRead) {
-      // Create a new read record
-      await prisma.notificationRead.create({
-        data: {
-          notificationId: notificationId,
-          userId: userId,
-        },
-      });
+    const response = await apiRequest(
+      "/api/push-notifications/mark-read",
+      "POST",
+      {
+        notificationId,
+        userId,
+      }
+    );
+    if (response && response.success) {
+      return true;
     } else {
-      // Update the existing read record
-      await prisma.notificationRead.update({
-        where: {
-          id: existingRead.id,
-        },
-        data: {
-          readAt: new Date(),
-        },
-      });
-      // Optionally: trigger a UI refresh or update local state
+      throw new Error(response?.error || "Failed to update read status");
     }
   } catch (error) {
     console.error("Error updating notification read status:", error);
@@ -108,41 +88,24 @@ export async function updateNotificationReadStatus({
   }
 }
 
-export async function markAllNotificationsAsRead() {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-
+export async function markAllNotificationsAsRead({
+  userId,
+}: {
+  userId: string;
+}) {
   try {
-    // Fetch all unread notifications for the user
-    const unreadNotifications = await prisma.notification.findMany({
-      where: {
-        Reads: {
-          none: {
-            userId: userId,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    // Create read records for all unread notifications
-    const readRecords = unreadNotifications.map((notification) => ({
-      notificationId: notification.id,
-      userId: userId,
-      readAt: new Date(),
-    }));
-
-    if (readRecords.length > 0) {
-      await prisma.notificationRead.createMany({
-        data: readRecords,
-        skipDuplicates: true, // Avoid duplicates if any
-      });
+    const response = await apiRequest(
+      "/api/push-notifications/mark-read",
+      "POST",
+      {
+        markAll: true,
+        userId,
+      }
+    );
+    if (response && response.success) {
+      return true;
+    } else {
+      throw new Error(response?.error || "Failed to mark all as read");
     }
   } catch (error) {
     console.error("Error marking all notifications as read:", error);
@@ -152,53 +115,29 @@ export async function markAllNotificationsAsRead() {
 
 export async function markBrokenEquipmentNotificationsAsRead({
   notificationId,
+  userId,
 }: {
   notificationId: number;
+  userId: string;
 }) {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-
   try {
-    const notification = await prisma.notification.findFirst({
-      where: {
-        id: notificationId,
-        topic: "equipment-break",
-        Response: {
-          is: null,
-        },
-      },
-    });
-
-    if (notification) {
-      return { success: false, message: "Notification action done" };
+    const response = await apiRequest(
+      "/api/push-notifications/mark-read",
+      "POST",
+      {
+        notificationId,
+        brokenEquipment: true,
+        userId,
+      }
+    );
+    if (response && response.success) {
+      return response;
+    } else {
+      throw new Error(
+        response?.error ||
+          "Failed to mark broken equipment notifications as read"
+      );
     }
-
-    if (!notification) {
-      await prisma.$transaction(async (tx) => {
-        // Create a response record for the notification
-        await tx.notificationResponse.create({
-          data: {
-            notificationId: notificationId,
-            userId: userId,
-            response: "Repaired",
-            respondedAt: new Date(),
-          },
-        });
-        // Create a read record for the notification
-        await tx.notificationRead.create({
-          data: {
-            notificationId: notificationId,
-            userId: userId,
-            readAt: new Date(),
-          },
-        });
-      });
-    }
-    return { success: true };
   } catch (error) {
     console.error(
       "Error marking broken equipment notifications as read:",
