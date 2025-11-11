@@ -270,7 +270,7 @@ export default function EditEquipmentModal({
 
   if (loading || !formData || !originalForm) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
         <div className="bg-white rounded-lg shadow-lg w-[600px] h-[80vh]  px-6 py-4 flex flex-col items-center">
           <div className="w-full flex flex-col border-b border-gray-100 pb-3 relative">
             <div className="flex flex-col">
@@ -330,7 +330,7 @@ export default function EditEquipmentModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
       <div className="bg-white rounded-lg shadow-lg w-[600px] h-[80vh]  px-6 py-4 flex flex-col items-center">
         <div className="w-full flex flex-col border-b border-gray-100 pb-3 relative">
           <div className="flex flex-col">
@@ -417,7 +417,7 @@ export default function EditEquipmentModal({
             {/* Section: General Information */}
             <div className="space-y-2 mb-5">
               <h3 className="text-md font-semibold ">General Information</h3>
-              <div className="border rounded-md bg-slate-50 p-4">
+              <div className="border border-gray-300 rounded-md bg-slate-50 p-4">
                 <div className="flex flex-col gap-3">
                   <div>
                     <Label htmlFor="code" className="text-sm">
@@ -508,7 +508,7 @@ export default function EditEquipmentModal({
             <div className="space-y-2 mb-5">
               <h3 className="text-md font-semibold ">Ownership Information</h3>
 
-              <div className="border rounded-md p-4 bg-slate-50">
+              <div className="border border-gray-300  rounded-md p-4 bg-slate-50">
                 <div className="flex flex-col gap-3">
                   <div>
                     <Label
@@ -593,7 +593,7 @@ export default function EditEquipmentModal({
                 Equipment Specifications
               </h3>
 
-              <div className="border rounded-md bg-slate-50 p-4">
+              <div className="border border-gray-300  rounded-md bg-slate-50 p-4">
                 <div className="flex flex-col gap-3">
                   <div>
                     <Label htmlFor="make" className="text-sm font-medium">
@@ -664,10 +664,10 @@ export default function EditEquipmentModal({
 
             {/* Section: License Information */}
             <div className="space-y-2 mb-5">
-              <h3 className="text-md font-semibold mb-3 border-b pb-2">
+              <h3 className="text-md font-semibold mb-3  pb-2">
                 License Information
               </h3>
-              <div className="border rounded-md bg-slate-50 p-4">
+              <div className="border border-gray-300 rounded-md bg-slate-50 p-4">
                 <div className="flex flex-col gap-3">
                   <div>
                     <Label
@@ -705,10 +705,10 @@ export default function EditEquipmentModal({
 
             {/* Section: Weight Information */}
             <div className="space-y-2 mb-5">
-              <h3 className="text-md font-semibold mb-3 border-b pb-2">
+              <h3 className="text-md font-semibold mb-3  pb-2">
                 Weight Information
               </h3>
-              <div className="border rounded-md bg-slate-50 p-4">
+              <div className="border border-gray-300  rounded-md bg-slate-50 p-4">
                 <div className="flex flex-col gap-3">
                   <div>
                     <Label htmlFor="overWeight" className="text-sm">

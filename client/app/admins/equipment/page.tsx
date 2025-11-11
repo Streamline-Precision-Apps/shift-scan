@@ -163,7 +163,7 @@ export default function EquipmentPage() {
       <div className="h-[85vh] rounded-lg w-full relative bg-white overflow-hidden">
         {/* Loading overlay */}
         {loading && (
-          <div className="absolute inset-0 z-20 flex flex-row items-center gap-2 justify-center bg-white bg-opacity-70 rounded-lg">
+          <div className="absolute inset-0 z-20 flex flex-row items-center gap-2 justify-center bg-white-70 rounded-lg">
             <Spinner size={20} />
             <span className="text-lg text-gray-500">Loading...</span>
           </div>
