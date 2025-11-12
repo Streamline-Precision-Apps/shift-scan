@@ -24,7 +24,7 @@ const ExportReportModal = ({ onClose, onExport }: ExportModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-40 ">
       <div className="bg-white rounded-lg shadow-lg w-[500px] max-h-[80vh] overflow-y-auto no-scrollbar px-6 py-4">
         <div className="flex flex-col gap-4 items-center w-full relative">
           {/* Modal title Content */}
