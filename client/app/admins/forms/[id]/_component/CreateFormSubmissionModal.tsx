@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/v1/components/ui/button";
 import { toast } from "sonner";
-import { createFormSubmission } from "@/actions/records-forms";
+import { createFormSubmission } from "@/app/lib/actions/adminActions";
 import RenderFields from "../../_components/RenderFields/RenderFields"; // Import the RenderFields component
-import Spinner from "@/components/(animations)/spinner";
+import Spinner from "@/app/v1/components/(animations)/spinner";
 import { FormIndividualTemplate } from "./hooks/types";
 import { X } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/app/v1/components/ui/label";
+import { Textarea } from "@/app/v1/components/ui/textarea";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 export interface Submission {
   id: string;
@@ -69,8 +69,8 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
   closeModal,
   onSuccess,
 }) => {
-  const { data: session } = useSession();
-  const adminUserId = session?.user?.id || null;
+  const { user } = useUserStore();
+  const adminUserId = user?.id || null;
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<
@@ -89,11 +89,11 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
 
   // State for different asset types
   const [equipment, setEquipment] = useState<{ id: string; name: string }[]>(
-    [],
+    []
   );
   const [jobsites, setJobsites] = useState<{ id: string; name: string }[]>([]);
   const [costCodes, setCostCodes] = useState<{ id: string; name: string }[]>(
-    [],
+    []
   );
 
   const [users, setUsers] = useState<
@@ -177,7 +177,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
 
   const handleFieldChange = (
     fieldId: string,
-    value: string | Date | string[] | object | boolean | number | null,
+    value: string | Date | string[] | object | boolean | number | null
   ) => {
     // Convert value to a format compatible with our formData state
     let compatibleValue: string | number | boolean | null = null;
@@ -243,7 +243,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
         },
         adminUserId,
         comment: managerComment,
-        signature: `${session?.user.firstName} ${session?.user.lastName}`,
+        signature: `${user?.firstName} ${user?.lastName}`,
         status: "APPROVED",
         // Include manager approval data if signed by manager
       });
@@ -362,7 +362,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
                   >
                     I,{" "}
                     <span className="font-semibold">
-                      {session?.user.firstName} {session?.user.lastName}
+                      {user?.firstName} {user?.lastName}
                     </span>
                     , electronically sign and approve this submission.
                   </label>
@@ -422,7 +422,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
                   >
                     I,{" "}
                     <span className="font-semibold">
-                      {session?.user.firstName} {session?.user.lastName}
+                      {user?.firstName} {user?.lastName}
                     </span>
                     , electronically sign and approve this submission.
                   </label>
@@ -466,7 +466,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
                   >
                     I,{" "}
                     <span className="font-semibold">
-                      {session?.user.firstName} {session?.user.lastName}
+                      {user?.firstName} {user?.lastName}
                     </span>
                     , electronically sign and approve this submission.
                   </label>

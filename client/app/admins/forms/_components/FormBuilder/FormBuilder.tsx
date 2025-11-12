@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/app/v1/components/ui/scroll-area";
+import { Button } from "@/app/v1/components/ui/button";
+import { Separator } from "@/app/v1/components/ui/separator";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 
@@ -24,8 +24,11 @@ import { PanelCenterPlaceholder } from "./components/panels/PanelCenterPlacehold
 import { PanelLeft } from "./components/panels/PanelLeft";
 import { FormBuilderPanelRight } from "./components/panels/PanelRight";
 import { CancelModal } from "./components/CancelModal";
-import { saveFormTemplate, updateFormTemplate } from "@/actions/records-forms";
-import Spinner from "@/components/(animations)/spinner";
+import {
+  saveFormTemplate,
+  updateFormTemplate,
+} from "@/app/lib/actions/adminActions";
+import Spinner from "@/app/v1/components/(animations)/spinner";
 
 export default function FormBuilder({
   onCancel,
@@ -51,7 +54,7 @@ export default function FormBuilder({
   });
 
   const [popoverOpenFieldId, setPopoverOpenFieldId] = useState<string | null>(
-    null,
+    null
   );
   const [loadingSave, setLoadingSave] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -95,7 +98,7 @@ export default function FormBuilder({
           }));
 
           setFormFields(
-            formGrouping.flatMap((group: FormGrouping) => group.Fields),
+            formGrouping.flatMap((group: FormGrouping) => group.Fields)
           );
           setFormSections(formGrouping);
           setFormSettings({
@@ -128,12 +131,12 @@ export default function FormBuilder({
   // Update field
   const updateField = (
     fieldId: string,
-    updatedProperties: Partial<FormField>,
+    updatedProperties: Partial<FormField>
   ) => {
     setFormFields((prevFields) =>
       prevFields.map((field) =>
-        field.id === fieldId ? { ...field, ...updatedProperties } : field,
-      ),
+        field.id === fieldId ? { ...field, ...updatedProperties } : field
+      )
     );
 
     // If we're updating minLength or maxLength, we may need to clear validation errors
@@ -232,7 +235,7 @@ export default function FormBuilder({
   // Update form settings
   const updateFormSettings = (
     key: keyof FormSettings,
-    value: string | boolean,
+    value: string | boolean
   ) => {
     setFormSettings({
       ...formSettings,

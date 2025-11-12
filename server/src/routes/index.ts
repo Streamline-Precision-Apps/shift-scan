@@ -22,6 +22,7 @@ import adminsJobsiteRoutes from "./adminsJobsiteRoutes.js";
 import adminsTagsRoutes from "./adminsTagsRoutes.js";
 import adminsCostCodesRoutes from "./adminsCostCodesRoutes.js";
 import adminsReportRoutes from "./adminsReportRoutes.js";
+import adminsFormRoutes from "./adminsFormRoutes.js";
 
 const router = Router();
 
@@ -43,6 +44,7 @@ router.use("/v1/admins/jobsite", adminsJobsiteRoutes);
 router.use("/v1/admins/tags", adminsTagsRoutes);
 router.use("/v1/admins/cost-codes", adminsCostCodesRoutes);
 router.use("/v1/admins/report", adminsReportRoutes);
+router.use("/v1/admins/forms", adminsFormRoutes);
 
 router.use("/notifications", notificationRoutes);
 router.use("/push-notifications", pushNotificationsRoute);

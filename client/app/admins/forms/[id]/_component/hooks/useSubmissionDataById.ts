@@ -12,14 +12,14 @@ import {
   getFormSubmissions,
   getFormTemplate,
   publishFormTemplate,
-} from "@/actions/records-forms";
+} from "@/app/lib/actions/adminActions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { Fields as FormField } from "./types";
-import { useDashboardData } from "@/app/(routes)/admins/_pages/sidebar/DashboardDataContext";
-import { useSession } from "next-auth/react";
+import { useDashboardData } from "@/app/admins/_pages/sidebar/DashboardDataContext";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 export default function useSubmissionDataById(id: string) {
   const { refresh } = useDashboardData();
@@ -28,8 +28,9 @@ export default function useSubmissionDataById(id: string) {
   const [inputValue, setInputValue] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const { data: session } = useSession();
-  const ApproverId = session?.user.id;
+  const { user } = useUserStore();
+
+  const ApproverId = user?.id;
 
   // Filter state: always include dateRange and status
   const [filter, setFilter] = useState<{
@@ -45,7 +46,7 @@ export default function useSubmissionDataById(id: string) {
         status: newFilter.status || "ALL",
       });
     },
-    [],
+    []
   );
 
   const [showExportModal, setShowExportModal] = useState(false);
@@ -96,11 +97,15 @@ export default function useSubmissionDataById(id: string) {
         const params = [];
         if (filter.dateRange.from)
           params.push(
-            `startDate=${encodeURIComponent(format(filter.dateRange.from, "yyyy-MM-dd"))}`,
+            `startDate=${encodeURIComponent(
+              format(filter.dateRange.from, "yyyy-MM-dd")
+            )}`
           );
         if (filter.dateRange.to)
           params.push(
-            `endDate=${encodeURIComponent(format(filter.dateRange.to, "yyyy-MM-dd"))}`,
+            `endDate=${encodeURIComponent(
+              format(filter.dateRange.to, "yyyy-MM-dd")
+            )}`
           );
         if (filter.status) params.push(`statusFilter=${filter.status}`);
         params.push(`pendingOnly=${showPendingOnly}`);
@@ -108,7 +113,7 @@ export default function useSubmissionDataById(id: string) {
         params.push(`pageSize=${pageSize}`);
         const query = params.length ? `?${params.join("&")}` : "";
         const response = await fetch(
-          `/api/getFormSubmissionsById/${id}${query}`,
+          `/api/getFormSubmissionsById/${id}${query}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch form template");
@@ -148,7 +153,7 @@ export default function useSubmissionDataById(id: string) {
         color: "bg-blue-400",
       },
     ],
-    [],
+    []
   );
 
   const currentStatus = useMemo(() => {
@@ -225,7 +230,7 @@ export default function useSubmissionDataById(id: string) {
   }, [refresh]);
 
   const handleStatusChange = async (
-    status: "ACTIVE" | "ARCHIVED" | "DRAFT",
+    status: "ACTIVE" | "ARCHIVED" | "DRAFT"
   ) => {
     if (!formTemplate) return;
     if (formTemplate.isActive === status) return;
@@ -234,8 +239,8 @@ export default function useSubmissionDataById(id: string) {
         status === "ACTIVE"
           ? "publish"
           : status === "ARCHIVED"
-            ? "archive"
-            : "draft",
+          ? "archive"
+          : "draft"
       );
       if (status === "ACTIVE") {
         const isPublished = await publishFormTemplate(formTemplate.id);
@@ -244,7 +249,7 @@ export default function useSubmissionDataById(id: string) {
             duration: 3000,
           });
           setFormTemplate((prev) =>
-            prev ? { ...prev, isActive: "ACTIVE" } : prev,
+            prev ? { ...prev, isActive: "ACTIVE" } : prev
           );
         }
       } else if (status === "ARCHIVED") {
@@ -254,7 +259,7 @@ export default function useSubmissionDataById(id: string) {
             duration: 3000,
           });
           setFormTemplate((prev) =>
-            prev ? { ...prev, isActive: "ARCHIVED" } : prev,
+            prev ? { ...prev, isActive: "ARCHIVED" } : prev
           );
         }
       } else if (status === "DRAFT") {
@@ -265,7 +270,7 @@ export default function useSubmissionDataById(id: string) {
             duration: 3000,
           });
           setFormTemplate((prev) =>
-            prev ? { ...prev, isActive: "DRAFT" } : prev,
+            prev ? { ...prev, isActive: "DRAFT" } : prev
           );
         }
       }
@@ -384,7 +389,7 @@ export default function useSubmissionDataById(id: string) {
             .map((row) =>
               row
                 .map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`)
-                .join(","),
+                .join(",")
             )
             .join("\n");
           const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -394,7 +399,7 @@ export default function useSubmissionDataById(id: string) {
               ?.toISOString()
               .slice(0, 10)}_${exportDateRange.to
               ?.toISOString()
-              .slice(0, 10)}.csv`,
+              .slice(0, 10)}.csv`
           );
         } else {
           const ws = XLSX.utils.aoa_to_sheet(exportData);
@@ -408,7 +413,7 @@ export default function useSubmissionDataById(id: string) {
               ?.toISOString()
               .slice(0, 10)}_${exportDateRange.to
               ?.toISOString()
-              .slice(0, 10)}.xlsx`,
+              .slice(0, 10)}.xlsx`
           );
         }
 
@@ -424,7 +429,7 @@ export default function useSubmissionDataById(id: string) {
 
   const onApprovalAction = async (
     id: number,
-    action: "APPROVED" | "REJECTED",
+    action: "APPROVED" | "REJECTED"
   ) => {
     const formData = new FormData();
     if (!ApproverId) {
