@@ -4,22 +4,31 @@ import LeftSidebar from "./_pages/sidebar/leftSide";
 import { Sidebar, SidebarProvider } from "@/app/v1/components/ui/sidebar";
 import { FcmProvider } from "./_pages/sidebar/FcmContext";
 import { DashboardDataProvider } from "./_pages/sidebar/DashboardDataContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
-import { useEffect } from "react";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const platform = Capacitor.getPlatform();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    const platform = Capacitor.getPlatform();
+
     if (platform === "ios" || platform === "android") {
       router.push("/signin"); // Redirect to sign-in page
     }
-  }, [platform, router]);
+  }, [router]);
+
+  // Don't render until component is mounted to prevent hydration mismatch
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen w-full  bg-linear-to-b from-app-dark-blue via-app-blue to-app-blue ">
