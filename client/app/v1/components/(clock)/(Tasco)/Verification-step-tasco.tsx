@@ -1,4 +1,5 @@
 "use client";
+import { useCookieStore } from "@/app/lib/store/cookieStore";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -80,6 +81,11 @@ export default function TascoVerificationStep({
   const [loading, setLoading] = useState<boolean>(false);
 
   const { user } = useUserStore();
+  const setCurrentPageView = useCookieStore(
+    (state) => state.setCurrentPageView
+  );
+  const setWorkRole = useCookieStore((state) => state.setWorkRole);
+  const setLaborType = useCookieStore((state) => state.setLaborType);
   const { savedCommentData, setCommentData } = useCommentData();
   const router = useRouter();
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
@@ -287,18 +293,17 @@ export default function TascoVerificationStep({
 
       if (trackingResult?.success) {
         console.log("Redirecting to dashboard...");
-        await Promise.all([
-          setCurrentPageView("dashboard"),
-          setWorkRole(role),
-          setLaborType(
-            clockInRoleTypes === "tascoEEquipment"
-              ? "EShift"
-              : clockInRoleTypes === "tascoFEquipment"
-              ? "FShift"
-              : clockInRoleTypes || ""
-          ),
-          refetchTimesheet(),
-        ]).then(() => router.push("/v1/dashboard"));
+        setCurrentPageView("dashboard");
+        setWorkRole(role);
+        setLaborType(
+          clockInRoleTypes === "tascoEEquipment"
+            ? "EShift"
+            : clockInRoleTypes === "tascoFEquipment"
+            ? "FShift"
+            : clockInRoleTypes || ""
+        );
+        await refetchTimesheet();
+        setTimeout(() => router.push("/v1/dashboard"), 500);
       } else {
         console.error("Clock in tracking failed, not redirecting.");
       }

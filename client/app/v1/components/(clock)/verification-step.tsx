@@ -13,11 +13,7 @@ import { Images } from "../(reusable)/images";
 import { Holds } from "../(reusable)/holds";
 import { Grids } from "../(reusable)/grids";
 
-import {
-  setCurrentPageView,
-  setLaborType,
-  setWorkRole,
-} from "@/app/lib/actions/cookieActions";
+import { useCookieStore } from '@/app/lib/store/cookieStore';
 import { Titles } from "../(reusable)/titles";
 import { useRouter } from "next/navigation";
 import Spinner from "../(animations)/spinner";
@@ -69,6 +65,9 @@ export default function VerificationStep({
   const [date] = useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUserStore();
+  const setCurrentPageView = useCookieStore((state) => state.setCurrentPageView);
+  const setWorkRole = useCookieStore((state) => state.setWorkRole);
+  const setLaborType = useCookieStore((state) => state.setLaborType);
   const { savedCommentData, setCommentData } = useCommentData();
   const router = useRouter();
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
@@ -247,13 +246,11 @@ export default function VerificationStep({
 
       if (trackingResult?.success) {
         console.log("Redirecting to dashboard...");
-        await Promise.all([
-          setCurrentPageView("dashboard"),
-          setWorkRole(role),
-          setLaborType(clockInRoleTypes || ""),
-          refetchTimesheet(),
-        ]);
-        setTimeout(() => router.push("/v1/dashboard"), 500); // 500ms delay
+        setCurrentPageView('dashboard');
+        setWorkRole(role);
+        setLaborType(clockInRoleTypes || '');
+        await refetchTimesheet();
+        setTimeout(() => router.push('/v1/dashboard'), 500); // 500ms delay
       } else {
         console.error("Clock in tracking failed, not redirecting.");
       }
