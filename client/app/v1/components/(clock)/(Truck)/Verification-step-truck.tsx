@@ -5,7 +5,6 @@ import {
   createNewSession,
   handleTruckTimeSheet,
 } from "@/app/lib/actions/timeSheetActions";
-
 import {
   setCurrentPageView,
   setLaborType,
@@ -23,7 +22,6 @@ import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import Spinner from "@/app/v1/components/(animations)/spinner";
 import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
-
 import { useUserStore } from "@/app/lib/store/userStore";
 import { usePermissions } from "@/app/lib/context/permissionContext";
 import { useCommentData } from "@/app/lib/context/CommentContext";
@@ -100,14 +98,18 @@ export default function TruckVerificationStep({
       }
 
       // Get current coordinates
+      console.log("Getting current coordinates for clock in...");
       const coordinates = await getStoredCoordinates();
+      console.log("Coordinates:", coordinates);
 
       // Check for session data
       let sessionId = null;
       if (currentSessionId === null) {
         // No session exists, create a new one
+        console.log("No session exists, creating new session...");
         sessionId = await createNewSession(id);
         setCurrentSession(sessionId);
+        console.log("New session created:", sessionId);
       } else {
         // Session exists, check if it's ended
         const currentSession = useSessionStore
@@ -127,17 +129,25 @@ export default function TruckVerificationStep({
             useSessionStore.getState().clearSessions();
             sessionId = await createNewSession(id);
             setCurrentSession(sessionId);
+            console.log("New session created after expiration:", sessionId);
           } else {
             // Less than 4 hours, create a new session but keep old one in history
+            console.log("Session still valid, creating new session...");
             sessionId = await createNewSession(id);
             setCurrentSession(sessionId);
+            console.log("New session created:", sessionId);
           }
         } else {
           // Session is still active, reuse it
+          console.log(
+            "Session still active, reusing session:",
+            currentSessionId
+          );
           sessionId = currentSessionId;
         }
       }
 
+      // Build the payload for handleTruckTimeSheet
       const payload: {
         date: string;
         jobsiteId: string;
@@ -174,7 +184,6 @@ export default function TruckVerificationStep({
         sessionId,
       };
 
-      // If switching jobs, include the previous timesheet ID
       if (type === "switchJobs") {
         let timeSheetId = savedTimeSheetData?.id;
         if (!timeSheetId) {
@@ -186,7 +195,6 @@ export default function TruckVerificationStep({
           }
           timeSheetId = ts;
         }
-
         payload.type = "switchJobs";
         payload.previousTimeSheetId = timeSheetId;
         payload.endTime = new Date().toISOString();
@@ -202,8 +210,10 @@ export default function TruckVerificationStep({
           : null;
       }
 
-      // Use the new transaction-based function
+      console.log("Submitting truck timesheet payload:", payload);
       const responseAction = await handleTruckTimeSheet(payload);
+
+      console.log("Truck TimeSheet action response:", responseAction);
 
       // Add timesheet ID to session store after successful creation
       if (
@@ -215,6 +225,10 @@ export default function TruckVerificationStep({
         useSessionStore
           .getState()
           .setTimesheetId(sessionId, responseAction.createdTimeSheet.id);
+        console.log(
+          "Timesheet ID set in session store:",
+          responseAction.createdTimeSheet.id
+        );
       }
 
       if (
@@ -226,26 +240,36 @@ export default function TruckVerificationStep({
         await sendNotification({
           topic: "timecard-submission",
           title: "Timecard Approval Needed",
-          message: `#${responseAction.createdTimeCard.id} has been submitted by ${responseAction.createdTimeCard.User.firstName} ${responseAction.createdTimeCard.User.lastName} for approval.`,
-          link: `/admins/timesheets?id=${responseAction.createdTimeCard.id}`,
-          referenceId: responseAction.createdTimeCard.id,
+          message: `#${responseAction.createdTimeSheet.id} has been submitted by ${responseAction.createdTimeSheet.User.firstName} ${responseAction.createdTimeSheet.User.lastName} for approval.`,
+          link: `/admins/timesheets?id=${responseAction.createdTimeSheet.id}`,
+          referenceId: responseAction.createdTimeSheet.id,
         });
+        console.log("Notification sent for timesheet approval.");
       }
 
       // Start location tracking for clock in
+      let trackingResult = { success: true };
       if (type !== "switchJobs" && sessionId) {
-        await startClockInTracking(id, sessionId);
+        console.log("Starting clock in tracking...");
+        trackingResult = await startClockInTracking(id, sessionId);
+        console.log("Clock in tracking result:", trackingResult);
       }
 
+      // Update state and redirect
       setCommentData(null);
       localStorage.removeItem("savedCommentData");
 
-      await Promise.all([
-        setCurrentPageView("dashboard"),
-        setWorkRole(role),
-        setLaborType(clockInRoleTypes || ""),
-        refetchTimesheet(),
-      ]).then(() => router.push("/v1/dashboard"));
+      if (trackingResult?.success) {
+        console.log("Redirecting to dashboard...");
+        await Promise.all([
+          setCurrentPageView("dashboard"),
+          setWorkRole(role),
+          setLaborType(clockInRoleTypes || ""),
+          refetchTimesheet(),
+        ]).then(() => router.push("/v1/dashboard"));
+      } else {
+        console.error("Clock in tracking failed, not redirecting.");
+      }
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     } finally {
