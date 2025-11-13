@@ -96,46 +96,64 @@ export const LaborClockOut = ({
         body
       );
       if (result.success) {
-        // Stop location tracking only after successful clock-out
-        await stopClockOutTracking();
+        // Navigate immediately, then run non-critical tasks in background
+        reset();
+        router.push("/v1");
 
-        try {
-          await sendNotification({
-            topic: "timecard-submission",
-            title: "Timecard Approval Needed",
-            message: `#${result.timesheetId} has been submitted by ${result.userFullName} for approval.`,
-            link: `/admins/timesheets?id=${result.timesheetId}`,
-            referenceId: result.timesheetId,
-          });
-        } catch (error) {
-          console.error("🔴 Failed to send notification:", error);
-          return;
-        } finally {
-          // List of cookie names to delete (add names as needed)
-          const cookiesToDelete: string[] = [
-            "currentPageView",
-            "costCode",
-            "equipment",
-            "jobSite",
-            "startingMileage",
-            "timeSheetId",
-            "truckId",
-            "adminAccess",
-            "laborType",
-            "workRole",
-          ];
-          // Build query string
-          const query = cookiesToDelete
-            .map((name) => `name=${encodeURIComponent(name)}`)
-            .join("&");
-          await apiRequest(
-            `/api/cookies/list${query ? `?${query}` : ""}`,
-            "DELETE"
-          );
-          localStorage.removeItem("timesheetId");
-          reset();
-          await Promise.all([refetchTimesheet(), router.push("/v1")]);
-        }
+        // Run these in the background, don't block UI
+        (async () => {
+          await Promise.allSettled([
+            stopClockOutTracking(),
+            (async () => {
+              try {
+                await sendNotification({
+                  topic: "timecard-submission",
+                  title: "Timecard Approval Needed",
+                  message: `#${result.timesheetId} has been submitted by ${result.userFullName} for approval.`,
+                  link: `/admins/timesheets?id=${result.timesheetId}`,
+                  referenceId: result.timesheetId,
+                });
+              } catch (error) {
+                console.error("🔴 Failed to send notification:", error);
+              }
+            })(),
+            (async () => {
+              // List of cookie names to delete (add names as needed)
+              const cookiesToDelete: string[] = [
+                "currentPageView",
+                "costCode",
+                "equipment",
+                "jobSite",
+                "startingMileage",
+                "timeSheetId",
+                "truckId",
+                "adminAccess",
+                "laborType",
+                "workRole",
+              ];
+              // Build query string
+              const query = cookiesToDelete
+                .map((name) => `name=${encodeURIComponent(name)}`)
+                .join("&");
+              try {
+                await apiRequest(
+                  `/api/cookies/list${query ? `?${query}` : ""}`,
+                  "DELETE"
+                );
+              } catch (error) {
+                console.error("🔴 Failed to delete cookies:", error);
+              }
+              localStorage.removeItem("timesheetId");
+            })(),
+            (async () => {
+              try {
+                await refetchTimesheet();
+              } catch (error) {
+                console.error("🔴 Failed to refetch timesheet:", error);
+              }
+            })(),
+          ]);
+        })();
       }
     } catch (error) {
       console.error("🔴 Failed to process the time sheet:", error);

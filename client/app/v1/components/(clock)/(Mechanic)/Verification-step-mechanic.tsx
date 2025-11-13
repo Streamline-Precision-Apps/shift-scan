@@ -1,9 +1,7 @@
 "use client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-
 import { useRouter } from "next/navigation";
-
 import { Buttons } from "@/app/v1/components/(reusable)/buttons";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
 import { Grids } from "@/app/v1/components/(reusable)/grids";
