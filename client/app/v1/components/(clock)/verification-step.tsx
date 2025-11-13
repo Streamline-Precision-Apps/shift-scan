@@ -92,14 +92,18 @@ export default function VerificationStep({
       }
 
       // Get current coordinates
+      console.log("Getting current coordinates for clock in...");
       const coordinates = await getStoredCoordinates();
+      console.log("Coordinates:", coordinates);
 
       // Check for session data
       let sessionId = null;
       if (currentSessionId === null) {
         // No session exists, create a new one
+        console.log("No session exists, creating new session...");
         sessionId = await createNewSession(id);
         setCurrentSession(sessionId);
+        console.log("New session created:", sessionId);
       } else {
         // Session exists, check if it's ended
         const currentSession = useSessionStore
@@ -119,13 +123,20 @@ export default function VerificationStep({
             useSessionStore.getState().clearSessions();
             sessionId = await createNewSession(id);
             setCurrentSession(sessionId);
+            console.log("New session created after expiration:", sessionId);
           } else {
             // Less than 4 hours, create a new session but keep old one in history
+            console.log("Session still valid, creating new session...");
             sessionId = await createNewSession(id);
             setCurrentSession(sessionId);
+            console.log("New session created:", sessionId);
           }
         } else {
           // Session is still active, reuse it
+          console.log(
+            "Session still active, reusing session:",
+            currentSessionId
+          );
           sessionId = currentSessionId;
         }
       }
@@ -185,6 +196,7 @@ export default function VerificationStep({
           : null;
       }
 
+      console.log("Submitting timesheet payload:", payload);
       const responseAction = await handleGeneralTimeSheet(payload);
 
       console.log("TimeSheet action response:", responseAction);
@@ -199,6 +211,10 @@ export default function VerificationStep({
         useSessionStore
           .getState()
           .setTimesheetId(sessionId, responseAction.createdTimeSheet.id);
+        console.log(
+          "Timesheet ID set in session store:",
+          responseAction.createdTimeSheet.id
+        );
       }
 
       if (
@@ -214,23 +230,32 @@ export default function VerificationStep({
           link: `/admins/timesheets?id=${responseAction.createdTimeSheet.id}`,
           referenceId: responseAction.createdTimeSheet.id,
         });
+        console.log("Notification sent for timesheet approval.");
       }
 
       // Start location tracking for clock in
+      let trackingResult = { success: true };
       if (type !== "switchJobs" && sessionId) {
-        await startClockInTracking(id, sessionId);
+        console.log("Starting clock in tracking...");
+        trackingResult = await startClockInTracking(id, sessionId);
+        console.log("Clock in tracking result:", trackingResult);
       }
 
       // Update state and redirect
       setCommentData(null);
       localStorage.removeItem("savedCommentData");
 
-      await Promise.all([
-        setCurrentPageView("dashboard"),
-        setWorkRole(role),
-        setLaborType(clockInRoleTypes || ""),
-        refetchTimesheet(),
-      ]).then(() => router.push("/v1/dashboard"));
+      if (trackingResult?.success) {
+        console.log("Redirecting to dashboard...");
+        await Promise.all([
+          setCurrentPageView("dashboard"),
+          setWorkRole(role),
+          setLaborType(clockInRoleTypes || ""),
+          refetchTimesheet(),
+        ]).then(() => router.push("/v1/dashboard"));
+      } else {
+        console.error("Clock in tracking failed, not redirecting.");
+      }
     } catch (error) {
       console.error("Error in handleSubmit:", error);
     } finally {
