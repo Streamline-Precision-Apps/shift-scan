@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="5ebbe08a-a707-5627-ad0c-fbee8a65e358")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="087ac0d7-8381-5a28-83be-ca15d3c8f28e")}catch(e){}}();
 import express from "express";
 import { fetchNotificationServiceByUserId, getDashboardData, getUserTopicPreferences, } from "../services/adminBaseService.js";
 export const baseController = async (req, res) => {
@@ -54,4 +54,4 @@ export const getUserTopicPreferencesController = async (req, res) => {
     }
 };
 //# sourceMappingURL=adminBaseController.js.map
-//# debugId=5ebbe08a-a707-5627-ad0c-fbee8a65e358
+//# debugId=087ac0d7-8381-5a28-83be-ca15d3c8f28e

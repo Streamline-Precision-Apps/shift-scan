@@ -11,5 +11,6 @@ export declare function fetchAllUsersLatestLocations(date?: Date): Promise<Array
     endTime?: string;
 }>>;
 export declare function validateLocationPayload(payload: Partial<Location>): string | null;
-export declare function saveUserLocation(userId: string, sessionId: number, coords: Location["coords"], device?: Location["device"]): Promise<boolean>;
+export declare function saveUserClockInLocation(userId: string, sessionId: number, coords: Location["coords"], device?: Location["device"]): Promise<boolean>;
+export declare function saveUserClockOutLocation(userId: string, sessionId: number, coords: Location["coords"], device?: Location["device"]): Promise<boolean>;
 //# sourceMappingURL=locationService.d.ts.map

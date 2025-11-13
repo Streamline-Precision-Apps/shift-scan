@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="876ef46a-d9f3-5390-8a4a-1a2cdc949f08")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="3453027c-8fe2-5124-8491-211c0ab9b9ae")}catch(e){}}();
 import { Router } from "express";
 import { listEquipment, getEquipmentById, createEquipment, updateEquipment, archiveEquipment, restoreEquipment, listArchivedEquipment, deleteEquipment, getEquipmentSummary, } from "../controllers/adminEquipmentController.js";
 const router = Router();
@@ -24,4 +24,4 @@ router.put("/:id/restore", restoreEquipment);
 router.get("/archived", listArchivedEquipment);
 export default router;
 //# sourceMappingURL=adminsEquipmentRoutes.js.map
-//# debugId=876ef46a-d9f3-5390-8a4a-1a2cdc949f08
+//# debugId=3453027c-8fe2-5124-8491-211c0ab9b9ae

@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="451d8560-d8ff-5d4a-b058-0727cd4e1ac5")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="e0ddcc19-8e4f-5b07-8357-b0f32eb5a016")}catch(e){}}();
 import { getTascoReport as getTascoReportService, getTruckingReport as getTruckingReportService, getMechanicReport as getMechanicReportService, } from "../services/adminsReportService.js";
 export async function getTascoReport(req, res) {
     try {
@@ -41,4 +41,4 @@ export async function getMechanicReport(req, res) {
     }
 }
 //# sourceMappingURL=adminReportController.js.map
-//# debugId=451d8560-d8ff-5d4a-b058-0727cd4e1ac5
+//# debugId=e0ddcc19-8e4f-5b07-8357-b0f32eb5a016

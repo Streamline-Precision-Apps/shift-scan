@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="a251d8a2-3457-5ec1-a670-c2e06eaa9b39")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="5fc51f5b-9352-5b85-8715-00448726ef9a")}catch(e){}}();
 import { Router } from "express";
 import { createCrewController, createUserAdminController, deleteCrewController, deleteUserController, editCrewController, editUserAdminController, getAllActiveEmployeesController, getAllCrewsController, getCrewByIdAdminController, getCrewEmployeesController, getCrewManagersController, getEmployeeInfoController, getPersonnelManagerController, } from "../controllers/adminPersonnelController.js";
 const router = Router();
@@ -30,4 +30,4 @@ router.put("/editUserAdmin/:id", editUserAdminController);
 router.delete("/deleteUser/:id", deleteUserController);
 export default router;
 //# sourceMappingURL=adminsPersonnelRoutes.js.map
-//# debugId=a251d8a2-3457-5ec1-a670-c2e06eaa9b39
+//# debugId=5fc51f5b-9352-5b85-8715-00448726ef9a

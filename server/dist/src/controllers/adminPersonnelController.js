@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="3167a714-c8cd-5d06-ac18-afc343146784")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="3225bc7f-97a6-5389-9d58-05c8298d969f")}catch(e){}}();
 import { getCrewEmployees, getAllCrews, getEmployeeInfo, getCrewByIdAdmin, createCrew, editCrew, deleteCrew, createUserAdmin, editUserAdmin, deleteUser, getPersonnelManager, getAllActiveEmployees, } from "../services/adminPersonnelServices.js";
 export const getCrewEmployeesController = async (req, res) => {
     try {
@@ -171,4 +171,4 @@ export const getPersonnelManagerController = async (req, res) => {
     }
 };
 //# sourceMappingURL=adminPersonnelController.js.map
-//# debugId=3167a714-c8cd-5d06-ac18-afc343146784
+//# debugId=3225bc7f-97a6-5389-9d58-05c8298d969f

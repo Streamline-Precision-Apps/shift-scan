@@ -4,11 +4,11 @@ set -e  # exit if any command fails
 echo "🚀 Starting application initialization..."
 
 # ============================================================
-# Set Core Environment Variables
-# ============================================================
+ # Set Core Environment Variables
+ # ============================================================
 
 export SKIP_SENTRY=true
-export PORT=${PORT:-8080}
+export PORT=8080
 export NODE_ENV=${NODE_ENV:-production}
 
 # ============================================================

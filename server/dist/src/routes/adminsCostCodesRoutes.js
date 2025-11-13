@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="034caf82-7dec-5775-a7d7-91c30d8faf6c")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="a2c9c6cb-0345-5e2d-ab4b-17457105376b")}catch(e){}}();
 import { Router } from "express";
 import { getCostCodesController, archiveCostCodeController, createCostCodeController, deleteCostCodeController, getCostCodeByIdController, restoreCostCodeController, updateCostCodeController, getCostCodeSummaryController, } from "../controllers/adminCostCodeController.js";
 const router = Router();
@@ -21,4 +21,4 @@ router.put("/:id/restore", restoreCostCodeController);
 router.delete("/:id", deleteCostCodeController);
 export default router;
 //# sourceMappingURL=adminsCostCodesRoutes.js.map
-//# debugId=034caf82-7dec-5775-a7d7-91c30d8faf6c
+//# debugId=a2c9c6cb-0345-5e2d-ab4b-17457105376b
