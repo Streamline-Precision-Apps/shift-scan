@@ -18,11 +18,7 @@ import { TitleBoxes } from "@/app/v1/components/(reusable)/titleBoxes";
 
 import { usePermissions } from "@/app/lib/context/permissionContext";
 import Capitalize from "@/app/lib/utils/capitalizeFirst";
-import {
-  setCurrentPageView,
-  setLaborType,
-  setWorkRole,
-} from "@/app/lib/actions/cookieActions";
+import { useCookieStore } from "@/app/lib/store/cookieStore";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { useTimeSheetData } from "@/app/lib/context/TimeSheetIdContext";
 import { useSavedCostCode } from "@/app/lib/context/CostCodeContext";
@@ -72,6 +68,11 @@ export default function MechanicVerificationStep({
   const [date] = useState(new Date());
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUserStore();
+  const setCurrentPageView = useCookieStore(
+    (state) => state.setCurrentPageView
+  );
+  const setWorkRole = useCookieStore((state) => state.setWorkRole);
+  const setLaborType = useCookieStore((state) => state.setLaborType);
   const { savedCommentData, setCommentData } = useCommentData();
   const { setCostCode } = useSavedCostCode();
   const costCode = "#00.50 Mechanics";
@@ -256,12 +257,11 @@ export default function MechanicVerificationStep({
 
       if (trackingResult?.success) {
         console.log("Redirecting to dashboard...");
-        await Promise.all([
-          setCurrentPageView("dashboard"),
-          setWorkRole(role),
-          setLaborType(clockInRoleTypes || ""),
-          refetchTimesheet(),
-        ]).then(() => router.push("/v1/dashboard"));
+        setCurrentPageView("dashboard");
+        setWorkRole(role);
+        setLaborType(clockInRoleTypes || "");
+        await refetchTimesheet();
+        setTimeout(() => router.push("/v1/dashboard"), 500);
       } else {
         console.error("Clock in tracking failed, not redirecting.");
       }
