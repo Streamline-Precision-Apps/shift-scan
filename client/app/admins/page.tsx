@@ -1,5 +1,4 @@
 "use client";
-import "@/app/globals.css";
 import React, { useEffect, useState, useCallback } from "react";
 import { PageHeaderContainer } from "./_pages/PageHeaderContainer";
 import { NotificationTable } from "./_components/NotificationTable";
