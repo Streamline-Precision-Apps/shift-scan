@@ -135,7 +135,7 @@ const LocationMap: React.FC = () => {
 
       const clusterId = `cluster_${clusterIndex}`;
       const zoom = map.current?.getZoom() || 11;
-      const isFocused = focusedId === `cluster_${clusterId}`;
+      const isFocused = focusedId === clusterId;
       const baseSize = isFocused ? 40 : 10;
       const iconSize = calculateIconSize(zoom, isFocused, baseSize);
 
@@ -149,11 +149,11 @@ const LocationMap: React.FC = () => {
 
       clusterMarker.on("click", (e: L.LeafletEvent) => {
         L.DomEvent.stopPropagation(e);
-        if (focusedClusterIdRef.current === `cluster_${clusterId}`) {
+        if (focusedClusterIdRef.current === clusterId) {
           setFocusedId(null);
           setSidebarOpen(false);
         } else {
-          setFocusedId(`cluster_${clusterId}`);
+          setFocusedId(clusterId);
           setSelectedCluster(cluster);
           setSidebarOpen(true);
         }

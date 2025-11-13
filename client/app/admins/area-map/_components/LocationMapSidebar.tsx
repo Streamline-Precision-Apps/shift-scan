@@ -89,7 +89,7 @@ export const LocationMapSidebar: React.FC<LocationMapSidebarProps> = ({
               key={user.userId}
               className="bg-white rounded-xl p-4 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all"
             >
-              <div className="mb-10 border-b border-gray-200 pb-2">
+              <div className="mb-5 border-b border-gray-200 pb-2">
                 {/* Profile Picture */}
                 {user.profilePicture && (
                   <img
@@ -103,21 +103,21 @@ export const LocationMapSidebar: React.FC<LocationMapSidebarProps> = ({
                 <h3 className="font-semibold text-center text-base text-gray-900">
                   {user.userName || user.userId}
                 </h3>
+                <div className="">
+                  {user.endTime ? (
+                    <div className="w-fit mx-auto rounded-lg px-3 py-0.5 bg-gray-400">
+                      <p className="text-sm text-white  text-center">Offline</p>
+                    </div>
+                  ) : (
+                    <div className="w-fit mx-auto rounded-lg px-4 py-0.5 bg-green-500 ">
+                      <p className="text-xs text-white  text-center">Online</p>
+                    </div>
+                  )}
+                </div>
                 <p className="text-base py-1 text-gray-600 text-center">
                   {formatPhoneNumber(user.phoneNumber)}
                 </p>
-              </div>
-              {/* Activity online */}
-              <div className="mb-3">
-                {user.endTime ? (
-                  <p className="text-sm text-red-600 font-semibold text-center">
-                    Inactive since {new Date(user.endTime).toLocaleString()}
-                  </p>
-                ) : (
-                  <p className="text-sm text-green-600 font-semibold text-center">
-                    Active Now
-                  </p>
-                )}
+                {/* Activity online */}
               </div>
 
               {/* Timestamp */}
