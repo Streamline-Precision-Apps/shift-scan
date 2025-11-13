@@ -18,7 +18,7 @@ import {
   getUserInfo,
   sessionController,
   endSessionController,
-} from "../controllers/UserController.js";
+} from "../controllers/userController.js";
 
 const router = Router();
 

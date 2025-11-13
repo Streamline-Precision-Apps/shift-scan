@@ -1,6 +1,6 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="41dde560-e000-56fa-b4e7-31b17833bcfe")}catch(e){}}();
-import { fetchLatestLocation, fetchLocationHistory, fetchAllUsersLatestLocations, saveUserLocation, validateLocationPayload, } from "../services/locationService.js";
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="01bcf764-019a-5210-a10d-e33a0613d5ff")}catch(e){}}();
+import { fetchLatestLocation, fetchLocationHistory, fetchAllUsersLatestLocations, saveUserClockInLocation, saveUserClockOutLocation, validateLocationPayload, } from "../services/locationService.js";
 // get the latest location for a user
 export async function getUserLocations(req, res) {
     const userId = req.user?.id || req.params.userId;
@@ -58,17 +58,28 @@ export async function getUserLocationHistory(req, res) {
 export async function postUserLocation(req, res) {
     // Extract userId, sessionId, and location data from request body
     const { userId, sessionId, coords, device } = req.body;
+    const clockType = req.query.clockType;
     if (!userId || !sessionId || !coords) {
         return res
             .status(400)
             .json({ error: "Missing userId, sessionId, or coordinates" });
+    }
+    if (!clockType || (clockType !== "clockIn" && clockType !== "clockOut")) {
+        return res.status(400).json({
+            error: "Missing or invalid clockType query parameter (must be 'clockIn' or 'clockOut')",
+        });
     }
     const validationError = validateLocationPayload({ coords });
     if (validationError) {
         return res.status(400).json({ error: validationError });
     }
     try {
-        await saveUserLocation(userId, parseInt(sessionId), coords, device);
+        if (clockType === "clockIn") {
+            await saveUserClockInLocation(userId, parseInt(sessionId), coords, device);
+        }
+        else if (clockType === "clockOut") {
+            await saveUserClockOutLocation(userId, parseInt(sessionId), coords, device);
+        }
         return res.status(201).json({ success: true });
     }
     catch (err) {
@@ -77,4 +88,4 @@ export async function postUserLocation(req, res) {
     }
 }
 //# sourceMappingURL=locationController.js.map
-//# debugId=41dde560-e000-56fa-b4e7-31b17833bcfe
+//# debugId=01bcf764-019a-5210-a10d-e33a0613d5ff

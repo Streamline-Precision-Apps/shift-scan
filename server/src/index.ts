@@ -88,7 +88,7 @@ async function main() {
     // Error handling middleware (must be last)
     app.use(errorHandler);
 
-    const PORT = parseInt(process.env.PORT || "8080", 10) || 8080;
+    const PORT = 8080;
 
     // Start server
     const server = app.listen(PORT, "0.0.0.0", () => {

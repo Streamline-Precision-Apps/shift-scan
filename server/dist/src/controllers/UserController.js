@@ -1,5 +1,3 @@
-
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="c8275a2c-c83b-588a-827e-7fac15085694")}catch(e){}}();
 import * as UserService from "../services/UserService.js";
 import prisma from "../lib/prisma.js";
 // GET /api/v1/user/settings (GET, by query param or header)
@@ -625,5 +623,6 @@ export async function endSessionController(req, res) {
         });
     }
 }
-//# sourceMappingURL=UserController.js.map
-//# debugId=c8275a2c-c83b-588a-827e-7fac15085694
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="6104293e-38ab-5930-8e51-632626554b56")}catch(e){}}();
+//# sourceMappingURL=userController.js.map
+//# debugId=6104293e-38ab-5930-8e51-632626554b56

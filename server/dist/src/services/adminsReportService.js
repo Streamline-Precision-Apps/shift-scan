@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b99d9c85-b046-5d34-8cde-c87dfd0034d3")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="d4d6e328-b9f0-5958-8e1b-0b1e8f5149d2")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 export async function getTruckingReport() {
     const overWeightReport = await prisma.truckingLog.findMany({
@@ -217,4 +217,4 @@ export async function getMechanicReport() {
     return mechanicReport;
 }
 //# sourceMappingURL=adminsReportService.js.map
-//# debugId=b99d9c85-b046-5d34-8cde-c87dfd0034d3
+//# debugId=d4d6e328-b9f0-5958-8e1b-0b1e8f5149d2
