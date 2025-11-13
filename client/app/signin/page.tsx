@@ -43,9 +43,7 @@ export default function SignInPage() {
       setBiometricAvailable(true);
     } else {
       // Biometry is not available, info.reason and info.code will tell you why.
-      console.log(
-        `Biometry unavailable - Reason: ${info.reason}, Code: ${info.code}`
-      );
+      console.log(`Biometry unavailable`);
       setBiometricAvailable(false);
     }
   }, []);
@@ -118,7 +116,6 @@ export default function SignInPage() {
             }
           } catch (err) {
             // Auth check failed, clear invalid credentials and show sign-in form
-            console.log("Auto sign-in failed:", err);
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
           }
@@ -181,12 +178,16 @@ export default function SignInPage() {
         const storedToken = localStorage.getItem("token");
         const storedUserId = localStorage.getItem("userId");
         if (storedToken !== data.token || storedUserId !== String(userId)) {
-          console.error("❌ localStorage values do not match what was set", { storedToken, storedUserId });
-        } else {
-          console.log("✅ Token and userId set in localStorage:", { token: storedToken, userId: storedUserId });
+          console.error("❌ localStorage values do not match what was set", {
+            storedToken,
+            storedUserId,
+          });
         }
       } catch (storageErr) {
-        console.error("Failed to set token/userId in localStorage:", storageErr);
+        console.error(
+          "Failed to set token/userId in localStorage:",
+          storageErr
+        );
         throw new Error("Failed to save credentials locally.");
       }
 
@@ -198,9 +199,10 @@ export default function SignInPage() {
           const storedUsername = localStorage.getItem("shift_scan_username");
           const storedPassword = localStorage.getItem("shift_scan_password");
           if (storedUsername !== username || storedPassword !== password) {
-            console.error("❌ Biometric credentials in localStorage do not match what was set", { storedUsername, storedPassword });
-          } else {
-            console.log("✅ Biometric credentials set in localStorage:", { username: storedUsername, password: storedPassword });
+            console.error(
+              "❌ Biometric credentials in localStorage do not match what was set",
+              { storedUsername, storedPassword }
+            );
           }
           // Wait a bit to ensure credentials are persisted before continuing
           await new Promise((resolve) => setTimeout(resolve, 200));

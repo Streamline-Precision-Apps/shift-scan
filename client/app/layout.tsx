@@ -41,6 +41,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="preload" as="style" href="/app/globals.css" />
       <body suppressHydrationWarning={true}>
         <ClientIntlProvider>{children}</ClientIntlProvider>
       </body>
