@@ -344,6 +344,7 @@ export function useTimesheetLogs(
                 materialType: "",
                 LoadQuantity: 0,
                 RefuelLogs: [],
+                TascoFLoads: [],
                 Equipment: null,
               },
             ],
@@ -407,8 +408,91 @@ export function useTimesheetLogs(
     },
     [setForm],
   );
-  // Tasco nested log change handler (alias)
-  const handleTascoNestedLogChange = handleNestedLogChange;
+  
+  // Tasco F-Load handlers
+  const addTascoFLoad = useCallback(
+    (logIdx: number) => {
+      setForm((prev) =>
+        prev
+          ? {
+              ...prev,
+              TascoLogs: prev.TascoLogs.map((log, idx) =>
+                idx === logIdx
+                  ? {
+                      ...log,
+                      TascoFLoads: [
+                        ...log.TascoFLoads,
+                        {
+                          id: Date.now().toString(),
+                          weight: 0,
+                          screenType: "UNSCREENED" as const,
+                        },
+                      ],
+                    }
+                  : log,
+              ),
+            }
+          : prev,
+      );
+    },
+    [setForm],
+  );
+
+  const deleteTascoFLoad = useCallback(
+    (logIdx: number, fLoadIdx: number) => {
+      setForm((prev) =>
+        prev
+          ? {
+              ...prev,
+              TascoLogs: prev.TascoLogs.map((log, idx) =>
+                idx === logIdx
+                  ? {
+                      ...log,
+                      TascoFLoads: log.TascoFLoads.filter((_, i) => i !== fLoadIdx),
+                    }
+                  : log,
+              ),
+            }
+          : prev,
+      );
+    },
+    [setForm],
+  );
+  
+  // Tasco nested log change handler (separate from TruckingNestedType handler)
+  const handleTascoNestedLogChange = useCallback(
+    <T extends TascoNestedType>(
+      logType: keyof TimesheetData,
+      logIndex: number,
+      nestedType: T,
+      nestedIndex: number,
+      field: keyof TascoNestedTypeMap[T],
+      value: string | number | null,
+    ) => {
+      setForm((prev) =>
+        prev
+          ? {
+              ...prev,
+              [logType]: (prev[logType] as TascoLog[]).map((log, idx) =>
+                idx === logIndex
+                  ? {
+                      ...log,
+                      [nestedType]: (
+                        log[nestedType] as TascoNestedTypeMap[T][]
+                      ).map((item, nidx) =>
+                        nidx === nestedIndex
+                          ? { ...item, [field]: value }
+                          : item,
+                      ),
+                    }
+                  : log,
+              ),
+            }
+          : prev,
+      );
+    },
+    [setForm],
+  );
 
   // Employee Equipment log handlers
   const addEmployeeEquipmentLog = useCallback(() => {
@@ -596,6 +680,8 @@ export function useTimesheetLogs(
     removeTascoLog,
     addTascoRefuelLog,
     deleteTascoRefuelLog,
+    addTascoFLoad,
+    deleteTascoFLoad,
     addEmployeeEquipmentLog,
     removeEmployeeEquipmentLog,
     handleTascoNestedLogChange,
