@@ -185,7 +185,7 @@ export default function VerificationStep({
       }
 
       // Start location tracking FIRST for clock in (before submitting timesheet)
-      let trackingResult = { success: true };
+      let trackingResult = { success: false };
       if (type !== "switchJobs" && sessionId) {
         if (!isTrackingActive()) {
           trackingResult = await startClockInTracking(id, sessionId);

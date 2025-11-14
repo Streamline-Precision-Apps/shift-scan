@@ -191,7 +191,7 @@ export default function MechanicVerificationStep({
       }
 
       // Start location tracking FIRST for clock in (before submitting timesheet)
-      let trackingResult = { success: true };
+      let trackingResult = { success: false };
       if (type !== "switchJobs" && sessionId) {
         // Check if tracking is already active to prevent duplicate tracking
         if (!isTrackingActive()) {
