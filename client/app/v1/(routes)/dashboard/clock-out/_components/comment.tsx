@@ -77,18 +77,15 @@ export default function Comment({
       }
 
       // Use prefetched coordinates if available, else fallback to fetching now
-      let coords = coordinates;
-      if (!coords) {
-        coords = await getStoredCoordinates();
-      }
+      const coordinates = await getStoredCoordinates();
 
       const body = {
         userId: user?.id,
         endTime: new Date().toISOString(),
         timeSheetComments: commentsValue,
         wasInjured: false,
-        clockOutLat: coords ? coords.lat : null,
-        clockOutLng: coords ? coords.lng : null,
+        clockOutLat: coordinates ? coordinates.lat : null,
+        clockOutLng: coordinates ? coordinates.lng : null,
       };
 
       // Use apiRequest to call the backend update route

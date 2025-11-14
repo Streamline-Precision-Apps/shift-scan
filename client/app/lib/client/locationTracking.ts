@@ -38,7 +38,7 @@ let currentSessionId: number | null = null;
 // add a variable to track the last time a write to FireStore occurred
 let lastFirestoreWriteTime: number = 0;
 // WRITE_INTERVAL_MS: how often we actually POST location to your backend.
-// Set to 5 * 60 * 1000 for 5 minutes in production.
+// Set to 5 minutes to prevent excessive API calls during continuous tracking.
 const WRITE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 // LOCAL STORAGE KEY for permissions and queue
@@ -599,95 +599,48 @@ export function isTrackingActive(): boolean {
 // Get current coordinates (for immediate clock-in snapshot)
 //=============================================================================
 
-const GEOLOCATION_TIMEOUT = 4000; // 4 seconds - aggressive timeout
-const GEOLOCATION_MAX_RETRIES = 2; // Retry up to 2 times (3 attempts total)
+const GEOLOCATION_TIMEOUT = 2000; // 2 seconds - quick snapshot for clock operations
 
 /**
- * Get fresh, current coordinates with retry logic and aggressive timeout
- * Ensures location is not stale by disabling caching and retrying on failure
- * @returns Fresh coordinates or null if all attempts fail
+ * Get fresh, current coordinates quickly
+ * Single attempt, fast timeout - fail fast for clock-in/out
+ * @returns Fresh coordinates or null if unable to obtain
  */
 export async function getStoredCoordinates(): Promise<{
   lat: number;
   lng: number;
 } | null> {
-  let lastError: Error | null = null;
+  try {
+    if (isNative) {
+      // Native Capacitor Geolocation - single attempt, 2 second timeout
+      const pos = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: GEOLOCATION_TIMEOUT,
+        maximumAge: 0, // No caching - always fresh
+      });
 
-  // Try up to GEOLOCATION_MAX_RETRIES + 1 times
-  for (let attempt = 0; attempt <= GEOLOCATION_MAX_RETRIES; attempt++) {
-    try {
-      if (isNative) {
-        // Native Capacitor Geolocation - generally faster and more reliable
-        const pos = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: GEOLOCATION_TIMEOUT,
-          maximumAge: 0, // No caching - always fresh
-        });
-
-        if (!pos) throw new Error("Geolocation position is null");
-
-        console.log(
-          `[Geolocation] Fresh coordinates obtained (attempt ${attempt + 1})`
-        );
-        return {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-      } else if (typeof navigator !== "undefined" && navigator.geolocation) {
-        // Fallback to browser geolocation API
-        return new Promise((resolve, reject) => {
-          const timeoutId = setTimeout(
-            () => reject(new Error("Browser geolocation timeout")),
-            GEOLOCATION_TIMEOUT
-          );
-
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              clearTimeout(timeoutId);
-              console.log(
-                `[Geolocation] Browser geolocation succeeded (attempt ${
-                  attempt + 1
-                })`
-              );
-              resolve({
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-              });
-            },
-            (err) => {
-              clearTimeout(timeoutId);
-              reject(err);
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: GEOLOCATION_TIMEOUT,
-              maximumAge: 0, // No caching
-            }
-          );
-        });
-      } else {
-        throw new Error("No geolocation API available");
+      if (!pos) {
+        console.warn("[Geolocation] Position is null");
+        return null;
       }
-    } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
-      console.warn(
-        `[Geolocation] Attempt ${attempt + 1} failed:`,
-        lastError.message
-      );
 
-      // If this wasn't the last attempt, wait a bit before retrying
-      if (attempt < GEOLOCATION_MAX_RETRIES) {
-        await sleep(500 + attempt * 300); // 500ms, then 800ms, etc.
-      }
+      console.log("[Geolocation] Fresh coordinates obtained");
+      return {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      };
     }
-  }
 
-  // All attempts exhausted
-  console.error(
-    `[Geolocation] All ${GEOLOCATION_MAX_RETRIES + 1} attempts failed:`,
-    lastError?.message
-  );
-  return null;
+    // Not on native platform - return null quickly
+    console.warn("[Geolocation] Not on native platform");
+    return null;
+  } catch (err) {
+    console.warn(
+      "[Geolocation] Failed to get coordinates:",
+      err instanceof Error ? err.message : String(err)
+    );
+    return null;
+  }
 }
 
 //=============================================================================

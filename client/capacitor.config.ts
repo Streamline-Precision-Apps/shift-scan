@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   webDir: "out",
 
   server: {
-    url: "https://shift-scan-app.vercel.app",
+    url: "http://192.168.1.102:3000",
     cleartext: true,
   },
   android: {
