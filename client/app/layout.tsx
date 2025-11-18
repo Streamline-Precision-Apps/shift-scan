@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ClientIntlProvider from "./lib/client/ClientIntlProvider";
+import AppProviders from "./v1/providers";
+import StatusBarSetup from "./lib/client/statusBar";
 
 export const viewport: Viewport = {
   themeColor: "#57BDE9",
@@ -42,7 +44,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <ClientIntlProvider>{children}</ClientIntlProvider>
+        <ClientIntlProvider>
+          <AppProviders>
+            <StatusBarSetup />
+            {children}
+          </AppProviders>
+        </ClientIntlProvider>
       </body>
     </html>
   );

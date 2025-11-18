@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { ProgressBar } from "./progressBar";
 import { Button } from "../ui/button";
 import { useUserStore } from "@/app/lib/store/userStore";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { Capacitor } from "@capacitor/core";
 
 type prop = {
   userId: string;
@@ -23,7 +24,8 @@ export default function ProfilePictureSetup({
 }: prop) {
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  const ios = Capacitor.getPlatform() === "ios";
+  const android = Capacitor.getPlatform() === "android";
   const t = useTranslations("SignUpProfilePicture");
 
   const handleUpload = async (file: Blob) => {
@@ -31,34 +33,50 @@ export default function ProfilePictureSetup({
       console.warn("No user id");
       return;
     }
+    if (!userId) {
+      console.warn("No user id");
+      return;
+    }
 
     try {
+      // Debug: log blob info
+      console.log("[handleUpload] file (blob):", file);
+      console.log("[handleUpload] file instanceof Blob:", file instanceof Blob);
+      if (file instanceof Blob) {
+        console.log("[handleUpload] blob size:", file.size);
+        if (file instanceof File) {
+          console.log("[handleUpload] file name:", file.name);
+        }
+      }
+
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("file", file, "profile.png");
       formData.append("folder", "profileImages");
 
-      const res = await fetch("/api/uploadBlobs", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to upload image");
+      // Debug: log FormData contents
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof Blob) {
+          console.log(
+            `[handleUpload] FormData field '${key}': Blob, size`,
+            value.size
+          );
+        } else {
+          console.log(`[handleUpload] FormData field '${key}':`, value);
+        }
       }
 
-      const { url } = await res.json();
+      // Use apiRequest utility, which supports FormData
+      const res = await apiRequest("/api/storage/upload", "POST", formData);
+      console.log("[handleUpload] upload response:", res);
+      if (!res.url) {
+        throw new Error("Failed to upload image url");
+      }
       // Add cache-busting param to break browser cache
-      const cacheBustedUrl = `${url}?t=${Date.now()}`;
-      // Make a post route to finish user setup\
-      const API_URL = getApiUrl();
-      const dbRes = await fetch(`${API_URL}/api/v1/users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profileImage: cacheBustedUrl,
-        }),
-      }).then((res) => res.json());
+      const cacheBustedUrl = `${res.url}?t=${Date.now()}`;
+      const dbRes = await apiRequest(`/api/v1/user/${userId}`, "PUT", {
+        image: cacheBustedUrl,
+      });
 
       if (!dbRes.success) {
         throw new Error("Error updating url in DB");
@@ -91,7 +109,11 @@ export default function ProfilePictureSetup({
   };
 
   return (
-    <div className="h-dvh w-full flex flex-col">
+    <div
+      className={`h-dvh w-full flex flex-col bg-app-dark-blue ${
+        ios ? "pt-8" : android ? "pt-4" : ""
+      }`}
+    >
       {/*Header - fixed at top*/}
       <div className="w-full h-[10%] flex flex-col justify-end py-3">
         <Texts text={"white"} className="justify-end" size={"sm"}>

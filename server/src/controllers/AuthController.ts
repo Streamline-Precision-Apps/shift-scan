@@ -59,6 +59,7 @@ export const loginUser = async (
       token,
       user: {
         id: user.id,
+        accountSetup: user.accountSetup,
       },
     });
   } catch (err) {
