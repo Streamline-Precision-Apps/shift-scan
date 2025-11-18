@@ -235,14 +235,14 @@ export default function SubmittedForms({
 
                 {/* Form Fields */}
                 <div className="bg-white rounded-lg">
-                  <FormFieldRenderer
+                  {/* <FormFieldRenderer
                     formData={formData}
                     formValues={formValues}
                     setFormValues={updateFormValues}
                     useNativeInput={true}
                     readOnly={true}
                     disabled={true}
-                  />
+                  /> */}
                 </div>
               </div>
 

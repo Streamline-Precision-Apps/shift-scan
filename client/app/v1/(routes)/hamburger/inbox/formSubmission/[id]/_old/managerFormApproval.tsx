@@ -191,14 +191,14 @@ export default function ManagerFormApproval({
                   Form Details
                 </h3>
               </div>
-              <FormFieldRenderer
+              {/* <FormFieldRenderer
                 formData={formData}
                 formValues={formValues}
                 setFormValues={() => {}}
                 readOnly={true}
                 disabled={true}
                 useNativeInput={true}
-              />
+              /> */}
 
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
                 <p className="text-xs text-gray-500">

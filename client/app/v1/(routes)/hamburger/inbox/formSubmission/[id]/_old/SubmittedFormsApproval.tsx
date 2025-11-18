@@ -267,14 +267,14 @@ export default function SubmittedFormsApproval({
 
               {/* Form Fields */}
               <div className="bg-white rounded-lg">
-                <FormFieldRenderer
+                {/* <FormFieldRenderer
                   formData={formData}
                   formValues={formValues}
                   setFormValues={() => {}}
                   useNativeInput={true}
                   readOnly={true}
                   disabled={true}
-                />
+                /> */}
               </div>
             </div>
           </div>

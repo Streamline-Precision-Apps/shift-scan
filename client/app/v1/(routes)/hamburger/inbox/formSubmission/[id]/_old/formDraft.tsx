@@ -287,13 +287,13 @@ export default function FormDraft({
                     Form Details
                   </h3>
                 </div>
-                <FormFieldRenderer
+                {/* <FormFieldRenderer
                   formData={formData}
                   formValues={formValues}
                   setFormValues={updateFormValues}
                   readOnly={false}
                   useNativeInput={true}
-                />
+                /> */}
               </div>
 
               {/* Signature section - only shown if required */}
