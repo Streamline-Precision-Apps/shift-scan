@@ -30,15 +30,16 @@ import {
 import { Button } from "@/app/v1/components/ui/button";
 import React, { Dispatch, SetStateAction, useMemo, Suspense } from "react";
 import { Skeleton } from "@/app/v1/components/ui/skeleton";
-import { Submission, FormTemplatePages } from "./hooks/useSubmissionDataById";
 import { format } from "date-fns";
 import { highlight } from "../../../_pages/highlight";
 import { Check, X } from "lucide-react";
 import LoadingFormSubmissionTableState from "./loadingFormSubmissionTableState";
+import { FormTemplate } from "@/app/lib/types/forms";
+import { FormIndividualTemplate, Submission } from "./hooks/types";
 
 interface FormsDataTableProps {
-  formTemplate?: any;
-  formTemplatePage?: FormTemplatePages;
+  formTemplate?: FormTemplate;
+  formSubmissions?: FormIndividualTemplate;
   loading: boolean;
   page: number;
   pageSize: number;
@@ -56,7 +57,7 @@ interface FormsDataTableProps {
 
 export function FormSubmissionDataTable({
   formTemplate,
-  formTemplatePage,
+  formSubmissions,
   loading,
   page,
   pageSize,
@@ -79,11 +80,11 @@ export function FormSubmissionDataTable({
     order: number;
   };
   const fields = useMemo(() => {
-    if (!formTemplate?.FormGrouping) return [] as Field[];
-    return formTemplate.FormGrouping.flatMap(
+    if (!formSubmissions?.FormGrouping) return [] as Field[];
+    return formSubmissions.FormGrouping.flatMap(
       (g: { Fields: Field[] }) => g.Fields
     ).sort((a: Field, b: Field) => a.order - b.order);
-  }, [formTemplate]);
+  }, [formSubmissions]);
 
   // Dynamically create columns based on the form fields
   const columns = useMemo(() => {
@@ -438,7 +439,7 @@ export function FormSubmissionDataTable({
   ]);
 
   const table = useReactTable({
-    data: formTemplatePage?.Submissions || [],
+    data: formSubmissions?.Submissions || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -449,7 +450,7 @@ export function FormSubmissionDataTable({
       },
     },
     manualPagination: true, // Tell TanStack Table we're handling pagination manually
-    pageCount: formTemplatePage?.totalPages || 1, // Important for proper page count display
+    pageCount: formSubmissions?.totalPages || 1, // Important for proper page count display
     onPaginationChange: (updater) => {
       const newState =
         typeof updater === "function"
@@ -532,7 +533,7 @@ export function FormSubmissionDataTable({
               </Suspense>
             </TableBody>
           </Table>
-          {!loading && formTemplate?.Submissions.length === 0 && (
+          {!loading && formSubmissions?.Submissions.length === 0 && (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-row items-center gap-2 justify-center rounded-lg">
               <span className="text-lg text-gray-500">
                 No submissions found.

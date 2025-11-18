@@ -272,8 +272,8 @@ export default function DynamicForm({ params }: PageProps) {
   const ios = Capacitor.getPlatform() === "ios";
   return (
     <div
-      className={`h-screen w-full container mx-auto max-w-4xl rounded-[10px] pb-8 px-5 ${
-        android ? "pt-3" : ios ? "pt-6" : "pt-3"
+      className={`h-screen w-full container mx-auto max-w-4xl rounded-[10px] pb-7 px-5 ${
+        android ? "pt-4" : ios ? "pt-12" : "pt-3.5"
       }`}
     >
       {/* Page Header */}

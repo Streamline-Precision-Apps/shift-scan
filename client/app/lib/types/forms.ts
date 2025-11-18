@@ -87,7 +87,7 @@ export interface FormSubmission {
   data: Record<string, FormFieldValue>;
   createdAt: Date;
   updatedAt: Date;
-  submittedAt: Date | null;
+  submittedAt: Date;
   status: FormStatus;
   User: UserInfo;
   Approvals?: FormApproval[];

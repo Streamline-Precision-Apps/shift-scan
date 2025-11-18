@@ -31,6 +31,7 @@ import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
 import FormLoadingView from "./FormLoadingView";
 import FormErrorView from "./FormErrorView";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 /**
  * Props for FormSubmittedView
@@ -124,12 +125,14 @@ export function FormSubmittedView({
   showApprovalInfo = true,
   className = "space-y-6",
 }: FormSubmittedViewProps) {
-  const { template } = useFormContext();
+  const { template, values, updateValue } = useFormContext();
   const submission = useFormSubmission();
   const approval = useFormApproval();
   const isReadOnly = useFormReadOnly();
   const { submissionStatus, loading, error } = useFormState();
+  const { user } = useUserStore();
 
+  const signatureImg = user?.signature || null;
   // Use template name as the form title
   const formTitle = template?.name || "Form Submission";
 
@@ -193,7 +196,58 @@ export function FormSubmittedView({
                   Form Details
                 </h3>
               </div>
-              <FormView readOnly={true} disabled={true} />
+              <FormView
+                readOnly={true}
+                disabled={true}
+                additionalContent={
+                  <>
+                    {template?.isSignatureRequired && (
+                      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
+                        <div className="mb-2">
+                          <span className="text-sm font-medium text-gray-700">
+                            Signature
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <input
+                            type="checkbox"
+                            id="user-signature-checkbox"
+                            checked={
+                              values.signature === true ||
+                              values.signature === "true"
+                            }
+                            onChange={(e) =>
+                              updateValue(
+                                "signature",
+                                e.target.checked ? true : null
+                              )
+                            }
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <label
+                            htmlFor="user-signature-checkbox"
+                            className="text-sm text-gray-700 select-none cursor-pointer font-medium"
+                          >
+                            I electronically sign this submission
+                          </label>
+                        </div>
+                        {/* Show user signature image if signed and available */}
+                        {(values.signature === true ||
+                          values.signature === "true") &&
+                          signatureImg && (
+                            <div className="mt-4 flex flex-col items-center border border-gray-200">
+                              <img
+                                src={signatureImg}
+                                alt="User Signature"
+                                className="w-32 h-auto  rounded"
+                              />
+                            </div>
+                          )}
+                      </div>
+                    )}
+                  </>
+                }
+              />
             </div>
 
             {/* Approval Information */}

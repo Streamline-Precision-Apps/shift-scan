@@ -21,32 +21,8 @@ import { useDashboardData } from "@/app/admins/_pages/sidebar/DashboardDataConte
 import { useUserStore } from "@/app/lib/store/userStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
 import { FormTemplate, FormField } from "@/app/lib/types/forms";
+import { FormIndividualTemplate } from "./types";
 
-export interface Submission {
-  id: number;
-  title: string;
-  formTemplateId: string;
-  userId: string;
-  formType: string;
-  data: Record<string, unknown>;
-  createdAt: string;
-  updatedAt: string;
-  submittedAt: string;
-  status: string;
-  User: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    signature: string;
-  };
-}
-export interface FormTemplatePages {
-  Submissions: Submission[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
 export default function useSubmissionDataById(id: string) {
   const { refresh } = useDashboardData();
   const router = useRouter();
@@ -87,7 +63,8 @@ export default function useSubmissionDataById(id: string) {
     useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formTemplate, setFormTemplate] = useState<FormTemplate>();
-  const [formTemplatePage, setFormTemplatePage] = useState<FormTemplatePages>();
+  const [formTemplatePage, setFormTemplatePage] =
+    useState<FormIndividualTemplate>();
   const [loading, setLoading] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);

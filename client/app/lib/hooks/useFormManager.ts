@@ -328,7 +328,13 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
         };
       }
 
-      const valuesToCheck = valuesToValidate || values;
+      // Clone values and ensure signature is present if required
+      let valuesToCheck = valuesToValidate || values;
+      if (template.isSignatureRequired) {
+        if (!Object.prototype.hasOwnProperty.call(valuesToCheck, "signature")) {
+          valuesToCheck = { ...valuesToCheck, signature: null };
+        }
+      }
 
       // Create temporary submission for validation
       const tempSubmission: FormSubmission = {
@@ -340,7 +346,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
         data: valuesToCheck,
         createdAt: submission?.createdAt ?? new Date(),
         updatedAt: new Date(),
-        submittedAt: submission?.submittedAt ?? null,
+        submittedAt: submission?.submittedAt ?? new Date(),
         status: submission?.status ?? FormStatus.DRAFT,
         User: submission?.User ?? { id: "", firstName: "", lastName: "" },
         FormTemplate: template,
@@ -366,6 +372,14 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
       }
 
       const submitValues = valuesToSubmit || values;
+
+      // If signature is required, ensure it is present and valid
+      if (template.isSignatureRequired) {
+        const sig = submitValues["signature"];
+        if (sig === null || sig === undefined || sig === "" || sig === false) {
+          throw new Error("Signature is required before submitting this form.");
+        }
+      }
 
       // Validate before submission
       const validation = validateForm(submitValues);

@@ -49,6 +49,7 @@ import {
 import FormView from "./FormView";
 import FormLoadingView from "./FormLoadingView";
 import FormErrorView from "./FormErrorView";
+import { useUserStore } from "@/app/lib/store/userStore";
 
 /**
  * Props for FormDraftView
@@ -112,7 +113,9 @@ export function FormDraftView({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteRequestModal, setDeleteRequestModal] = useState(false);
   const [userDisplayTitle, setUserDisplayTitle] = useState("");
+  const { user } = useUserStore();
 
+  const signatureImg = user?.signature || null;
   // AlertDialog for unsaved changes
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const pendingRouteChange = useRef<null | (() => void)>(null);
@@ -227,6 +230,57 @@ export function FormDraftView({
                 readOnly={false}
                 disabled={isSubmitting}
                 useNativeInput={true}
+                additionalContent={
+                  <>
+                    {template?.isSignatureRequired && (
+                      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
+                        <div className="mb-2 flex flex-row ">
+                          <span className="text-sm font-medium text-gray-700 ">
+                            Signature
+                          </span>
+                          <span className="text-red-500 pl-0.5 flex justify-center">
+                            *
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <input
+                            type="checkbox"
+                            id="user-signature-checkbox"
+                            checked={
+                              values.signature === true ||
+                              values.signature === "true"
+                            }
+                            onChange={(e) =>
+                              updateValue(
+                                "signature",
+                                e.target.checked ? true : null
+                              )
+                            }
+                            className="h-6 w-6  text-blue-600 focus:ring-blue-500 border-gray-300 rounded-lg"
+                          />
+                          <label
+                            htmlFor="user-signature-checkbox"
+                            className="text-sm text-gray-700 select-none cursor-pointer font-medium"
+                          >
+                            I electronically sign this submission
+                          </label>
+                        </div>
+                        {/* Show user signature image if signed and available */}
+                        {(values.signature === true ||
+                          values.signature === "true") &&
+                          signatureImg && (
+                            <div className="mt-4 flex flex-col items-center border border-gray-200">
+                              <img
+                                src={signatureImg}
+                                alt="User Signature"
+                                className="w-32 h-auto  rounded"
+                              />
+                            </div>
+                          )}
+                      </div>
+                    )}
+                  </>
+                }
               />
             </div>
           </div>

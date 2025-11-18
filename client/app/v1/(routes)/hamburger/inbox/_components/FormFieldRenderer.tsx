@@ -168,9 +168,21 @@ export const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
    */
   const sortedFormData = useMemo(() => {
     const sorted = sortFormTemplate(formData);
-
+    // If native input, filter out signature and state fields
+    if (useNativeInput) {
+      return {
+        ...sorted,
+        FormGrouping: sorted.FormGrouping.map((group) => ({
+          ...group,
+          Fields: group.Fields.filter((field) => {
+            const id = field.id.toLowerCase();
+            return id !== "signature" && id !== "state";
+          }),
+        })),
+      };
+    }
     return sorted;
-  }, [formData]);
+  }, [formData, useNativeInput]);
 
   /**
    * Handle field changes from RenderFields.

@@ -101,6 +101,7 @@ const FormPage = ({ params }: PageProps) => {
         <div className="h-full w-full overflow-auto pb-10">
           <FormSubmissionDataTable
             formTemplate={formTemplate}
+            formSubmissions={formTemplatePage}
             loading={loading}
             page={page}
             pageSize={pageSize}

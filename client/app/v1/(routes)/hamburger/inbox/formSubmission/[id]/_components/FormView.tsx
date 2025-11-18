@@ -16,7 +16,7 @@
 
 "use client";
 
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import type {
   FormFieldRendererProps,
   FormGrouping,
@@ -136,9 +136,6 @@ export function FormView({
 }: FormViewProps) {
   const { template, values, updateValue, loading, error, submission } =
     useFormContext();
-
-  const groupings = useFormGroupings();
-
   /**
    * Sort template to ensure proper ordering:
    * 1. FormGrouping sorted by order
@@ -198,9 +195,9 @@ export function FormView({
         useNativeInput={useNativeInput}
       />
       {/* Additional content (signatures, approvals, etc) */}
-      {additionalContent && (
-        <div className="space-y-4">{additionalContent}</div>
-      )}
+      {additionalContent}
+
+      {/* Signature section if required by template */}
     </div>
   );
 }
