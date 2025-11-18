@@ -32,11 +32,11 @@ export async function getAllTimesheets(params: GetAllTimesheetsParams) {
     // Status filter (pending vs all)
     // Only add status filter if not "all" (which means show all statuses)
     if (status && status !== "all") {
-      if (status === "pending") {
-        where.status = "PENDING";
+      if (status.toLowerCase() === "pending") {
+        where.status = "PENDING" as ApprovalStatus;
       } else {
-        // For specific status values, cast to enum
-        where.status = status as ApprovalStatus;
+        // For specific status values, convert to uppercase and cast to enum
+        where.status = status.toUpperCase() as ApprovalStatus;
       }
     }
 
@@ -82,8 +82,10 @@ export async function getAllTimesheets(params: GetAllTimesheetsParams) {
 
     // Status filter (from filter options, not pending/all)
     if (filters.status && filters.status.length > 0) {
-      // Filter out "all" from status array as it's not a valid enum value
-      const validStatuses = filters.status.filter((s) => s !== "all");
+      // Filter out "all" from status array and convert to uppercase to match enum
+      const validStatuses = filters.status
+        .filter((s) => s.toLowerCase() !== "all")
+        .map((s) => s.toUpperCase());
       if (validStatuses.length > 0) {
         where.status = {
           in: validStatuses as ApprovalStatus[],
@@ -787,11 +789,14 @@ export async function updateTimesheet(
 export async function updateTimesheetStatus(
   id: string | undefined,
   status: string,
-  changes: Record<string, { old: unknown; new: unknown }>
+  changes: Record<string, { old: unknown; new: unknown }>,
+  userId: string
 ) {
   try {
+    const timesheetId = parseInt(id as string, 10);
+    
     await prisma.timeSheet.update({
-      where: { id: parseInt(id as string, 10) },
+      where: { id: timesheetId },
       data: {
         status: status as ApprovalStatus,
       },
@@ -801,12 +806,61 @@ export async function updateTimesheetStatus(
     if (Object.keys(changes).length > 0) {
       await prisma.timeSheetChangeLog.create({
         data: {
-          timeSheetId: parseInt(id as string, 10),
-          changedBy: "system", // or pass admin ID
+          timeSheetId: timesheetId,
+          changedBy: userId,
           changes: changes as any,
           changeReason: `Status changed to ${status}`,
         },
       });
+    }
+
+    // Handle notifications for timecard approval/denial
+    if (status === "APPROVED" || status === "REJECTED") {
+      const notifications = await prisma.notification.findMany({
+        where: {
+          topic: "timecard-submission",
+          referenceId: timesheetId.toString(),
+          Response: { is: null },
+        },
+      });
+
+      if (notifications.length > 0) {
+        // Filter out notifications that already have a notificationRead for this user
+        const existingReads = await prisma.notificationRead.findMany({
+          where: {
+            notificationId: { in: notifications.map((n) => n.id) },
+            userId: userId,
+          },
+          select: { notificationId: true },
+        });
+        const alreadyReadIds = new Set(
+          existingReads.map((r) => r.notificationId)
+        );
+        const unreadNotifications = notifications.filter(
+          (n) => !alreadyReadIds.has(n.id)
+        );
+
+        // Create notification responses and mark as read in a transaction
+        await prisma.$transaction(async (tx) => {
+          if (unreadNotifications.length > 0) {
+            await tx.notificationRead.createMany({
+              data: unreadNotifications.map((n) => ({
+                notificationId: n.id,
+                userId: userId,
+                readAt: new Date(),
+              })),
+            });
+          }
+          await tx.notificationResponse.createMany({
+            data: notifications.map((n) => ({
+              notificationId: n.id,
+              userId: userId,
+              response: status === "APPROVED" ? "Approved" : "Rejected",
+              respondedAt: new Date(),
+            })),
+          });
+        });
+      }
     }
   } catch (error) {
     console.error("Error updating timesheet status:", error);
@@ -951,6 +1005,100 @@ export async function getAllTascoMaterialTypes() {
     };
   } catch (error) {
     console.error("Error fetching Tasco material types:", error);
+    throw error;
+  }
+}
+
+/**
+ * Check timesheet status and resolve associated notification
+ * If timesheet is already approved/rejected, create notification response
+ */
+export async function resolveTimecardNotification(
+  timesheetId: string,
+  notificationId: number,
+  userId: string
+) {
+  try {
+    // Parse timesheetId to int for Prisma query
+    const tsId = parseInt(timesheetId, 10);
+    if (isNaN(tsId)) {
+      throw new Error("Invalid timesheet ID");
+    }
+
+    // Get the timesheet to check its current status
+    const timesheet = await prisma.timeSheet.findUnique({
+      where: { id: tsId },
+      select: { status: true },
+    });
+
+    if (!timesheet) {
+      throw new Error("Timesheet not found");
+    }
+
+    // Check if timesheet has been approved or rejected
+    if (timesheet.status === "APPROVED" || timesheet.status === "REJECTED") {
+      // Check if notification already has a response
+      const existingResponse = await prisma.notificationResponse.findUnique({
+        where: { notificationId },
+      });
+
+      if (existingResponse) {
+        return {
+          success: true,
+          alreadyResolved: true,
+          status: timesheet.status,
+        };
+      }
+
+      // Check if user has already read this notification
+      const existingRead = await prisma.notificationRead.findUnique({
+        where: {
+          notificationId_userId: {
+            notificationId,
+            userId,
+          },
+        },
+      });
+
+      // Create notification response and read in transaction
+      await prisma.$transaction(async (tx) => {
+        // Create response with the actual status
+        await tx.notificationResponse.create({
+          data: {
+            notificationId,
+            userId,
+            response: timesheet.status === "APPROVED" ? "Approved" : "Rejected",
+            respondedAt: new Date(),
+          },
+        });
+
+        // Create read record if it doesn't exist
+        if (!existingRead) {
+          await tx.notificationRead.create({
+            data: {
+              notificationId,
+              userId,
+              readAt: new Date(),
+            },
+          });
+        }
+      });
+
+      return {
+        success: true,
+        resolved: true,
+        status: timesheet.status,
+      };
+    }
+
+    // Timesheet is still pending
+    return {
+      success: true,
+      resolved: false,
+      status: timesheet.status,
+    };
+  } catch (error) {
+    console.error("Error resolving timecard notification:", error);
     throw error;
   }
 }

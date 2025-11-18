@@ -9,6 +9,7 @@ import {
   exportTimesheets,
   getTimesheetChangeLogs,
   getAllTascoMaterialTypes,
+  resolveTimecardNotification,
 } from "../services/adminTimesheetService.js";
 
 /**
@@ -45,11 +46,9 @@ export async function getAllTimesheetsController(req: Request, res: Response) {
         ? req.query.equipmentLogTypes
         : [req.query.equipmentLogTypes]
       : [];
-    const statusFilters = req.query.status
-      ? Array.isArray(req.query.status)
-        ? req.query.status
-        : [req.query.status]
-      : [];
+    // Note: statusFilters should come from a different query param (e.g., statusFilter[])
+    // not from the main 'status' param which controls pending vs all behavior
+    const statusFilters: string[] = [];
     const changes = req.query.changes
       ? Array.isArray(req.query.changes)
         ? req.query.changes
@@ -309,7 +308,16 @@ export async function updateTimesheetStatusController(
       });
     }
 
-    await updateTimesheetStatus(id, status, changes || {});
+    // Get authenticated user ID from JWT token
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    await updateTimesheetStatus(id, status, changes || {}, userId);
 
     res.status(200).json({
       success: true,
@@ -371,6 +379,50 @@ export async function getAllTascoMaterialTypesController(
     res.status(500).json({
       success: false,
       message: "Failed to fetch Tasco material types",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+
+/**
+ * POST /api/v1/admins/timesheet/resolve-notification
+ * Check timesheet status and resolve notification if already approved/rejected
+ */
+export async function resolveTimecardNotificationController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const { timesheetId, notificationId } = req.body;
+    
+    if (!timesheetId || !notificationId) {
+      return res.status(400).json({
+        success: false,
+        message: "Timesheet ID and notification ID are required",
+      });
+    }
+
+    // Get authenticated user ID
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    const result = await resolveTimecardNotification(
+      timesheetId,
+      parseInt(notificationId),
+      userId
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error resolving timecard notification:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to resolve timecard notification",
       error: error instanceof Error ? error.message : "Unknown error",
     });
   }

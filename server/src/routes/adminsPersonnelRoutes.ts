@@ -39,6 +39,8 @@ router.post("/createCrew", createCrewController);
 router.put("/editCrew/:id", editCrewController);
 // delete crew
 router.delete("/deleteCrew/:id", deleteCrewController);
+// delete crew by ID (alternate route for REST pattern)
+router.delete("/:id", deleteCrewController);
 
 // create user (admin)
 router.post("/createUserAdmin", createUserAdminController);

@@ -133,29 +133,32 @@ export const EditTimesheetModal: React.FC<EditTimesheetModalProps> = ({
 
     useEffect(() => {
         const getData = async () => {
-        if (!isOpen || !timesheetId) return;
-        setLoading(true);
-        setError(null);
+            if (!isOpen || !timesheetId) return;
+            setLoading(true);
+            setError(null);
 
-        // Fetch timesheet data
-        apiRequest(`/api/v1/admins/timesheet/${timesheetId}`, "GET")
-            .then((json) => {
-                setForm(json); // Pre-populate form
-                setOriginalForm(json); // Store original for undo
-            })
-            .catch((e) => setError(e.message))
-            .finally(() => setLoading(false));
+            // Fetch timesheet data
+            apiRequest(`/api/v1/admins/timesheet/${timesheetId}`, "GET")
+                .then((json) => {
+                    setForm(json); // Pre-populate form
+                    setOriginalForm(json); // Store original for undo
+                })
+                .catch((e) => setError(e.message))
+                .finally(() => setLoading(false));
 
-        // Fetch change logs separately
-        apiRequest(`/api/v1/admins/timesheet/${timesheetId}/change-logs`, "GET")
-            .then((json) => {
-                setChangeLogs(json);
-            })
-            .catch((e) => {
-                console.error("Error fetching change logs:", e);
-                // Don't set the error state for this, as it's not critical
-            });
-        }
+            // Fetch change logs separately
+            apiRequest(
+                `/api/v1/admins/timesheet/${timesheetId}/change-logs`,
+                "GET"
+            )
+                .then((json) => {
+                    setChangeLogs(json);
+                })
+                .catch((e) => {
+                    console.error("Error fetching change logs:", e);
+                    // Don't set the error state for this, as it's not critical
+                });
+        };
         getData();
     }, [isOpen, timesheetId]);
 
@@ -229,19 +232,17 @@ export const EditTimesheetModal: React.FC<EditTimesheetModalProps> = ({
                 setLoading(false);
 
                 if (!result.data?.onlyStatusUpdated && numberOfChanges > 0) {
-                    await fetch("/api/notifications/send-multicast", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
+                    await apiRequest(
+                        "/api/notifications/send-multicast",
+                        "POST",
+                        {
                             topic: "timecards-changes",
                             title: "Timecard Modified ",
                             message: `${result.data?.editorFullName} made ${numberOfChanges} changes to ${result.data?.userFullname}'s timesheet #${timesheetId}.`,
                             link: `/admins/timesheets?id=${timesheetId}`,
                             referenceId: timesheetId,
-                        }),
-                    });
+                        }
+                    );
                 }
             }
         } catch (err) {
@@ -310,12 +311,13 @@ export const EditTimesheetModal: React.FC<EditTimesheetModalProps> = ({
     // Call ensureSingleLog when workType changes to TRUCK_DRIVER or TASCO
     useEffect(() => {
         const getEnsureSingleLog = () => {
-        if (!form) return;
-        if (form.workType === "TRUCK_DRIVER") {
-            ensureSingleLog("TruckingLogs");
-        } else if (form.workType === "TASCO") {
-            ensureSingleLog("TascoLogs");
-        }}
+            if (!form) return;
+            if (form.workType === "TRUCK_DRIVER") {
+                ensureSingleLog("TruckingLogs");
+            } else if (form.workType === "TASCO") {
+                ensureSingleLog("TascoLogs");
+            }
+        };
         getEnsureSingleLog();
     }, [form?.workType]);
 
