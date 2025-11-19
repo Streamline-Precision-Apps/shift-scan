@@ -93,6 +93,17 @@ import { Holds } from "@/app/v1/components/(reusable)/holds";
 import { Images } from "@/app/v1/components/(reusable)/images";
 import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { Button } from "@/app/v1/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/app/v1/components/ui/alert-dialog";
 import { useTranslations } from "next-intl";
 import {
   Accordion,
@@ -101,13 +112,16 @@ import {
   AccordionContent,
 } from "@/app/v1/components/ui/accordion";
 import React, { useState } from "react";
+
 import { format } from "date-fns/format";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
 
 export default function GeneralReviewSection({
   currentTimeSheets,
   isScrolling, // Default to 'verticle' if not provided
   scrollSwipeHandlers,
   onEditTimesheet,
+  onDeleteTimesheet,
 }: {
   currentTimeSheets: TimeSheet[];
   isScrolling: boolean;
@@ -117,6 +131,7 @@ export default function GeneralReviewSection({
     onTouchEnd: (e: React.TouchEvent) => void;
   };
   onEditTimesheet?: (timesheetId: string) => void;
+  onDeleteTimesheet?: (timesheetId: string) => void;
 }) {
   const t = useTranslations("TimeCardSwiper");
 
@@ -135,6 +150,15 @@ export default function GeneralReviewSection({
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
     return `${hours}h ${minutes}m`;
+  };
+
+  // Helper to get duration in minutes
+  const getDurationMinutes = (start: string, end: string) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffMs = endDate.getTime() - startDate.getTime();
+    if (isNaN(diffMs) || diffMs < 0) return 0;
+    return Math.floor(diffMs / (1000 * 60));
   };
 
   return (
@@ -215,15 +239,57 @@ export default function GeneralReviewSection({
                       <strong>{t("Costcode")}:</strong>{" "}
                       {timesheet.CostCode.name.split(" ")[0]}
                     </Texts>
-                    {onEditTimesheet && (
-                      <Button
-                        onClick={() => onEditTimesheet(String(timesheet.id))}
-                        className="mt-2 w-full bg-app-orange hover:bg-app-orange/80 text-black font-medium"
-                      >
-                        <img src="/formEdit.svg" alt="Edit" className="w-4 h-4 mr-2" />
-                        Edit
-                      </Button>
-                    )}
+                    <div className="w-full flex flex-row gap-2  mt-2 justify-end items-end">
+                      {getDurationMinutes(
+                        timesheet.startTime,
+                        timesheet.endTime
+                      ) < 5 && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size={"sm"}
+                              className="border border-red-200 hover:bg-red-100 "
+                              aria-label="Delete timesheet"
+                            >
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Delete Timesheet?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete timesheet #
+                                {timesheet.id}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                                onClick={() =>
+                                  onDeleteTimesheet?.(String(timesheet.id))
+                                }
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                      {onEditTimesheet && (
+                        <Button
+                          size={"sm"}
+                          onClick={() => onEditTimesheet(String(timesheet.id))}
+                          className=" px-6 bg-app-orange hover:bg-app-orange/80 text-black font-medium"
+                        >
+                          Edit
+                        </Button>
+                      )}
+                    </div>
                   </Holds>
                 </AccordionContent>
               </AccordionItem>

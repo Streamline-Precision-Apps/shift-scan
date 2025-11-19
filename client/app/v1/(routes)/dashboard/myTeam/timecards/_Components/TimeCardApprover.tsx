@@ -308,6 +308,17 @@ export default function TimeCardApprover({
     fetchCrewTimeCards();
   }, [fetchCrewTimeCards]);
 
+  const handleDelete = async (timesheetId: string) => {
+    console.log("Deleting timesheet with ID:", timesheetId);
+    const response = await apiRequest(
+      `/api/v1/admins/timesheet/${timesheetId}`,
+      "DELETE"
+    );
+    if (response) {
+      fetchCrewTimeCards();
+    }
+  };
+
   return (
     <Holds className="h-full w-full">
       <Grids rows={"8"} className="h-full w-full pb-5">
@@ -393,6 +404,7 @@ export default function TimeCardApprover({
                           scrollSwipeHandlers={scrollSwipeHandlers}
                           isScrolling={isScrolling}
                           onEditTimesheet={handleEditTimesheet}
+                          onDeleteTimesheet={handleDelete}
                         />
                       )}
                       {viewOption === "Trucking" && (
