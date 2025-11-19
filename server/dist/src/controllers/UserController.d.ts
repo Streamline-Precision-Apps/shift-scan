@@ -41,5 +41,6 @@ export declare function getUserOnlineStatus(req: Request, res: Response): Promis
 export declare function getUserInfo(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 export declare function sessionController(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 export declare function endSessionController(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
+export declare function userSignatureController(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 export {};
 //# sourceMappingURL=userController.d.ts.map

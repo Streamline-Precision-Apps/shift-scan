@@ -41,6 +41,7 @@ export const loginUser = async (req, res) => {
             token,
             user: {
                 id: user.id,
+                accountSetup: user.accountSetup,
             },
         });
     }
@@ -70,6 +71,6 @@ export const signOutUser = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0c319b78-a926-5ffd-9a08-a88d13ac61f3")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="a2f21e83-b9fd-5a50-b15b-6b3bf390d280")}catch(e){}}();
 //# sourceMappingURL=authController.js.map
-//# debugId=0c319b78-a926-5ffd-9a08-a88d13ac61f3
+//# debugId=a2f21e83-b9fd-5a50-b15b-6b3bf390d280

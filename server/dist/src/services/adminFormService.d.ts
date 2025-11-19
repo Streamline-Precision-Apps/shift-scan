@@ -413,6 +413,7 @@ export declare function getFormSubmissionById(submissionId: number): Promise<({
             id: string;
             firstName: string;
             lastName: string;
+            signature: string | null;
         } | null;
     } & {
         id: string;

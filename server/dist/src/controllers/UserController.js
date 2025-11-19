@@ -623,6 +623,31 @@ export async function endSessionController(req, res) {
         });
     }
 }
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="6104293e-38ab-5930-8e51-632626554b56")}catch(e){}}();
+export async function userSignatureController(req, res) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                error: "User ID is required",
+                message: "Failed to handle user signature",
+            });
+        }
+        const signature = await UserService.handleUserSignature(id);
+        res.status(200).json({
+            success: true,
+            data: signature,
+            message: "User signature handled successfully",
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+            message: "Failed to handle user signature",
+        });
+    }
+}
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="8ccaf34d-e4c3-59f9-9f6c-e9f42efe72e9")}catch(e){}}();
 //# sourceMappingURL=userController.js.map
-//# debugId=6104293e-38ab-5930-8e51-632626554b56
+//# debugId=8ccaf34d-e4c3-59f9-9f6c-e9f42efe72e9

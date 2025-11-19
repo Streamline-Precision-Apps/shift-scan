@@ -338,4 +338,7 @@ export declare function EndSession(id: number): Promise<{
     startTime: Date;
     endTime: Date | null;
 }>;
+export declare function handleUserSignature(userId: string): Promise<{
+    signature: string | null;
+} | null>;
 //# sourceMappingURL=UserService.d.ts.map
