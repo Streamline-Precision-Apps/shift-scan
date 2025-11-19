@@ -33,20 +33,18 @@ router.get("/crewManagers", getCrewManagersController);
 
 router.get("/personnelManager", getPersonnelManagerController);
 
-// create crew
-router.post("/createCrew", createCrewController);
-// edit crew
-router.put("/editCrew/:id", editCrewController);
-// delete crew
-router.delete("/deleteCrew/:id", deleteCrewController);
-// delete crew by ID (alternate route for REST pattern)
-router.delete("/:id", deleteCrewController);
-
 // create user (admin)
 router.post("/createUserAdmin", createUserAdminController);
 // edit user (admin)
 router.put("/editUserAdmin/:id", editUserAdminController);
 // delete user (admin)
 router.delete("/deleteUser/:id", deleteUserController);
+
+// create crew
+router.post("/createCrew", createCrewController);
+// edit crew
+router.put("/editCrew/:id", editCrewController);
+// delete crew
+router.delete("/deleteCrew/:id", deleteCrewController);
 
 export default router;

@@ -332,6 +332,23 @@ export default function CreateJobsiteModal({
                 required
               />
             </div>
+            
+            <div>
+              <Label htmlFor="jobsite-country" className={`text-sm font-medium `}>
+                Country
+              </Label>
+              <Input
+                id="jobsite-country"
+                name="country"
+                value="US"
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                disabled
+              />
+              <p className="pl-1 text-xs italic text-gray-600">
+                Currently only US addresses are supported
+              </p>
+            </div>
           </div>
           <div className="my-4">
             <p className="text-xs text-gray-600">

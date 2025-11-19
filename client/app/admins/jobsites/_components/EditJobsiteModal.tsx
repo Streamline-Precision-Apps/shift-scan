@@ -33,7 +33,15 @@ export default function EditJobsiteModal({
 
   useEffect(() => {
     if (jobSiteDetails) {
-      setFormData(jobSiteDetails);
+      setFormData({
+        ...jobSiteDetails,
+        Address: jobSiteDetails.Address || {
+          street: "",
+          city: "",
+          state: "",
+          zipCode: "",
+        },
+      });
       setOriginalForm(jobSiteDetails);
     }
   }, [jobSiteDetails]);
@@ -48,6 +56,35 @@ export default function EditJobsiteModal({
             ...prev,
             [name]:
               type === "number" ? (value === "" ? null : Number(value)) : value,
+          }
+        : prev
+    );
+  };
+
+  const handleAddressChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | { name: string; value: string | number }
+  ) => {
+    let name: string, value: string | number, type: string | undefined;
+    if ("target" in e) {
+      name = e.target.name;
+      value = e.target.value;
+      type = (e.target as HTMLInputElement).type;
+    } else {
+      name = e.name;
+      value = e.value;
+      type = undefined;
+    }
+    setFormData((prev) =>
+      prev
+        ? {
+            ...prev,
+            Address: {
+              ...(prev.Address || { street: "", city: "", state: "", zipCode: "" }),
+              [name]:
+                type === "number" ? (value === "" ? null : Number(value)) : value,
+            },
           }
         : prev
     );
@@ -72,6 +109,14 @@ export default function EditJobsiteModal({
         "CCTags",
         JSON.stringify(formData.CCTags.map((tag) => ({ id: tag.id })))
       );
+      
+      // Include address data
+      fd.append("Address", JSON.stringify({
+        street: formData.Address.street,
+        city: formData.Address.city,
+        state: formData.Address.state,
+        zipCode: formData.Address.zipCode,
+      }));
 
       const result = await updateJobsiteAdmin(fd);
 
@@ -249,6 +294,92 @@ export default function EditJobsiteModal({
                 className="w-full text-xs"
               />
             </div>
+            
+            <div className="my-2">
+              <p className="text-xs text-gray-600">
+                Update the jobsite&apos;s address details.
+              </p>
+            </div>
+            
+            <div>
+              <Label htmlFor="jobsite-street" className="text-sm font-medium">
+                Street <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="jobsite-street"
+                name="street"
+                value={formData.Address?.street || ""}
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="jobsite-city" className="text-sm font-medium">
+                City <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="jobsite-city"
+                name="city"
+                value={formData.Address?.city || ""}
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="jobsite-state" className="text-sm font-medium">
+                State <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="jobsite-state"
+                name="state"
+                value={formData.Address?.state || ""}
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="jobsite-zip" className="text-sm font-medium">
+                Zip Code <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="jobsite-zip"
+                name="zipCode"
+                value={formData.Address?.zipCode || ""}
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="jobsite-country" className="text-sm font-medium">
+                Country
+              </Label>
+              <Input
+                id="jobsite-country"
+                name="country"
+                value="US"
+                onChange={handleAddressChange}
+                className="w-full text-xs"
+                disabled
+              />
+              <p className="pl-1 text-xs italic text-gray-600">
+                Currently only US addresses are supported
+              </p>
+            </div>
+            
+            <div className="my-2">
+              <p className="text-xs text-gray-600">
+                Select cost code tags for this jobsite.
+              </p>
+            </div>
+            
             {tagSummaries && (
               <div>
                 <div>
