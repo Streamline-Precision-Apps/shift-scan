@@ -177,6 +177,7 @@ export function FormDraftView({
 
   return (
     <form
+      autoComplete="off"
       onSubmit={async (e) => {
         e.preventDefault();
         await handleSubmit();
