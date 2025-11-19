@@ -564,14 +564,14 @@ export async function updateJobsiteAdmin(formData: FormData) {
             const cCTagsArray = JSON.parse(cCTagsString || "[]");
             updateData.CCTags = cCTagsArray;
         }
-        
+
         // Handle address data
         if (formData.has("Address")) {
             const addressString = formData.get("Address") as string;
             const addressData = JSON.parse(addressString || "{}");
             updateData.Address = addressData;
         }
-        
+
         const result = await apiRequest(
             `/api/v1/admins/jobsite/${id}`,
             "PUT",
