@@ -14,7 +14,7 @@
 
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { format } from "date-fns";
 import {
   useFormSubmission,
@@ -32,6 +32,8 @@ import { Contents } from "@/app/v1/components/(reusable)/contents";
 import FormLoadingView from "./FormLoadingView";
 import FormErrorView from "./FormErrorView";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { Textarea } from "@/app/v1/components/ui/textarea";
+import { Label } from "@/app/v1/components/ui/label";
 
 /**
  * Props for FormSubmittedView
@@ -48,6 +50,10 @@ export interface FormSubmittedViewProps {
   showApprovalInfo?: boolean;
 
   /**
+   * User signature image
+   */
+  userSignatureImg?: string;
+  /**
    * Custom class names
    */
   className?: string;
@@ -56,9 +62,16 @@ export interface FormSubmittedViewProps {
 /**
  * Formats date for display
  */
-function formatSubmissionDate(date: Date | null | undefined): string {
+function formatSubmissionDate(
+  date: Date | null | undefined,
+  type?: string
+): string {
   if (!date) return "N/A";
-  return format(new Date(date), "MMMM d, yyyy 'at' h:mm a");
+  if (type === "submitted") {
+    return format(new Date(date), "EE, MMMM d, yyyy");
+  } else {
+    return format(new Date(date), "MMM dd, yy 'at' h:mm a");
+  }
 }
 
 /**
@@ -131,8 +144,8 @@ export function FormSubmittedView({
   const isReadOnly = useFormReadOnly();
   const { submissionStatus, loading, error } = useFormState();
   const { user } = useUserStore();
-
   const signatureImg = user?.signature || null;
+
   // Use template name as the form title
   const formTitle = template?.name || "Form Submission";
 
@@ -166,35 +179,124 @@ export function FormSubmittedView({
             <div
               className={`${statusInfo.bgColor} rounded-lg shadow-sm border border-gray-100 p-4`}
             >
-              <h3 className={`font-semibold text-sm mb-3 ${statusInfo.color}`}>
+              <h3 className={`font-semibold text-lg ${statusInfo.color}`}>
                 {statusInfo.label}
               </h3>
-              <div className="space-y-2 text-sm text-gray-600">
-                {submission && (
+              <div className=" text-gray-600">
+                {submission && submission.status === FormStatus.APPROVED ? (
                   <>
-                    <p>
-                      Submitted by{" "}
-                      <span className="font-medium">
-                        {submission.User?.firstName} {submission.User?.lastName}
-                      </span>
-                    </p>
-                    <p>
-                      On{" "}
-                      <span className="font-medium">
-                        {formatSubmissionDate(submission?.submittedAt)}
-                      </span>
-                    </p>
+                    {template?.isApprovalRequired ? (
+                      <>
+                        <p className="text-gray-600 italic text-sm pt-1 pb-4">{`By ${
+                          submission?.Approvals?.[0]?.Approver
+                            ? `${submission.Approvals[0].Approver.firstName} ${submission.Approvals[0].Approver.lastName}`
+                            : "Unknown"
+                        } on ${formatSubmissionDate(
+                          submission?.Approvals?.[0]?.submittedAt,
+                          "submitted"
+                        )}`}</p>
+
+                        {submission?.Approvals?.[0]?.comment && (
+                          <div className="mb-2">
+                            <Label
+                              htmlFor="reason"
+                              className="text-gray-600 pb-1 "
+                            >
+                              Comment
+                            </Label>
+                            <Textarea
+                              id="reason"
+                              readOnly={true}
+                              value={submission?.Approvals?.[0]?.comment || ""}
+                              className="text-gray-600"
+                            />
+                          </div>
+                        )}
+                        {submission.Approvals?.[0]?.Approver?.signature ? (
+                          <>
+                            <p className="text-gray-600 text-sm ">Signature</p>
+                            <div className=" bg-white  rounded-md flex flex-col items-center border border-gray-200">
+                              <img
+                                src={
+                                  submission.Approvals?.[0]?.Approver
+                                    ?.signature || ""
+                                }
+                                alt="Approver Signature"
+                                className="w-32 h-auto  rounded"
+                              />
+                            </div>
+                          </>
+                        ) : null}
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-gray-600 italic text-sm">{`Submitted on:  ${formatSubmissionDate(
+                          submission?.submittedAt,
+                          "submitted"
+                        )}`}</p>
+                      </>
+                    )}
                   </>
-                )}
+                ) : submission && submission.status === FormStatus.DENIED ? (
+                  <>
+                    <p className="text-gray-600 italic text-sm pt-1 pb-4">{`By ${
+                      submission?.Approvals?.[0]?.Approver
+                        ? `${submission.Approvals[0].Approver.firstName} ${submission.Approvals[0].Approver.lastName}`
+                        : "Unknown"
+                    } on ${formatSubmissionDate(
+                      submission?.Approvals?.[0]?.submittedAt,
+                      "submitted"
+                    )}`}</p>
+                    {submission?.Approvals?.[0]?.comment && (
+                      <div className="mb-2 ">
+                        <Label htmlFor="reason" className="text-gray-600 pb-1 ">
+                          Comment
+                        </Label>
+                        <Textarea
+                          id="reason"
+                          readOnly={true}
+                          value={submission?.Approvals?.[0]?.comment || ""}
+                          className="text-gray-600"
+                        />
+                      </div>
+                    )}
+
+                    {submission.Approvals?.[0]?.Approver?.signature ? (
+                      <>
+                        <p className="text-gray-600 text-sm ">Signature</p>
+                        <div className=" bg-white  rounded-md flex flex-col items-center border border-gray-200">
+                          <img
+                            src={
+                              submission.Approvals?.[0]?.Approver?.signature ||
+                              ""
+                            }
+                            alt="Approver Signature"
+                            className="w-32 h-auto  rounded"
+                          />
+                        </div>
+                      </>
+                    ) : null}
+                  </>
+                ) : submission && submission.status === FormStatus.PENDING ? (
+                  <>
+                    <p className="text-gray-600 text-sm">{`Submitted on:  ${formatSubmissionDate(
+                      submission?.submittedAt,
+                      "submitted"
+                    )}`}</p>
+                  </>
+                ) : null}
               </div>
             </div>
 
             {/* Form Details Card */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
-              <div className="mb-4">
-                <h3 className="text-blue-600 font-semibold text-sm">
+              <div className="mb-4 w-full flex flex-row justify-between items-center">
+                <h3 className="text-blue-600 font-semibold text-base">
                   Form Details
                 </h3>
+                <p className="text-gray-600 text-sm">
+                  {`ID: ${submission?.id}`}
+                </p>
               </div>
               <FormView
                 readOnly={true}
@@ -235,10 +337,10 @@ export function FormSubmittedView({
                         {/* Show user signature image if signed and available */}
                         {(values.signature === true ||
                           values.signature === "true") &&
-                          signatureImg && (
+                          submission?.User.signature && (
                             <div className="mt-4 flex flex-col items-center border border-gray-200">
                               <img
-                                src={signatureImg}
+                                src={submission?.User.signature || ""}
                                 alt="User Signature"
                                 className="w-32 h-auto  rounded"
                               />

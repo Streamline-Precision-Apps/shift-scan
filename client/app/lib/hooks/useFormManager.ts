@@ -114,7 +114,6 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
       );
 
       const normalized = normalizeFormTemplate(apiData);
-      console.log("[Normalized Data] - Fetch Data", normalized);
 
       setTemplate(normalized);
       return normalized;
@@ -139,7 +138,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
           `/api/v1/admins/forms/submissions/${submissionId}`,
           "GET"
         );
-        console.log("[API Approval] - Fetch Data", apiData);
+
         const normalized = normalizeFormSubmission(apiData, template);
         console.log("[Normalized Submission] - Fetch Data", normalized);
         setSubmission(normalized);
@@ -487,6 +486,44 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
   );
 
   // =========================================================================
+  // APPROVAL HANDLING
+  // =========================================================================
+
+  /**
+   * Approve form (mark as approved)
+   */
+  const approveForm = useCallback(
+    async (
+      values?: Record<string, FormFieldValue>,
+      approvalStatus: "APPROVED" | "DENIED" = "APPROVED",
+      managerSignature: string | undefined = undefined,
+      managerId: string | undefined = undefined,
+      comment: string = "",
+      submissionId: number | undefined = undefined
+    ) => {
+      if (!submissionId && !managerId && !managerSignature) {
+        throw new Error("Missing key approval parameters");
+      }
+
+      const apiPayload = {
+        formSubmissionId: submissionId,
+        signedBy: managerId,
+        signature: managerSignature,
+        comment,
+        approval: approvalStatus,
+      };
+
+      // No approvalId: create a new approval record
+      // You may want to pass signature if available (not shown here)
+      await apiRequest("/api/v1/forms/approval", "POST", apiPayload);
+      // After creation, reload approval state
+      const updatedApproval = await loadApproval();
+      setApproval(updatedApproval);
+    },
+    [approvalId, submissionId, template]
+  );
+
+  // =========================================================================
   // DELETION
   // =========================================================================
 
@@ -533,5 +570,6 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
     saveAsDraft,
     deleteSubmission,
     validateForm,
+    approveForm,
   };
 }

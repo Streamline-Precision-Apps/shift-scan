@@ -107,7 +107,7 @@ export function FormDraftView({
 }: FormDraftViewProps) {
   const { submissionStatus, loading, error } = useFormState();
   const isDraft = useFormIsDraft();
-  const { template, values, updateValue } = useFormContext();
+  const { template, values, updateValue, submission } = useFormContext();
   const router = useRouter();
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -221,10 +221,13 @@ export function FormDraftView({
 
             {/* Form fields section */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
-              <div className="mb-6">
-                <h3 className="text-blue-600 font-semibold text-sm">
+              <div className="mb-6 w-full flex flex-row justify-between items-center">
+                <h3 className="text-blue-600 font-semibold text-base">
                   Form Details
                 </h3>
+                <p className="text-gray-600 text-sm">
+                  {`ID: ${submission?.id}`}
+                </p>
               </div>
               <FormView
                 readOnly={false}

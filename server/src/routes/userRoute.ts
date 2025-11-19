@@ -18,12 +18,15 @@ import {
   getUserInfo,
   sessionController,
   endSessionController,
+  userSignatureController,
 } from "../controllers/userController.js";
 
 const router = Router();
 
 router.post("/:id/session", sessionController);
 router.put("/:id/session/:sessionId", endSessionController);
+
+router.post("/:id/signature", userSignatureController);
 
 /**
  * @swagger

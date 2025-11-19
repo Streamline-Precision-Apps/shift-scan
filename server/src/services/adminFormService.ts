@@ -689,7 +689,12 @@ export async function getFormSubmissionById(submissionId: number) {
       Approvals: {
         include: {
           Approver: {
-            select: { id: true, firstName: true, lastName: true },
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              signature: true,
+            },
           },
         },
         orderBy: { updatedAt: "desc" },

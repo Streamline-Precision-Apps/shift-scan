@@ -298,6 +298,14 @@ export interface FormManagerState {
     valid: boolean;
     errors: string[];
   };
+  approveForm: (
+    values: Record<string, FormFieldValue>,
+    approvalStatus: "APPROVED" | "DENIED",
+    managerSignature: string,
+    managerId: string,
+    comment: string,
+    submissionId: number
+  ) => Promise<void>;
 }
 
 // ============================================================================

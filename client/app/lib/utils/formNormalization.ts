@@ -1,13 +1,3 @@
-/**
- * FORM NORMALIZATION UTILITIES
- *
- * This module handles converting API responses to canonical form types,
- * and converting canonical types back to API format.
- *
- * All normalization happens in one place to ensure consistency.
- * Components receive already-normalized data with zero transformation.
- */
-
 import {
   FormTemplate,
   FormSubmission,
@@ -586,7 +576,6 @@ export function validateFieldStructure(
   const errors: string[] = [];
   const validFieldIds = new Set<string>();
 
-
   // Build set of valid field IDs from template
   for (const grouping of template.FormGrouping) {
     for (const field of grouping.Fields) {
@@ -595,7 +584,7 @@ export function validateFieldStructure(
   }
   // Defensive: if template requires signature, always allow 'signature' as a valid field
   if (template.isSignatureRequired) {
-    validFieldIds.add('signature');
+    validFieldIds.add("signature");
   }
 
   // Check submission data
@@ -820,4 +809,42 @@ function findFieldInTemplate(
  * Validation:
  * - validateFieldStructure() - Check entire submission structure
  * - validateFieldValue() - Check single field value
+ */
+
+/**
+ * Converts canonical approval data to API format for approval update/create
+ *
+ * @param params - Approval update params
+ * @returns API payload for approval update
+ */
+export function denormalizeFormApproval({
+  id,
+  formSubmissionId,
+  comment,
+  managerId,
+  isApproved,
+}: {
+  id: string;
+  formSubmissionId: number;
+  comment: string;
+  managerId: string;
+  isApproved: boolean;
+}) {
+  return {
+    id,
+    formSubmissionId,
+    comment,
+    managerId,
+    isApproved,
+  };
+}
+
+/**
+ * FORM NORMALIZATION UTILITIES
+ *
+ * This module handles converting API responses to canonical form types,
+ * and converting canonical types back to API format.
+ *
+ * All normalization happens in one place to ensure consistency.
+ * Components receive already-normalized data with zero transformation.
  */

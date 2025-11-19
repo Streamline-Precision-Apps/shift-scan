@@ -56,6 +56,7 @@ export interface UpdateFormApprovalParams {
   formSubmissionId: number;
   comment: string;
   isApproved: boolean;
+  managerId: string;
 }
 
 /**
@@ -367,12 +368,19 @@ export const ServiceCreateFormApproval = async (
 export const ServiceUpdateFormApproval = async (
   params: UpdateFormApprovalParams
 ) => {
-  const { id, formSubmissionId, comment, isApproved } = params;
+  const { id, formSubmissionId, comment, managerId, isApproved } = params;
   // Use a transaction to ensure atomicity
   const [approval, updatedSubmission] = await prisma.$transaction([
     prisma.formApproval.update({
       where: { id },
-      data: { comment },
+      data: {
+        comment,
+        Approver: {
+          connect: {
+            id: managerId,
+          },
+        },
+      },
     }),
     prisma.formSubmission.update({
       where: { id: formSubmissionId },

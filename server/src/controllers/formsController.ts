@@ -86,7 +86,7 @@ export const getEmployeeRequests = async (req: any, res: express.Response) => {
       return res.status(401).json({ error: "Unauthorized User Permission" });
     }
 
-    const filter = req.query.filter as string;
+    const filter = req.params.filter as string;
     const skip = parseInt((req.query.skip as string) || "0");
     const take = parseInt((req.query.take as string) || "10");
 
@@ -261,6 +261,7 @@ export const createFormApproval = async (
   try {
     const { formSubmissionId, signedBy, signature, comment, approval } =
       req.body;
+    console.log("Creating approval with signedBy:", req.body);
     const result = await ServiceCreateFormApproval({
       formSubmissionId,
       signedBy,
@@ -283,11 +284,12 @@ export const updateFormApproval = async (
   res: express.Response
 ) => {
   try {
-    const { id, formSubmissionId, comment, isApproved } = req.body;
+    const { id, formSubmissionId, comment, managerId, isApproved } = req.body;
     const result = await ServiceUpdateFormApproval({
       id,
       formSubmissionId,
       comment,
+      managerId,
       isApproved,
     });
     res.status(200).json(result);

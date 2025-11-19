@@ -14,6 +14,7 @@ import { useEffect, useState, useCallback, Suspense } from "react";
 import InboxSkeleton from "./inboxSkeleton";
 import { useInfiniteScroll } from "@/app/lib/hooks/useInfiniteScroll";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { useFormAndDocumentUiStateManagement } from "@/app/lib/store/FormAndDocumentUiStateManagement";
 import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
 
 type Form = {
@@ -62,12 +63,15 @@ export default function FormSelection({
 }: {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
-  activeTab: number;
   isManager: boolean;
 }) {
   const t = useTranslations("Hamburger-Inbox");
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const selectedFilter = useFormAndDocumentUiStateManagement(
+    (s) => s.selectedFilterMyForms
+  );
+  const setSelectedFilter = useFormAndDocumentUiStateManagement(
+    (s) => s.setSelectedFilterMyForms
+  );
   const [forms, setForms] = useState<Form[]>([]);
   const [selectedForm, setSelectedForm] = useState<string>("");
   // const [formDrafts, setFormDrafts] = useState<DraftForm[]>([]);
@@ -194,7 +198,7 @@ export default function FormSelection({
     <>
       <Holds
         position={"row"}
-        className="h-16 border-b-2  border-neutral-100  gap-2 px-2"
+        className="h-[12%] border-b-2  border-neutral-100  gap-2 px-2"
       >
         <Holds>
           {loading ? (
@@ -243,126 +247,126 @@ export default function FormSelection({
         </Holds>
       </Holds>
 
-      <Holds className="h-fit w-full pb-2 ">
-        <Contents width={"section"}>
-          <Holds className="pb-1">
-            <Titles position={"left"} size={"md"}>
-              {t("DraftsSubmissions")}
-            </Titles>
-          </Holds>
-          <Selects
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
-            className="text-center text-black text-sm justify-center "
-          >
-            <option value="all">{t("SelectAFilter")}</option>
-            <option value="draft">{t("Drafts")}</option>
-            <option value="pending">{t("Pending")}</option>
-            <option value="approved">{t("Approved")}</option>
-            <option value="denied">{t("Denied")}</option>
-          </Selects>
-        </Contents>
+      <Holds className="h-[12%] w-full pb-2 px-2 flex flex-col justify-center items-center">
+        <Holds className="pb-1">
+          <Titles position={"left"} size={"md"}>
+            {t("DraftsSubmissions")}
+          </Titles>
+        </Holds>
+        <Selects
+          value={selectedFilter}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+          className="text-center text-black text-sm justify-center "
+        >
+          <option value="all">{t("SelectAFilter")}</option>
+          <option value="draft">{t("Drafts")}</option>
+          <option value="pending">{t("Pending")}</option>
+          <option value="approved">{t("Approved")}</option>
+          <option value="denied">{t("Denied")}</option>
+        </Selects>
       </Holds>
-      <div className="flex-1 overflow-y-auto no-scrollbar border-t-black border-opacity-5 border-t-2">
+      <div className="h-[76%] flex-1 overflow-y-auto no-scrollbar border-t-black border-opacity-5 border-t-2">
         <Suspense fallback={<InboxSkeleton />}>
           {isInitialLoading ? (
             <InboxSkeleton />
           ) : (
-            <PullToRefresh
-              onRefresh={handleRefresh}
-              pullText={t("PullToRefresh") || "Pull to refresh"}
-              releaseText={t("ReleaseToRefresh") || "Release to refresh"}
-              refreshingText={t("Loading") || "Loading..."}
-              contentClassName="h-full"
-              textColor="text-app-dark-blue"
-            >
-              <div className="h-full max-h-full overflow-y-auto no-scrollbar">
-                <Holds className="row-start-2 row-end-7 h-full w-full ">
-                  <Contents width={"section"}>
-                    {!sentContent ||
-                      (sentContent.length === 0 && (
-                        <Holds className="h-full">
-                          <Texts size={"md"} className="italic text-gray-500">
-                            {selectedFilter === "denied"
-                              ? t("NoDeniedFormsSubmitted")
-                              : selectedFilter === "pending"
-                              ? t("NoPendingFormsSubmitted")
-                              : selectedFilter === "approved"
-                              ? t("NoApprovedFormsSubmitted")
-                              : t("NoFormsSubmitted")}
-                          </Texts>
-                          <Texts size={"sm"} className="italic text-gray-500">
-                            {t("GoToFormsSectionToCreateForms")}
-                          </Texts>
-                        </Holds>
-                      ))}
-                    <div className="pt-3 pb-5 h-full w-full">
-                      {Array.isArray(sentContent) &&
-                        sentContent.map((form, index) => {
-                          if (typeof form === "string") return null; // Defensive: skip invalid entries
+            <div className="flex flex-col h-full">
+              <PullToRefresh
+                onRefresh={handleRefresh}
+                pullText={t("PullToRefresh") || "Pull to refresh"}
+                releaseText={t("ReleaseToRefresh") || "Release to refresh"}
+                refreshingText={t("Loading") || "Loading..."}
+                contentClassName="h-full"
+                textColor="text-app-dark-blue"
+              >
+                <div className="h-full overflow-y-auto no-scrollbar">
+                  <Holds className="row-start-2 row-end-7 h-full w-full ">
+                    <Contents width={"section"}>
+                      {!sentContent ||
+                        (sentContent.length === 0 && (
+                          <Holds className="h-full">
+                            <Texts size={"md"} className="italic text-gray-500">
+                              {selectedFilter === "denied"
+                                ? t("NoDeniedFormsSubmitted")
+                                : selectedFilter === "pending"
+                                ? t("NoPendingFormsSubmitted")
+                                : selectedFilter === "approved"
+                                ? t("NoApprovedFormsSubmitted")
+                                : t("NoFormsSubmitted")}
+                            </Texts>
+                            <Texts size={"sm"} className="italic text-gray-500">
+                              {t("GoToFormsSectionToCreateForms")}
+                            </Texts>
+                          </Holds>
+                        ))}
+                      <div className="pt-3 pb-5 h-full w-full">
+                        {Array.isArray(sentContent) &&
+                          sentContent.map((form, index) => {
+                            if (typeof form === "string") return null; // Defensive: skip invalid entries
 
-                          // Defensive: fallback to FormTemplate name if title is missing or empty
-                          const title =
-                            form.title && form.title.length > 0
-                              ? form.title.charAt(0).toUpperCase() +
-                                form.title.slice(1)
-                              : form.FormTemplate?.name || "";
+                            // Defensive: fallback to FormTemplate name if title is missing or empty
+                            const title =
+                              form.title && form.title.length > 0
+                                ? form.title.charAt(0).toUpperCase() +
+                                  form.title.slice(1)
+                                : form.FormTemplate?.name || "";
 
-                          const isLastItem = index === sentContent.length - 1;
+                            const isLastItem = index === sentContent.length - 1;
 
-                          return (
-                            <Holds className="pb-3" key={form.id}>
-                              <Buttons
-                                ref={isLastItem ? lastItemRef : null}
-                                shadow={"none"}
-                                className="py-1.5 relative"
-                                background={
-                                  form.status === "PENDING"
-                                    ? "orange"
-                                    : form.status === "APPROVED"
-                                    ? "green"
-                                    : form.status === "DENIED"
-                                    ? "red"
-                                    : "lightBlue"
-                                }
-                                onClick={() => {
-                                  router.push(
-                                    `/v1/hamburger/inbox/formSubmission/${form.formTemplateId}?submissionId=${form.id}&status=${form.status}`
-                                  );
-                                }}
-                                disabled={isLoading}
-                              >
-                                <Holds className="w-full h-full relative">
-                                  <Titles size={"md"}>{title}</Titles>
+                            return (
+                              <Holds className="pb-3" key={form.id}>
+                                <Buttons
+                                  ref={isLastItem ? lastItemRef : null}
+                                  shadow={"none"}
+                                  className="py-1.5 relative"
+                                  background={
+                                    form.status === "PENDING"
+                                      ? "orange"
+                                      : form.status === "APPROVED"
+                                      ? "green"
+                                      : form.status === "DENIED"
+                                      ? "red"
+                                      : "lightBlue"
+                                  }
+                                  onClick={() => {
+                                    router.push(
+                                      `/v1/hamburger/inbox/formSubmission/${form.formTemplateId}?submissionId=${form.id}&status=${form.status}`
+                                    );
+                                  }}
+                                  disabled={isLoading}
+                                >
+                                  <Holds className="w-full h-full relative">
+                                    <Titles size={"md"}>{title}</Titles>
 
-                                  <Images
-                                    titleImgAlt={"form Status"}
-                                    titleImg={
-                                      form.status === "PENDING"
-                                        ? "/statusOngoingFilled.svg"
-                                        : form.status === "APPROVED"
-                                        ? "/statusApprovedFilled.svg"
-                                        : form.status === "DENIED"
-                                        ? "/statusDeniedFilled.svg"
-                                        : "/formSent.svg"
-                                    }
-                                    className="absolute max-w-8 h-auto object-contain top-[50%] translate-y-[-50%] right-2"
-                                  />
-                                </Holds>
-                              </Buttons>
-                            </Holds>
-                          );
-                        })}
-                      {isLoading && (
-                        <Holds className="flex justify-center py-4">
-                          <Spinner />
-                        </Holds>
-                      )}
-                    </div>
-                  </Contents>
-                </Holds>
-              </div>
-            </PullToRefresh>
+                                    <Images
+                                      titleImgAlt={"form Status"}
+                                      titleImg={
+                                        form.status === "PENDING"
+                                          ? "/statusOngoingFilled.svg"
+                                          : form.status === "APPROVED"
+                                          ? "/statusApprovedFilled.svg"
+                                          : form.status === "DENIED"
+                                          ? "/statusDeniedFilled.svg"
+                                          : "/formSent.svg"
+                                      }
+                                      className="absolute max-w-8 h-auto object-contain top-[50%] translate-y-[-50%] right-2"
+                                    />
+                                  </Holds>
+                                </Buttons>
+                              </Holds>
+                            );
+                          })}
+                        {isLoading && (
+                          <Holds className="flex justify-center py-4">
+                            <Spinner />
+                          </Holds>
+                        )}
+                      </div>
+                    </Contents>
+                  </Holds>
+                </div>
+              </PullToRefresh>
+            </div>
           )}
         </Suspense>
       </div>

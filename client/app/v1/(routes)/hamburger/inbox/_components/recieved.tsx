@@ -10,9 +10,10 @@ import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { useFormAndDocumentUiStateManagement } from "@/app/lib/store/FormAndDocumentUiStateManagement";
 import RecievedInboxSkeleton from "./recievedInboxSkeleton";
 import { useInfiniteScroll } from "@/app/lib/hooks/useInfiniteScroll";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
 
 enum FormStatus {
   PENDING = "PENDING",
@@ -54,7 +55,12 @@ type EmployeeRequests = {
 
 export default function RTab({ isManager }: { isManager: boolean }) {
   const t = useTranslations("Hamburger-Inbox");
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const selectedFilter = useFormAndDocumentUiStateManagement(
+    (s) => s.selectedFilterTeamSubmissions
+  );
+  const setSelectedFilter = useFormAndDocumentUiStateManagement(
+    (s) => s.setSelectedFilterTeamSubmissions
+  );
   const [employeeRequests, setEmployeeRequests] = useState<EmployeeRequests[]>(
     []
   );
@@ -62,20 +68,14 @@ export default function RTab({ isManager }: { isManager: boolean }) {
   const router = useRouter();
 
   const fetchRequests = async (skip: number, reset: boolean = false) => {
-    const url = getApiUrl();
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    const response = await fetch(
-      `${url}/api/v1/forms/employeeRequests/filter=${
+    const response = await apiRequest(
+      `/api/v1/forms/employeeRequests/${
         selectedFilter ? selectedFilter : "all"
-      }&skip=${skip}&take=10`,
-      {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      }
+      }?skip=${skip}&take=10`,
+      "GET"
     );
-    return await response.json();
+
+    return await response;
   };
 
   const {
@@ -96,15 +96,10 @@ export default function RTab({ isManager }: { isManager: boolean }) {
   useEffect(() => {
     const fetchEmployeeRequests = async () => {
       try {
-        const url = getApiUrl();
-        const token =
-          typeof window !== "undefined" ? localStorage.getItem("token") : null;
-        const response = await fetch(`${url}/api/v1/user`, {
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        });
-        const data = await response.json();
+        const data = await apiRequest(`/api/v1/user`, "GET");
+        if (!data) {
+          throw new Error("No data found");
+        }
         setEmployeeRequests(data as EmployeeRequests[]);
       } catch (err) {
         console.error("Error fetching employee requests:", err);
@@ -128,7 +123,7 @@ export default function RTab({ isManager }: { isManager: boolean }) {
   return (
     <>
       <Holds
-        className="h-16 border-b-2  border-neutral-100 shrink-0 rounded-lg sticky top-0 z-10 px-2 gap-x-2"
+        className="h-[10%] border-b-2  border-neutral-100 shrink-0 rounded-lg sticky top-0 z-10 px-2 gap-x-2"
         position={"row"}
       >
         <Suspense
@@ -159,7 +154,7 @@ export default function RTab({ isManager }: { isManager: boolean }) {
           </Selects>
         </Suspense>
       </Holds>
-      <div className="flex-1 overflow-y-auto no-scrollbar border-t-black border-opacity-5 border-t-2">
+      <div className="h-[90%] flex-1 overflow-y-auto no-scrollbar border-t-black border-opacity-5 border-t-2">
         <Suspense fallback={<RecievedInboxSkeleton />}>
           {isInitialLoading ? (
             <RecievedInboxSkeleton />
