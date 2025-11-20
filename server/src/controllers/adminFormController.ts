@@ -57,8 +57,6 @@ export async function getAllFormTemplatesController(
   }
 }
 
-
-
 export async function getFormTemplateByIdController(
   req: Request,
   res: Response
@@ -132,12 +130,11 @@ export async function getFormSubmissionByTemplateIdController(
     }
 
     // Parse query parameters
-    const page = req.query.page 
-      ? parseInt(req.query.page as string, 10) 
-      : 1;
-    const pageSize = req.query.pageSize 
-      ? parseInt(req.query.pageSize as string, 10) 
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const pageSize = req.query.pageSize
+      ? parseInt(req.query.pageSize as string, 10)
       : 25;
+    const search = req.query.search as string | null;
     const pendingOnly = req.query.pendingOnly === "true";
     const statusFilter = (req.query.statusFilter as string) || "ALL";
     const dateRangeStart = req.query.startDate as string | null;
@@ -145,6 +142,7 @@ export async function getFormSubmissionByTemplateIdController(
 
     const result = await getFormSubmissionByTemplateId(
       id,
+      search,
       page,
       pageSize,
       pendingOnly,

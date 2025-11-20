@@ -211,6 +211,7 @@ export async function getAllFormTemplates(
 
 export async function getFormSubmissionByTemplateId(
   id: string,
+  search: string | null,
   page: number,
   pageSize: number,
   pendingOnly: boolean,
@@ -218,9 +219,10 @@ export async function getFormSubmissionByTemplateId(
   dateRangeStart: string | null,
   dateRangeEnd: string | null
 ) {
-  // If pendingOnly, do not paginate (return all pending submissions)
-  const skip = pendingOnly ? undefined : (page - 1) * pageSize;
-  const take = pendingOnly ? undefined : pageSize;
+  // If pendingOnly or searching, do not paginate (return all matching submissions)
+  const isSearching = search !== null && search !== undefined && search !== "";
+  const skip = pendingOnly || isSearching ? undefined : (page - 1) * pageSize;
+  const take = pendingOnly || isSearching ? undefined : pageSize;
 
   // (moved up)
 
@@ -314,9 +316,9 @@ export async function getFormSubmissionByTemplateId(
     ...formTemplate,
     Submissions: submissions,
     total,
-    page: pendingOnly ? 1 : page,
-    pageSize: pendingOnly ? submissions.length : pageSize,
-    totalPages: pendingOnly ? 1 : Math.ceil(total / pageSize),
+    page: pendingOnly || isSearching ? 1 : page,
+    pageSize: pendingOnly || isSearching ? submissions.length : pageSize,
+    totalPages: pendingOnly || isSearching ? 1 : Math.ceil(total / pageSize),
     pendingForms,
   };
 }

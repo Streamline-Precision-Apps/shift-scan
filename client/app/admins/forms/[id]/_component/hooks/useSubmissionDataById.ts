@@ -113,6 +113,8 @@ export default function useSubmissionDataById(id: string) {
           );
         if (filter.status) params.push(`statusFilter=${filter.status}`);
         params.push(`pendingOnly=${showPendingOnly}`);
+        if (searchTerm.length > 0)
+          params.push(`search=${encodeURIComponent(searchTerm)}`);
         params.push(`page=${page}`);
         params.push(`pageSize=${pageSize}`);
         const query = params.length ? `?${params.join("&")}` : "";
@@ -134,6 +136,57 @@ export default function useSubmissionDataById(id: string) {
     };
     fetchFormTemplate();
   }, [id, page, pageSize, filter, refreshKey, searchTerm, showPendingOnly]);
+
+  // Filter method for client-side filtering of submissions
+  const filteredSubmissions = useMemo(() => {
+    if (!formTemplate || !Array.isArray((formTemplate as any).Submissions))
+      return [];
+    if (!searchTerm) return (formTemplate as any).Submissions;
+    const lowerSearch = searchTerm.toLowerCase();
+    return (formTemplate as any).Submissions.filter((submission: any) => {
+      // Check user fields
+      const user = submission.User;
+      if (user) {
+        const fullName = `${user.firstName || ""} ${
+          user.lastName || ""
+        }`.toLowerCase();
+        if (fullName.includes(lowerSearch)) return true;
+        if ((user.id || "").toLowerCase().includes(lowerSearch)) return true;
+      }
+      // Check submission id
+      if ((submission.id || "").toLowerCase().includes(lowerSearch))
+        return true;
+      // Check all data fields (string values only)
+      if (submission.data && typeof submission.data === "object") {
+        for (const value of Object.values(submission.data)) {
+          if (
+            typeof value === "string" &&
+            value.toLowerCase().includes(lowerSearch)
+          ) {
+            return true;
+          }
+          if (
+            typeof value === "number" &&
+            value.toString().includes(lowerSearch)
+          ) {
+            return true;
+          }
+          // Optionally, check inside arrays/objects
+          if (Array.isArray(value)) {
+            if (
+              value.some(
+                (v) =>
+                  typeof v === "string" && v.toLowerCase().includes(lowerSearch)
+              )
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    });
+  }, [formTemplate, searchTerm]);
 
   //helper functions
 
@@ -511,5 +564,6 @@ export default function useSubmissionDataById(id: string) {
     approvalInbox,
     onApprovalAction,
     formTemplatePage,
+    filteredSubmissions,
   };
 }
