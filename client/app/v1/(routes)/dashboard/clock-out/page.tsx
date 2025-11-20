@@ -68,20 +68,10 @@ export default function TempClockOutContent() {
   const { currentView } = useCurrentView();
   const [commentsValue, setCommentsValue] = useState("");
   const [timesheets, setTimesheets] = useState<TimeSheet[]>([]);
-  const [coordinates, setCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
   const [pendingTimeSheets, setPendingTimeSheets] = useState<TimeSheet>();
-  const [editFilter, setEditFilter] = useState<TimesheetFilter | null>(null);
-  const [editDate, setEditDate] = useState<string>("");
-  const [focusIds, setFocusIds] = useState<string[]>([]);
-  const [employeeId, setEmployeeId] = useState<string>("");
-  const [teamUsers, setTeamUsers] = useState<crewUsers[]>([]);
   const [wasInjured, setWasInjured] = useState<boolean>(false);
   // const [currentTimesheetId, setCurrentTimesheetId] = useState<number>();
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
-  const { requestLocationPermission } = usePermissions();
 
   const incrementStep = () => {
     setStep((prevStep) => prevStep + 1); // Increment function
@@ -90,29 +80,6 @@ export default function TempClockOutContent() {
   const prevStep = () => {
     setStep((prevStep) => prevStep - 1); // Increment function
   };
-
-  // Prefetch coordinates as soon as possible on page mount
-  useEffect(() => {
-    const fetchCoordinates = async () => {
-      const coords = await getStoredCoordinates();
-      setCoordinates(coords);
-    };
-    fetchCoordinates();
-
-    // Refresh coordinates every 30 seconds while on the page
-    const refreshInterval = setInterval(async () => {
-      const coords = await getStoredCoordinates();
-      setCoordinates(coords);
-      console.log("[ClockOut] Location refreshed");
-    }, 30000); // 30 seconds
-
-    return () => clearInterval(refreshInterval);
-  }, []);
-
-  // on mount, request location permission and get stored coordinates
-  useEffect(() => {
-    requestLocationPermission();
-  }, []);
 
   // Batch fetch all clock-out details (timesheets, comment, signature)
   useEffect(() => {
@@ -201,7 +168,6 @@ export default function TempClockOutContent() {
         loading={loading}
         setLoading={setLoading}
         currentTimesheetId={savedTimeSheetData?.id}
-        coordinates={coordinates}
       />
     );
   }
@@ -251,7 +217,6 @@ export default function TempClockOutContent() {
         wasInjured={wasInjured}
         timeSheetId={savedTimeSheetData?.id}
         refetchTimesheet={refetchTimesheet}
-        coordinates={coordinates}
       />
     );
   } else {

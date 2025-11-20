@@ -1,6 +1,6 @@
 "use client";
 import "@/app/globals.css";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 
 import { z } from "zod";
 
@@ -11,7 +11,12 @@ import NotificationSettings from "@/app/v1/components/(signup)/notificationSetti
 import ProfilePictureSetup from "@/app/v1/components/(signup)/profilePictureSetup";
 import SignatureSetup from "@/app/v1/components/(signup)/signatureSetup";
 import { useUserStore } from "@/app/lib/store/userStore";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { useSignOut } from "@/app/lib/hooks/useSignOut";
+import {
+  SignupStepProvider,
+  useSignupStep,
+} from "@/app/lib/context/signupStepContext";
 
 // Define Zod schema for validating props
 const propsSchema = z.object({
@@ -35,42 +40,42 @@ function validateProps(userId: string | null, accountSetup: string | null) {
 
 function SignUpContent() {
   const router = useRouter();
+  const { user } = useUserStore();
+  const userId = user?.id;
+  const accountSetup = user?.accountSetup;
+  const userName = user?.firstName || "";
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
-  const accountSetup = searchParams.get("accountSetup");
-  const userName = searchParams.get("userName") || "";
+  const { step, setStep, resetStep } = useSignupStep();
+  const totalSteps = 6;
+  const signOut = useSignOut();
 
-  const validation = validateProps(userId, accountSetup);
-  const isValid = validation.valid;
-
-  const [step, setStep] = useState(1); // Always call useState
-  const totalSteps = 6; // Total number of steps in the signup process
   const handleComplete = async () => {
     try {
-      // Make a post route to finish user setup\
-      const API_URL = getApiUrl();
+      const res = await apiRequest(`/api/v1/user/${userId}`, "PUT", {
+        accountSetup: true,
+      });
 
-      const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accountSetup: true }),
-      }).then((res) => res.json());
-
-      if (res.success) {
-        useUserStore.getState().setUser(res.data);
-        return router.push("/v1");
+      if (!res) {
+        throw new Error("Error updating account setup in DB");
       }
+      localStorage.removeItem("signup_step");
+      localStorage.removeItem("user-store");
+      localStorage.removeItem("cost-code-store");
+      localStorage.removeItem("equipment-store");
+      localStorage.removeItem("profit-store");
+
+      resetStep();
+      // Sign out the user after setup is complete
+      await signOut();
+      // No need to push to /v1, signOut will redirect to /signin
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleNextStep = () => {
-    setStep((prevStep) => prevStep + 1);
+    setStep(step + 1);
   };
-
-  // Early return after hooks are declared
-  if (!isValid) return <div>Error: Invalid props provided.</div>;
 
   return (
     <>
@@ -83,7 +88,6 @@ function SignUpContent() {
           currentStep={step}
         />
       )}
-
       {step === 2 && (
         <ResetPassword
           userId={userId!}
@@ -108,12 +112,18 @@ function SignUpContent() {
           currentStep={step}
         />
       )}
-
       {(step === 5 || step === 6) && (
         <SignatureSetup
           userId={userId!}
           handleNextStep={handleComplete}
-          setStep={setStep}
+          setStep={(value) => {
+            if (typeof value === "function") {
+              // value is (prev: number) => number
+              setStep(value(step));
+            } else {
+              setStep(value);
+            }
+          }}
           totalSteps={totalSteps}
           currentStep={step}
         />
@@ -124,8 +134,10 @@ function SignUpContent() {
 
 export default function SignUp() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SignUpContent />
-    </Suspense>
+    <SignupStepProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <SignUpContent />
+      </Suspense>
+    </SignupStepProvider>
   );
 }

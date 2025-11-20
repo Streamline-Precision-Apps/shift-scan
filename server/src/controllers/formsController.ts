@@ -18,6 +18,7 @@ import {
   ServiceSaveDraftToPending,
   ServiceSavePending,
   ServiceUpdateFormApproval,
+  updateFormSubmissionService,
 } from "../services/formsService.js";
 
 import { ServiceGetEmployeeRequests } from "../services/formsService.js";
@@ -85,7 +86,7 @@ export const getEmployeeRequests = async (req: any, res: express.Response) => {
       return res.status(401).json({ error: "Unauthorized User Permission" });
     }
 
-    const filter = req.query.filter as string;
+    const filter = req.params.filter as string;
     const skip = parseInt((req.query.skip as string) || "0");
     const take = parseInt((req.query.take as string) || "10");
 
@@ -112,6 +113,23 @@ export const getForms = async (req: express.Request, res: express.Response) => {
       error instanceof Error && error.message
         ? error.message
         : "Failed to retrieve forms";
+    res.status(400).json({ message });
+  }
+};
+
+export const updateFormSubmission = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const body = req.body;
+    const submission = await updateFormSubmissionService(body);
+    res.status(201).json(submission);
+  } catch (error) {
+    const message =
+      error instanceof Error && error.message
+        ? error.message
+        : "Failed to create form submission";
     res.status(400).json({ message });
   }
 };
@@ -243,6 +261,7 @@ export const createFormApproval = async (
   try {
     const { formSubmissionId, signedBy, signature, comment, approval } =
       req.body;
+    console.log("Creating approval with signedBy:", req.body);
     const result = await ServiceCreateFormApproval({
       formSubmissionId,
       signedBy,
@@ -265,11 +284,12 @@ export const updateFormApproval = async (
   res: express.Response
 ) => {
   try {
-    const { id, formSubmissionId, comment, isApproved } = req.body;
+    const { id, formSubmissionId, comment, managerId, isApproved } = req.body;
     const result = await ServiceUpdateFormApproval({
       id,
       formSubmissionId,
       comment,
+      managerId,
       isApproved,
     });
     res.status(200).json(result);

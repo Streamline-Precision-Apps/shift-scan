@@ -7,12 +7,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/app/v1/components/ui/accordion";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   FormIndividualTemplate,
   FormSubmissionWithTemplate,
 } from "./hooks/types";
-import React from "react";
 import { Label } from "@/app/v1/components/ui/label";
 import { Input } from "@/app/v1/components/ui/input";
 import { toast } from "sonner";
@@ -36,6 +35,8 @@ import {
 import { useUserStore } from "@/app/lib/store/userStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
 
+import { FormTemplate } from "@/app/lib/types/forms";
+
 export default function EditFormSubmissionModal({
   id,
   closeModal,
@@ -44,7 +45,7 @@ export default function EditFormSubmissionModal({
 }: {
   id: number;
   closeModal: () => void;
-  formTemplate: FormIndividualTemplate | null;
+  formTemplate: FormTemplate | null;
   onSuccess: () => void;
 }) {
   const { refresh } = useDashboardData();
@@ -56,7 +57,7 @@ export default function EditFormSubmissionModal({
   const [formSubmission, setFormSubmission] =
     useState<FormSubmissionWithTemplate | null>(null);
   const [editData, setEditData] = useState<
-    Record<string, string | number | boolean | null>
+    Record<string, string | number | boolean | null | Date | object | string[]>
   >({});
 
   // State for manager comment and signature
@@ -131,6 +132,7 @@ export default function EditFormSubmissionModal({
         });
       }
       setEditData(processedData);
+
       setLoading(false);
     };
     fetchData();
@@ -155,6 +157,7 @@ export default function EditFormSubmissionModal({
           "/api/v1/admins/equipment/summary",
           "GET"
         );
+
         setEquipment(data || []);
       } catch (error) {
         console.error("Error fetching equipment:", error);
@@ -181,7 +184,10 @@ export default function EditFormSubmissionModal({
     const fetchCostCodes = async () => {
       try {
         const data = await apiRequest("/api/v1/admins/cost-codes", "GET");
-        setCostCodes(data.costCodes || []);
+
+        const codes = data.costCodes || [];
+
+        setCostCodes(codes);
       } catch (error) {
         console.error("Error fetching cost codes:", error);
       }
@@ -217,35 +223,185 @@ export default function EditFormSubmissionModal({
     return null;
   };
 
-  useEffect(() => {
-    console.log("Edit Data:", editData);
-    console.log("Form Submission:", formSubmission);
-  }, [editData]);
-
   const handleFieldChange = (
     fieldId: string,
     value: string | Date | string[] | object | boolean | number | null
   ) => {
-    // Convert value to compatible type for our state
-    let compatibleValue: string | number | boolean | null = null;
+    // Store value directly - child components handle their own formatting
+    // Normalization happens only during submission
+    setEditData((prev) => ({ ...prev, [fieldId]: value }));
+    const fieldError = validateField(fieldId, value, true);
+    setErrors((prev) => ({ ...prev, [fieldId]: fieldError }));
+  };
 
-    if (
-      typeof value === "string" ||
-      typeof value === "number" ||
-      typeof value === "boolean"
-    ) {
-      compatibleValue = value;
-    } else if (value instanceof Date) {
-      compatibleValue = value.toISOString();
-    } else if (Array.isArray(value)) {
-      compatibleValue = value.join(",");
-    } else if (value !== null && typeof value === "object") {
-      compatibleValue = JSON.stringify(value);
+  // Transform editData to display format for child components
+  // Converts stored strings back to proper object formats
+  // Use useMemo to re-compute only when dependencies change
+  const displayFormData = useMemo(() => {
+    const displayData: Record<string, any> = { ...editData };
+
+    if (formSubmission?.FormTemplate?.FormGrouping) {
+      for (const group of formSubmission.FormTemplate.FormGrouping) {
+        for (const field of group.Fields || []) {
+          const val = editData[field.id];
+
+          // SEARCH_PERSON: Convert comma-separated names back to person objects
+          if (
+            field.type === "SEARCH_PERSON" &&
+            typeof val === "string" &&
+            val.trim()
+          ) {
+            if (field.multiple) {
+              // Multi-select: comma-separated names → array of person objects
+              const names = val
+                .split(",")
+                .map((n) => n.trim())
+                .filter(Boolean);
+              displayData[field.id] = names
+                .map((name) => {
+                  const match = userOptions.find((opt) => opt.label === name);
+                  return match ? { id: match.value, name: match.label } : null;
+                })
+                .filter(Boolean);
+            } else {
+              // Single select: name → person object
+              const match = userOptions.find((opt) => opt.label === val.trim());
+              if (match) {
+                displayData[field.id] = { id: match.value, name: match.label };
+              }
+            }
+          }
+
+          // SEARCH_ASSET: Convert asset names back to asset objects
+          if (field.type === "SEARCH_ASSET") {
+            // Skip if already an object or array of objects
+            if (typeof val === "string" && val.trim()) {
+              const allAssetOptions = [
+                ...(equipmentOptions || []),
+                ...(jobsiteOptions || []),
+                ...(costCodeOptions || []),
+              ];
+
+              if (field.multiple) {
+                // Multi-select: comma-separated names → array of asset objects
+                const names = val
+                  .split(",")
+                  .map((n) => n.trim())
+                  .filter(Boolean);
+                displayData[field.id] = names
+                  .map((name) => {
+                    // Try exact match first, then case-insensitive match
+                    let match = allAssetOptions.find(
+                      (opt) => opt.label.trim() === name
+                    );
+                    if (!match) {
+                      match = allAssetOptions.find(
+                        (opt) =>
+                          opt.label.trim().toLowerCase() === name.toLowerCase()
+                      );
+                    }
+
+                    return match
+                      ? {
+                          id: match.value,
+                          name: match.label,
+                          type: (field.filter || "asset").toLowerCase(),
+                        }
+                      : null;
+                  })
+                  .filter(Boolean);
+              } else {
+                // Single select: name → asset object
+                // Try exact match first, then case-insensitive match
+                let match = allAssetOptions.find(
+                  (opt) => opt.label.trim() === val.trim()
+                );
+                if (!match) {
+                  match = allAssetOptions.find(
+                    (opt) =>
+                      opt.label.trim().toLowerCase() ===
+                      val.trim().toLowerCase()
+                  );
+                }
+
+                if (match) {
+                  displayData[field.id] = {
+                    id: match.value,
+                    name: match.label,
+                    type: (field.filter || "asset").toLowerCase(),
+                  };
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
-    setEditData((prev) => ({ ...prev, [fieldId]: compatibleValue }));
-    const fieldError = validateField(fieldId, value, true); // Assuming all fields are required for now
-    setErrors((prev) => ({ ...prev, [fieldId]: fieldError }));
+    return displayData;
+  }, [
+    editData,
+    equipmentOptions,
+    jobsiteOptions,
+    costCodeOptions,
+    formSubmission,
+    userOptions,
+  ]);
+
+  // Transform editData to API submission format
+  const getSubmitFormData = () => {
+    const submitData: Record<string, string | number | boolean | null> = {};
+
+    for (const [key, value] of Object.entries(editData)) {
+      // Null/undefined values
+      if (value === null || value === undefined) {
+        submitData[key] = null;
+      }
+      // ISO date strings
+      else if (typeof value === "string" && value.match(/^\d{4}-\d{2}-\d{2}/)) {
+        submitData[key] = value;
+      }
+      // Date objects
+      else if (value instanceof Date) {
+        submitData[key] = value.toISOString();
+      }
+      // String and number primitives
+      else if (typeof value === "string" || typeof value === "number") {
+        submitData[key] = value;
+      }
+      // Boolean values
+      else if (typeof value === "boolean") {
+        submitData[key] = value;
+      }
+      // Arrays (multiselect, search fields with multiple selections)
+      else if (Array.isArray(value)) {
+        submitData[key] = value
+          .map((v) => {
+            if (typeof v === "object" && v !== null && "name" in v) {
+              return String((v as { name: unknown }).name);
+            }
+            return String(v);
+          })
+          .filter(Boolean)
+          .join(",");
+      }
+      // Objects (single person/asset selections)
+      else if (typeof value === "object") {
+        if ("name" in value) {
+          submitData[key] = String((value as { name: unknown }).name);
+        } else if ("id" in value) {
+          submitData[key] = String((value as { id: unknown }).id);
+        } else {
+          submitData[key] = String(value);
+        }
+      }
+      // Fallback
+      else {
+        submitData[key] = String(value);
+      }
+    }
+
+    return submitData;
   };
 
   // Signature state for editing
@@ -264,17 +420,15 @@ export default function EditFormSubmissionModal({
       return;
     }
     try {
-      // Create a properly typed data object for submission
-      const updatedData: Record<string, string | number | boolean | null> = {
-        ...editData,
-      };
+      // Transform editData to API submission format
+      const updatedData = getSubmitFormData();
 
       if (
         formTemplate?.isSignatureRequired &&
         !editData.signature &&
         signatureChecked
       ) {
-        updatedData.signature = true;
+        updatedData.signature = "true";
       }
 
       // Submit with correct typing
@@ -419,10 +573,14 @@ export default function EditFormSubmissionModal({
   // Render editable fields for each field in the template
   const renderFields = () => {
     if (!formSubmission?.FormTemplate?.FormGrouping) return null;
+
+    // displayFormData is already computed by useMemo above
     // Helper to check if signed
     const isSigned =
-      editData.signature === true || editData.signature === "true";
+      displayFormData.signature === true ||
+      displayFormData.signature === "true";
     const signature = formSubmission.User.signature;
+
     return (
       <>
         <div>
@@ -441,221 +599,228 @@ export default function EditFormSubmissionModal({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                {group.Fields.map((field) => {
-                  const options = field.Options || [];
-                  const rawValue =
-                    editData[field.id] ?? editData[field.label] ?? null;
-                  const defaultValue = "";
-                  const error = errors[field.id];
-                  const isTouched = touchedFields[field.id];
+                {/* Sort fields by order property */}
+                {[...group.Fields]
+                  .sort((a, b) => a.order - b.order)
+                  .map((field) => {
+                    const options = field.Options || [];
+                    const rawValue =
+                      displayFormData[field.id] ??
+                      displayFormData[field.label] ??
+                      null;
+                    const defaultValue = "";
+                    const error = errors[field.id];
+                    const isTouched = touchedFields[field.id];
 
-                  function getFieldValue(type: "CHECKBOX"): boolean;
-                  function getFieldValue(type: "MULTISELECT"): string[];
-                  function getFieldValue(
-                    type:
-                      | "NUMBER"
-                      | "TEXTAREA"
-                      | "DATE"
-                      | "TIME"
-                      | "DROPDOWN"
-                      | "RADIO"
-                      | "SEARCH_PERSON"
-                      | "SEARCH_ASSET"
-                      | "TEXT"
-                  ): string;
-                  function getFieldValue(
-                    type: string
-                  ): string | boolean | string[] {
-                    if (rawValue === null || rawValue === undefined)
-                      return type === "CHECKBOX"
-                        ? false
-                        : type === "MULTISELECT"
-                        ? []
-                        : defaultValue;
-
-                    switch (type) {
-                      case "NUMBER":
-                        return typeof rawValue === "number"
-                          ? rawValue.toString()
-                          : typeof rawValue === "string"
-                          ? rawValue
-                          : defaultValue;
-                      case "CHECKBOX":
-                        return typeof rawValue === "boolean"
-                          ? rawValue
-                          : rawValue === "true"
-                          ? true
-                          : rawValue === "false"
+                    function getFieldValue(type: "CHECKBOX"): boolean;
+                    function getFieldValue(type: "MULTISELECT"): string[];
+                    function getFieldValue(
+                      type:
+                        | "NUMBER"
+                        | "TEXTAREA"
+                        | "DATE"
+                        | "TIME"
+                        | "DROPDOWN"
+                        | "RADIO"
+                        | "SEARCH_PERSON"
+                        | "SEARCH_ASSET"
+                        | "TEXT"
+                    ): string;
+                    function getFieldValue(
+                      type: string
+                    ): string | boolean | string[] {
+                      if (rawValue === null || rawValue === undefined)
+                        return type === "CHECKBOX"
                           ? false
-                          : false;
-                      case "MULTISELECT":
-                        return typeof rawValue === "string"
-                          ? rawValue.split(",").filter(Boolean)
-                          : Array.isArray(rawValue)
-                          ? rawValue
-                          : [String(rawValue)];
-                      default:
-                        return typeof rawValue === "string"
-                          ? rawValue
-                          : rawValue !== null
-                          ? String(rawValue)
+                          : type === "MULTISELECT"
+                          ? []
                           : defaultValue;
-                    }
-                  }
 
-                  switch (field.type) {
-                    case "TEXTAREA":
-                      return (
-                        <RenderTextArea
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("TEXTAREA")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "NUMBER":
-                      return (
-                        <RenderNumberField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("NUMBER")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "DATE":
-                      return (
-                        <RenderDateField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("DATE")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "TIME":
-                      return (
-                        <RenderTimeField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("TIME")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "DROPDOWN":
-                      return (
-                        <RenderDropdownField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("DROPDOWN")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                          options={options}
-                        />
-                      );
-                    case "RADIO":
-                      return (
-                        <RenderRadioField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("RADIO")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                          options={options}
-                        />
-                      );
-                    case "CHECKBOX":
-                      return (
-                        <RenderCheckboxField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("CHECKBOX")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "MULTISELECT":
-                      return (
-                        <RenderMultiselectField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("MULTISELECT")}
-                          options={options}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                        />
-                      );
-                    case "SEARCH_PERSON":
-                      return (
-                        <RenderSearchPersonField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("SEARCH_PERSON")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          error={error}
-                          userOptions={userOptions}
-                          formData={editData}
-                        />
-                      );
-                    case "SEARCH_ASSET":
-                      return (
-                        <RenderSearchAssetField
-                          key={field.id}
-                          field={field}
-                          value={getFieldValue("SEARCH_ASSET")}
-                          handleFieldChange={handleFieldChange}
-                          handleFieldTouch={handleFieldTouch}
-                          touchedFields={touchedFields}
-                          equipmentOptions={equipmentOptions}
-                          jobsiteOptions={jobsiteOptions}
-                          costCodeOptions={costCodeOptions}
-                          formData={editData}
-                        />
-                      );
-                    default:
-                      return (
-                        <div key={field.id} className="flex flex-col">
-                          <Label className="text-sm font-medium mb-1">
-                            {field.label}
-                          </Label>
-                          <Input
-                            type="text"
-                            className={`border rounded px-2 py-1 ${
-                              isTouched && error ? "border-red-500" : ""
-                            }`}
-                            value={getFieldValue("TEXT")}
-                            onChange={(e) =>
-                              handleFieldChange(field.id, e.target.value)
-                            }
-                            onBlur={() => handleFieldTouch(field.id)}
+                      switch (type) {
+                        case "NUMBER":
+                          return typeof rawValue === "number"
+                            ? rawValue.toString()
+                            : typeof rawValue === "string"
+                            ? rawValue
+                            : defaultValue;
+                        case "CHECKBOX":
+                          return typeof rawValue === "boolean"
+                            ? rawValue
+                            : rawValue === "true"
+                            ? true
+                            : rawValue === "false"
+                            ? false
+                            : false;
+                        case "MULTISELECT":
+                          return typeof rawValue === "string"
+                            ? rawValue.split(",").filter(Boolean)
+                            : Array.isArray(rawValue)
+                            ? rawValue
+                            : [String(rawValue)];
+                        default:
+                          return typeof rawValue === "string"
+                            ? rawValue
+                            : rawValue !== null
+                            ? String(rawValue)
+                            : defaultValue;
+                      }
+                    }
+
+                    switch (field.type) {
+                      case "TEXTAREA":
+                        return (
+                          <RenderTextArea
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("TEXTAREA")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
                           />
-                          {isTouched && error && (
-                            <p className="text-xs text-red-500 mt-1">{error}</p>
-                          )}
-                        </div>
-                      );
-                  }
-                })}
+                        );
+                      case "NUMBER":
+                        return (
+                          <RenderNumberField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("NUMBER")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                          />
+                        );
+                      case "DATE":
+                        return (
+                          <RenderDateField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("DATE")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                          />
+                        );
+                      case "TIME":
+                        return (
+                          <RenderTimeField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("TIME")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                          />
+                        );
+                      case "DROPDOWN":
+                        return (
+                          <RenderDropdownField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("DROPDOWN")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                            options={options}
+                          />
+                        );
+                      case "RADIO":
+                        return (
+                          <RenderRadioField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("RADIO")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                            options={options}
+                          />
+                        );
+                      case "CHECKBOX":
+                        return (
+                          <RenderCheckboxField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("CHECKBOX")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                          />
+                        );
+                      case "MULTISELECT":
+                        return (
+                          <RenderMultiselectField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("MULTISELECT")}
+                            options={options}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                          />
+                        );
+                      case "SEARCH_PERSON":
+                        return (
+                          <RenderSearchPersonField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("SEARCH_PERSON")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            error={error}
+                            userOptions={userOptions}
+                            formData={displayFormData}
+                          />
+                        );
+                      case "SEARCH_ASSET":
+                        return (
+                          <RenderSearchAssetField
+                            key={field.id}
+                            field={field}
+                            value={getFieldValue("SEARCH_ASSET")}
+                            handleFieldChange={handleFieldChange}
+                            handleFieldTouch={handleFieldTouch}
+                            touchedFields={touchedFields}
+                            equipmentOptions={equipmentOptions}
+                            jobsiteOptions={jobsiteOptions}
+                            costCodeOptions={costCodeOptions}
+                            formData={displayFormData}
+                          />
+                        );
+                      default:
+                        return (
+                          <div key={field.id} className="flex flex-col">
+                            <Label className="text-sm font-medium mb-1">
+                              {field.label}
+                            </Label>
+                            <Input
+                              type="text"
+                              className={`border rounded px-2 py-1 ${
+                                isTouched && error ? "border-red-500" : ""
+                              }`}
+                              value={getFieldValue("TEXT")}
+                              onChange={(e) =>
+                                handleFieldChange(field.id, e.target.value)
+                              }
+                              onBlur={() => handleFieldTouch(field.id)}
+                            />
+                            {isTouched && error && (
+                              <p className="text-xs text-red-500 mt-1">
+                                {error}
+                              </p>
+                            )}
+                          </div>
+                        );
+                    }
+                  })}
               </div>
             </div>
           ))}

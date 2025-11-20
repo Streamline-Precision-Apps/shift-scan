@@ -56,6 +56,7 @@ export interface UpdateFormApprovalParams {
   formSubmissionId: number;
   comment: string;
   isApproved: boolean;
+  managerId: string;
 }
 
 /**
@@ -367,12 +368,19 @@ export const ServiceCreateFormApproval = async (
 export const ServiceUpdateFormApproval = async (
   params: UpdateFormApprovalParams
 ) => {
-  const { id, formSubmissionId, comment, isApproved } = params;
+  const { id, formSubmissionId, comment, managerId, isApproved } = params;
   // Use a transaction to ensure atomicity
   const [approval, updatedSubmission] = await prisma.$transaction([
     prisma.formApproval.update({
       where: { id },
-      data: { comment },
+      data: {
+        comment,
+        Approver: {
+          connect: {
+            id: managerId,
+          },
+        },
+      },
     }),
     prisma.formSubmission.update({
       where: { id: formSubmissionId },
@@ -679,4 +687,71 @@ export const ServiceForm = async (id: string, userId: string) => {
   };
 
   return formattedForm;
+};
+
+export interface UpdateFormSubmissionParams {
+  submissionId: number;
+  formData?: Record<string, any>;
+  status?: string;
+  title?: string;
+  formType?: string;
+  isApprovalRequired?: boolean;
+  userId?: string; // For permission checks if needed
+  submittedAt?: string;
+}
+
+/**
+ * Update a form submission (partial update)
+ * Supports updating data, status, title, and formType.
+ * Returns the updated submission.
+ */
+export const updateFormSubmissionService = async (
+  body: UpdateFormSubmissionParams
+) => {
+  const {
+    submissionId,
+    formData,
+    isApprovalRequired,
+    title,
+    formType,
+    submittedAt,
+  } = body;
+
+  // Fetch the existing submission
+  const existing = await prisma.formSubmission.findUnique({
+    where: { id: submissionId },
+  });
+  if (!existing) {
+    throw new Error("Form submission not found");
+  }
+
+  // Build update data object
+  const updateData: any = {
+    updatedAt: new Date(),
+  };
+  if (formData) updateData.data = formData;
+  if (typeof title === "string") updateData.title = title;
+  if (typeof formType === "string") updateData.formType = formType;
+  if (typeof isApprovalRequired === "boolean") {
+    // Update status based on isApprovalRequired, if it expect an approval set to PENDING, else APPROVED
+    updateData.status = isApprovalRequired
+      ? FormStatus.PENDING
+      : FormStatus.APPROVED;
+  }
+  if (typeof submittedAt === "string") {
+    updateData.submittedAt = submittedAt; // Converts ISO string to Date
+  }
+
+  // Update the submission
+  const updated = await prisma.formSubmission.update({
+    where: { id: submissionId },
+    data: updateData,
+    include: {
+      FormTemplate: true,
+      User: true,
+      Approvals: true,
+    },
+  });
+
+  return updated;
 };

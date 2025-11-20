@@ -21,6 +21,8 @@ import {
   stopClockOutTracking,
   getStoredCoordinates,
 } from "@/app/lib/client/locationTracking";
+import { sendNotification } from "@/app/lib/actions/generatorActions";
+import { enqueue } from "@/app/lib/queue/jobQueue";
 
 export default function Comment({
   handleClick,
@@ -68,45 +70,58 @@ export default function Comment({
         const ts = savedTimeSheetData?.id;
         if (!ts) {
           console.error("No active timesheet found for job switch.");
+          return;
         }
-        return (timeSheetId = ts);
+        timeSheetId = ts;
       }
+
       if (!permissions.location) {
         console.error("Location permissions are required to clock in.");
         return;
       }
 
-      // Use prefetched coordinates if available, else fallback to fetching now
-      let coords = coordinates;
-      if (!coords) {
-        coords = await getStoredCoordinates();
-      }
+      const coordinates = await getStoredCoordinates();
 
       const body = {
         userId: user?.id,
         endTime: new Date().toISOString(),
         timeSheetComments: commentsValue,
         wasInjured: false,
-        clockOutLat: coords ? coords.lat : null,
-        clockOutLng: coords ? coords.lng : null,
+        clockOutLat: coordinates?.lat ?? null,
+        clockOutLong: coordinates?.lng ?? null,
       };
 
-      // Use apiRequest to call the backend update route
-      const isUpdated = await apiRequest(
-        `/api/v1/timesheet/${timeSheetId}/clock-out`,
-        "PUT",
-        body
-      );
+      // 🔴 CRITICAL: Stop tracking FIRST before doing anything else
 
-      if (isUpdated) {
-        // Stop location tracking only after successful clock-out
-        await stopClockOutTracking();
-        setCurrentPageView("break");
-        setTimeSheetData(null);
-        router.push("/v1");
-      }
+      await stopClockOutTracking();
+
+      // Now update state and redirect
+      setCurrentPageView("break");
+      setTimeSheetData(null);
+      // 🟢 INSTANT — Navigate after tracking is stopped
+      router.push("/v1");
+
+      // 🟡 Queue API call after redirect
+      enqueue(async () => {
+        await apiRequest(
+          `/api/v1/timesheet/${timeSheetId}/clock-out`,
+          "PUT",
+          body
+        );
+      });
+
+      enqueue(async () => {
+        const fullName = user?.firstName + " " + user?.lastName;
+        await sendNotification({
+          topic: "timecard-submission",
+          title: "Timecard Approval Needed",
+          message: `#${timeSheetId} has been submitted by ${fullName}.`,
+          link: `/admins/timesheets?id=${timeSheetId}`,
+          referenceId: timeSheetId,
+        });
+      });
     } catch (err) {
-      console.error(err);
+      console.error("[Comment] Error:", err);
     }
   };
   const ios = Capacitor.getPlatform() === "ios";

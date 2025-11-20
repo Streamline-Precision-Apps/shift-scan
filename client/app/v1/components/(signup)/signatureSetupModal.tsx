@@ -219,14 +219,14 @@ export default function SignatureSetUpModal({
           position={"row"}
           className="row-span-1 gap-2 h-full justify-center flex"
         >
-          <Buttons
+          {/* <Buttons
             background={"red"}
             shadow={"none"}
             onClick={handleClear}
             className="text-black"
           >
             {t("Clear")}
-          </Buttons>
+          </Buttons> */}
           <Buttons
             disabled={hasStroke === false}
             onClick={handleSave}

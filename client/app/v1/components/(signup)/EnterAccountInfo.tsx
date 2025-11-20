@@ -18,7 +18,10 @@ import { Calendar } from "../ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { setLocaleCookie } from "@/app/lib/client/cookie-utils";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
+import { Capacitor } from "@capacitor/core";
+import { useLocale } from "@/app/lib/client/ClientIntlProvider";
+import { email } from "zod";
 
 export const EnterAccountInfo = ({
   userId,
@@ -33,8 +36,10 @@ export const EnterAccountInfo = ({
   totalSteps: number;
   currentStep: number;
 }) => {
+  const { setUserSetUp, setLanguage } = useUserStore();
   const t = useTranslations("SignUpAccountInfo");
-
+  const ios = Capacitor.getPlatform() === "ios";
+  const android = Capacitor.getPlatform() === "android";
   const [form, setForm] = useState({
     email: "",
     phoneNumber: "",
@@ -61,6 +66,7 @@ export const EnterAccountInfo = ({
 
   const [datePopoverOpen, setDatePopoverOpen] = useState(false);
 
+  const { resetLocale } = useLocale();
   // Example server action placeholder
   // async function submitToServer(data: typeof form) { ... }
 
@@ -92,6 +98,8 @@ export const EnterAccountInfo = ({
   const handleLanguageChange = (value: string) => {
     setForm((prev) => ({ ...prev, language: value }));
     setLocaleCookie(value);
+    resetLocale((value as "en" | "es") || "en");
+    setLanguage(value);
   };
 
   const handleDateChange = (date: Date | undefined) => {
@@ -112,44 +120,48 @@ export const EnterAccountInfo = ({
       return;
     }
 
-    const data = new FormData();
-    data.append("id", userId);
-    data.append("email", form.email);
-    data.append("DOB", form.date ? form.date.toISOString() : "");
-    data.append("phoneNumber", form.phoneNumber);
-    data.append("language", form.language);
-    data.append("emergencyContact", form.emergencyContactName);
-    data.append("emergencyContactNumber", form.emergencyContactPhone);
+    const res = await apiRequest(`/api/v1/user/${userId}`, "PUT", {
+      email: form.email,
+      DOB: form.date ? form.date.toISOString() : "",
+      Contact: {
+        phoneNumber: form.phoneNumber,
+        emergencyContact: form.emergencyContactName,
+        emergencyContactNumber: form.emergencyContactPhone,
+      },
+      UserSettings: {
+        language: form.language,
+      },
+    });
 
-    // Make a post route to finish user setup\
-    const API_URL = getApiUrl();
-    const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: form.email,
-        DOB: form.date ? form.date.toISOString() : "",
-        Contact: {
-          phoneNumber: form.phoneNumber,
-          emergencyContactName: form.emergencyContactName,
-          emergencyContactNumber: form.emergencyContactPhone,
-        },
-        UserSettings: {
-          language: form.language,
-        },
-      }),
-    }).then((res) => res.json());
+    console.log("Update response:", res);
 
-    if (res.success) {
-      useUserStore.getState().setUser(res.data);
+    if (!res.success) {
+      throw new Error("Error updating account info in DB");
     }
+
+    setUserSetUp({
+      email: form.email,
+      DOB: form.date ? form.date.toISOString() : "",
+      Contact: {
+        phoneNumber: form.phoneNumber,
+        emergencyContact: form.emergencyContactName,
+        emergencyContactNumber: form.emergencyContactPhone,
+      },
+      UserSettings: {
+        language: form.language,
+      },
+    });
 
     handleNextStep();
   };
   return (
-    <div className="h-dvh w-full flex flex-col">
+    <div
+      className={`h-dvh w-full flex flex-col bg-app-dark-blue ${
+        ios ? "pt-8" : android ? "pt-4" : ""
+      }`}
+    >
       {/*Header - fixed at top*/}
-      <div className="w-full h-[10%] flex flex-col justify-end py-3">
+      <div className={`w-full h-[10%] flex flex-col justify-end py-3 `}>
         <Texts text={"white"} className="justify-end" size={"sm"}>
           {t("ItsTimeToSetUpYourAccount")}
         </Texts>
@@ -181,32 +193,16 @@ export const EnterAccountInfo = ({
           </div>
           <div className="flex flex-col">
             <Label>{t("DateOfBirth")}</Label>
-            <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  id="date"
-                  className="justify-between font-normal"
-                >
-                  {form.date ? form.date.toLocaleDateString() : "Select date"}
-                  <ChevronDownIcon />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="start"
-              >
-                <Calendar
-                  mode="single"
-                  selected={form.date}
-                  captionLayout="dropdown"
-                  onSelect={(date: Date | undefined) => {
-                    handleDateChange(date);
-                    setDatePopoverOpen(false);
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
+            <Input
+              type="date"
+              name="dateOfBirth"
+              value={form.date ? form.date.toISOString().split("T")[0] : ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleDateChange(val ? new Date(val) : undefined);
+              }}
+              className="w-[95%] max-w-[600px] mx-auto border border-zinc-300 p-2 rounded-md"
+            />
           </div>
           <div>
             <Label>{t("Email")}</Label>

@@ -1,11 +1,12 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="9fe7400e-d778-5481-834d-654525defe97")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="cad72154-99c3-58fd-b4ec-8ba49d72f46a")}catch(e){}}();
 import { Router } from "express";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { createUser, deleteUser, getUserById, getUsers, updateSettings, updateUser, getUserSettingsByQuery, getUserContact, getAllUsers, getUsersTimeSheetByDate, getTeamsByUserId, getCrewMembers, getCrewOnlineStatus, getUserOnlineStatus, getUserInfo, sessionController, endSessionController, } from "../controllers/userController.js";
+import { createUser, deleteUser, getUserById, getUsers, updateSettings, updateUser, getUserSettingsByQuery, getUserContact, getAllUsers, getUsersTimeSheetByDate, getTeamsByUserId, getCrewMembers, getCrewOnlineStatus, getUserOnlineStatus, getUserInfo, sessionController, endSessionController, userSignatureController, } from "../controllers/userController.js";
 const router = Router();
 router.post("/:id/session", sessionController);
 router.put("/:id/session/:sessionId", endSessionController);
+router.post("/:id/signature", userSignatureController);
 /**
  * @swagger
  * /api/v1/user/{userId}/online:
@@ -376,4 +377,4 @@ router.put("/:id", verifyToken, updateUser);
 router.delete("/:id", verifyToken, deleteUser);
 export default router;
 //# sourceMappingURL=userRoute.js.map
-//# debugId=9fe7400e-d778-5481-834d-654525defe97
+//# debugId=cad72154-99c3-58fd-b4ec-8ba49d72f46a

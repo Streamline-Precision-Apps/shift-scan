@@ -1,9 +1,9 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="8d7caf6b-f8d0-53bb-bdfa-cc23543f0e89")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="e70ad532-5e46-5885-8435-3ee25aa8b0fb")}catch(e){}}();
 import { ServiceManagerFormApprovals, ServiceFormSubmissions, ServiceTeamSubmissions, ServiceFormDraft, ServiceForm, } from "../services/formsService.js";
 // Controller for forms endpoints
 import express from "express";
-import { ServiceCreateFormApproval, ServiceCreateFormSubmission, ServiceDeleteFormSubmission, ServiceGetForms, ServiceGetUserSubmissions, ServiceSaveDraft, ServiceSaveDraftToPending, ServiceSavePending, ServiceUpdateFormApproval, } from "../services/formsService.js";
+import { ServiceCreateFormApproval, ServiceCreateFormSubmission, ServiceDeleteFormSubmission, ServiceGetForms, ServiceGetUserSubmissions, ServiceSaveDraft, ServiceSaveDraftToPending, ServiceSavePending, ServiceUpdateFormApproval, updateFormSubmissionService, } from "../services/formsService.js";
 import { ServiceGetEmployeeRequests } from "../services/formsService.js";
 // Fetch employee requests for a manager (with filter, skip, take)
 export const getUserSubmissions = async (req, res) => {
@@ -62,7 +62,7 @@ export const getEmployeeRequests = async (req, res) => {
         if (permission === "USER") {
             return res.status(401).json({ error: "Unauthorized User Permission" });
         }
-        const filter = req.query.filter;
+        const filter = req.params.filter;
         const skip = parseInt(req.query.skip || "0");
         const take = parseInt(req.query.take || "10");
         const requests = await ServiceGetEmployeeRequests({
@@ -88,6 +88,19 @@ export const getForms = async (req, res) => {
         const message = error instanceof Error && error.message
             ? error.message
             : "Failed to retrieve forms";
+        res.status(400).json({ message });
+    }
+};
+export const updateFormSubmission = async (req, res) => {
+    try {
+        const body = req.body;
+        const submission = await updateFormSubmissionService(body);
+        res.status(201).json(submission);
+    }
+    catch (error) {
+        const message = error instanceof Error && error.message
+            ? error.message
+            : "Failed to create form submission";
         res.status(400).json({ message });
     }
 };
@@ -184,6 +197,7 @@ export const savePending = async (req, res) => {
 export const createFormApproval = async (req, res) => {
     try {
         const { formSubmissionId, signedBy, signature, comment, approval } = req.body;
+        console.log("Creating approval with signedBy:", req.body);
         const result = await ServiceCreateFormApproval({
             formSubmissionId,
             signedBy,
@@ -202,11 +216,12 @@ export const createFormApproval = async (req, res) => {
 };
 export const updateFormApproval = async (req, res) => {
     try {
-        const { id, formSubmissionId, comment, isApproved } = req.body;
+        const { id, formSubmissionId, comment, managerId, isApproved } = req.body;
         const result = await ServiceUpdateFormApproval({
             id,
             formSubmissionId,
             comment,
+            managerId,
             isApproved,
         });
         res.status(200).json(result);
@@ -302,4 +317,4 @@ export const getFormTemplate = async (req, res) => {
     }
 };
 //# sourceMappingURL=formsController.js.map
-//# debugId=8d7caf6b-f8d0-53bb-bdfa-cc23543f0e89
+//# debugId=e70ad532-5e46-5885-8435-3ee25aa8b0fb

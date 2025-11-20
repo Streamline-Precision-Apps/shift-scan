@@ -6,7 +6,6 @@ import RenderSearchPersonField, {
 } from "../../../../v1/(routes)/hamburger/inbox/_components/RenderSearchPersonField";
 import RenderSearchAssetField from "../../../../v1/(routes)/hamburger/inbox/_components/RenderSearchAssetField";
 import RenderTimeField from "../../../../v1/(routes)/hamburger/inbox/_components/RenderTimeField";
-import { FormIndividualTemplate } from "../../../../v1/(routes)/hamburger/inbox/_adminComponents/types";
 import RenderInputField from "./RenderInputField";
 import RenderTextArea from "./RenderTextAreaField";
 import RenderNumberField from "./RenderNumberField";
@@ -15,16 +14,24 @@ import RenderDropdownField from "./RenderDropdownField";
 import RenderRadioField from "./RenderRadioField";
 import RenderCheckboxField from "./RenderCheckboxField";
 import RenderMultiselectField from "./RenderMultiselectField";
+import { FormTemplate, FormField, FormFieldValue } from "@/app/lib/types/forms";
 
-// Define a FormFieldValue type to represent all possible field values
-type FormFieldValue =
-  | string
-  | Date
-  | string[]
-  | object
-  | boolean
-  | number
-  | null;
+/**
+ * Type adapter: Convert canonical FormField to legacy Fields type for backward-compatible components.
+ * This adapter is temporary and should be removed once all child components are updated to use FormField.
+ */
+function adaptFormFieldToLegacy(field: FormField): Fields {
+  return {
+    ...field,
+    // Ensure nullable fields are properly handled for legacy components
+    multiple: field.multiple ?? null,
+    placeholder: field.placeholder ?? undefined,
+    maxLength: field.maxLength ?? undefined,
+    minLength: field.minLength ?? undefined,
+    content: field.content ?? undefined,
+    filter: field.filter ?? undefined,
+  };
+}
 
 export default function RenderFields({
   formTemplate,
@@ -35,7 +42,6 @@ export default function RenderFields({
   formData,
   handleFieldChange,
   disabled,
-
   equipmentOptions = [],
   jobsiteOptions = [],
   costCodeOptions = [],
@@ -43,7 +49,7 @@ export default function RenderFields({
   hideSubmittedBy = false,
   useNativeInput = false,
 }: {
-  formTemplate: FormIndividualTemplate;
+  formTemplate: FormTemplate;
   userOptions: { value: string; label: string }[];
   submittedBy: { id: string; firstName: string; lastName: string } | null;
   setSubmittedBy: (
@@ -93,9 +99,8 @@ export default function RenderFields({
         case "TIME":
         case "SEARCH_PERSON":
         case "SEARCH_ASSET":
-          return "";
         case "NUMBER":
-          return 0;
+          return "";
         case "CHECKBOX":
           return false;
         case "DATE":
@@ -111,6 +116,7 @@ export default function RenderFields({
   };
 
   if (!formTemplate?.FormGrouping) return null;
+
   return (
     <>
       {!hideSubmittedBy && (
@@ -145,319 +151,399 @@ export default function RenderFields({
           )}
         </div>
       )}
-      {formTemplate.FormGrouping?.map((group, groupIndex) => (
-        <div key={group.id || `group-${groupIndex}`} className="mb-4">
-          <div className="flex flex-col gap-5">
-            {group.Fields?.map((field: Fields, fieldIndex) => {
-              // Get properly typed value based on field type - use same fallback pattern as admin
-              const rawValue =
-                formData[field.id] ?? formData[field.label] ?? null;
-              const value = getTypedValue(field, rawValue);
-              const options = field.Options || [];
-              const error = handleFieldValidation(field, value);
+      {formTemplate.FormGrouping?.sort((a, b) => a.order - b.order).map(
+        (group, groupIndex) => (
+          <div key={group.id || `group-${groupIndex}`} className="mb-4">
+            <div className="flex flex-col gap-5">
+              {group.Fields?.sort((a, b) => a.order - b.order).map(
+                (formField: FormField, fieldIndex) => {
+                  // Adapt canonical FormField to legacy Fields type for backward-compatible components
+                  const field = adaptFormFieldToLegacy(formField);
 
-              // Ensure unique key, fallback to field position if no ID
-              const fieldKey =
-                field.id ||
-                `field-${group.id}-${fieldIndex}` ||
-                `field-${groupIndex}-${fieldIndex}`;
+                  // Get properly typed value based on field type - use same fallback pattern as admin
+                  const rawValue =
+                    formData[field.id] ?? formData[field.label] ?? null;
+                  const value = getTypedValue(field, rawValue);
+                  const options = field.Options || [];
+                  const error = handleFieldValidation(field, value);
 
-              switch (field.type) {
-                case "TEXT":
-                case "INPUT":
-                  return (
-                    <RenderInputField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "TEXTAREA":
-                  return (
-                    <RenderTextArea
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "NUMBER":
-                  return (
-                    <RenderNumberField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "DATE":
-                case "DATE_TIME":
-                  return (
-                    <RenderDateField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      useNativeInput={useNativeInput}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                    />
-                  );
-                case "TIME":
-                  return (
-                    <RenderTimeField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "DROPDOWN":
-                  return (
-                    <RenderDropdownField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      options={options}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "RADIO":
-                  return (
-                    <RenderRadioField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      options={options}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "CHECKBOX":
-                  return (
-                    <RenderCheckboxField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string | boolean}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string | boolean) => {
-                              console.log("RenderFields", val);
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "HEADER":
-                  return (
-                    <div key={fieldKey} className="col-span-2">
-                      <h2 className="text-xl font-bold my-2">{field.label}</h2>
-                      <h2 className="text-xl font-bold my-2">
-                        {field.content}
-                      </h2>
-                    </div>
-                  );
-                case "PARAGRAPH":
-                  return (
-                    <div key={fieldKey} className="col-span-2">
-                      <p className="text-gray-700 text-sm">{field.label}</p>
-                      <p className="text-gray-700 my-2">{field.content}</p>
-                    </div>
-                  );
-                case "MULTISELECT":
-                  return (
-                    <RenderMultiselectField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string | string[]}
-                      options={options}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string | string[]) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "SEARCH_PERSON":
-                  return (
-                    <RenderSearchPersonField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      userOptions={userOptions} // Use the userOptions array
-                      handleFieldChange={
-                        readOnly
-                          ? () => {
-                              return;
-                            }
-                          : (
-                              id: string,
-                              val:
-                                | string
-                                | Date
-                                | string[]
-                                | object
-                                | boolean
-                                | number
-                                | null
-                            ) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      formData={formData}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                case "SEARCH_ASSET":
-                  return (
-                    <RenderSearchAssetField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (
-                              id: string,
-                              val:
-                                | string
-                                | Date
-                                | string[]
-                                | object
-                                | boolean
-                                | number
-                                | null
-                            ) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      formData={formData}
-                      equipmentOptions={equipmentOptions || []}
-                      jobsiteOptions={jobsiteOptions || []}
-                      costCodeOptions={costCodeOptions || []}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-                default:
-                  return (
-                    <RenderInputField
-                      key={fieldKey}
-                      field={field}
-                      value={value as string}
-                      handleFieldChange={
-                        readOnly
-                          ? () => {}
-                          : (id: string, val: string) => {
-                              handleFieldChange(id, val);
-                            }
-                      }
-                      handleFieldTouch={handleFieldTouch}
-                      touchedFields={touchedFields}
-                      error={error}
-                      disabled={disabled}
-                      useNativeInput={useNativeInput}
-                    />
-                  );
-              }
-            }) || []}
+                  // Ensure unique key, fallback to field position if no ID
+                  const fieldKey =
+                    field.id ||
+                    `field-${group.id}-${fieldIndex}` ||
+                    `field-${groupIndex}-${fieldIndex}`;
+
+                  switch (field.type) {
+                    case "TEXT":
+                    case "INPUT":
+                      return (
+                        <RenderInputField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Text / Input]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "TEXTAREA":
+                      return (
+                        <RenderTextArea
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Text Area]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "NUMBER":
+                      return (
+                        <RenderNumberField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Number]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "DATE":
+                    case "DATE_TIME":
+                      return (
+                        <RenderDateField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Date / DateTime]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          useNativeInput={useNativeInput}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                        />
+                      );
+                    case "TIME":
+                      return (
+                        <RenderTimeField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Time]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "DROPDOWN":
+                      return (
+                        <RenderDropdownField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          options={options}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Dropdown]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "RADIO":
+                      return (
+                        <RenderRadioField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          options={options}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Radio]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "CHECKBOX":
+                      return (
+                        <RenderCheckboxField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string | boolean}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string | boolean) => {
+                                  console.log(
+                                    "[Checkbox]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "HEADER":
+                      return (
+                        <div key={fieldKey} className="col-span-2">
+                          <h2 className="text-xl font-bold my-2">
+                            {field.label}
+                          </h2>
+                          <h2 className="text-xl font-bold my-2">
+                            {field.content}
+                          </h2>
+                        </div>
+                      );
+                    case "PARAGRAPH":
+                      return (
+                        <div key={fieldKey} className="col-span-2">
+                          <p className="text-gray-700 text-sm">{field.label}</p>
+                          <p className="text-gray-700 my-2">{field.content}</p>
+                        </div>
+                      );
+                    case "MULTISELECT":
+                      return (
+                        <RenderMultiselectField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string | string[]}
+                          options={options}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string | string[]) => {
+                                  handleFieldChange(id, val);
+                                  console.log(
+                                    "[Multiselect]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "SEARCH_PERSON":
+                      return (
+                        <RenderSearchPersonField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          userOptions={userOptions} // Use the userOptions array
+                          handleFieldChange={
+                            readOnly
+                              ? () => {
+                                  return;
+                                }
+                              : (
+                                  id: string,
+                                  val:
+                                    | string
+                                    | Date
+                                    | string[]
+                                    | Record<string, any>
+                                    | boolean
+                                    | number
+                                    | null
+                                ) => {
+                                  console.log(
+                                    "[SearchPerson]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          formData={formData}
+                          disabled={disabled || readOnly}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    case "SEARCH_ASSET":
+                      return (
+                        <RenderSearchAssetField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (
+                                  id: string,
+                                  val:
+                                    | string
+                                    | Date
+                                    | string[]
+                                    | Record<string, any>
+                                    | boolean
+                                    | number
+                                    | null
+                                ) => {
+                                  console.log(
+                                    "[SearchAsset]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          formData={formData}
+                          equipmentOptions={equipmentOptions || []}
+                          jobsiteOptions={jobsiteOptions || []}
+                          costCodeOptions={costCodeOptions || []}
+                          error={error}
+                          disabled={disabled || readOnly}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                    default:
+                      return (
+                        <RenderInputField
+                          key={fieldKey}
+                          field={field}
+                          value={value as string}
+                          handleFieldChange={
+                            readOnly
+                              ? () => {}
+                              : (id: string, val: string) => {
+                                  console.log(
+                                    "[Input]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
+                                  handleFieldChange(id, val);
+                                }
+                          }
+                          handleFieldTouch={handleFieldTouch}
+                          touchedFields={touchedFields}
+                          error={error}
+                          disabled={disabled}
+                          useNativeInput={useNativeInput}
+                        />
+                      );
+                  }
+                }
+              ) || []}
+            </div>
           </div>
-        </div>
-      )) || []}
+        )
+      ) || []}
     </>
   );
 }

@@ -47,6 +47,7 @@ type QRStepProps = {
   setMaterialType?: Dispatch<SetStateAction<string>>;
   setShiftType?: Dispatch<SetStateAction<string>>;
   setLaborType?: Dispatch<SetStateAction<string>>;
+  setStep?: Dispatch<SetStateAction<number>>;
 };
 
 export default function QRMultiRoles({
@@ -66,6 +67,7 @@ export default function QRMultiRoles({
   setMaterialType,
   setShiftType,
   setLaborType,
+  setStep,
 }: QRStepProps) {
   const t = useTranslations("Clock");
   const native = Capacitor.isNativePlatform();
@@ -113,6 +115,9 @@ export default function QRMultiRoles({
   }, [permissionStatus, requestCameraPermission, requestLocationPermission]);
 
   const selectView = (selectedRoleType: string) => {
+    if (selectedRoleType === "") {
+      return;
+    }
     setClockInRoleTypes(selectedRoleType);
 
     // Map the selected role type to the main clock-in role but only update local state
@@ -216,7 +221,6 @@ export default function QRMultiRoles({
         setLaborType?.("EShift");
         break;
 
-      case "tascoFShift":
       case "tascoFEquipment":
         // F Shift - Lime Rock → #80.40 Amalgamated Equipment (same as E shift but different material)
         const fCostCode = findCostCodeByExactName(
@@ -240,8 +244,18 @@ export default function QRMultiRoles({
       setClockInRole(tempClockInRole);
     }
 
-    // Move to next step
-    handleNextStep();
+    // Handle step navigation based on shift type
+    if (
+      (clockInRoleTypes === "tascoEEquipment" ||
+        clockInRoleTypes === "tascoFEquipment") &&
+      setStep
+    ) {
+      // E and F shifts skip material selection (step 3) and go directly to equipment selection (step 4)
+      setStep(4);
+    } else {
+      // All other Tasco roles proceed to next step normally
+      handleNextStep();
+    }
   };
 
   useEffect(() => {
@@ -268,8 +282,7 @@ export default function QRMultiRoles({
   // Auto-set predefined data when clockInRoleTypes is already set (e.g., from switch jobs)
   useEffect(() => {
     if (
-      (clockInRoleTypes === "tascoFShift" ||
-        clockInRoleTypes === "tascoFEquipment") &&
+      clockInRoleTypes === "tascoFEquipment" &&
       jobsiteResults &&
       costcodeResults
     ) {
@@ -343,7 +356,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className=" h-12 bg-app-blue text-center p-2 text-sm disabled:bg-app-blue"
+                          className=" h-12 bg-app-blue text-center px-2 text-sm disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -360,8 +373,8 @@ export default function QRMultiRoles({
                               <option value="tascoEEquipment">
                                 {t("TASCOEEquipmentOperator")}
                               </option>
-                              <option value="tascoFShift">
-                                {t("TASCOFShift")}
+                              <option value="tascoFEquipment">
+                                {t("TASCOFEquipmentOperator")}
                               </option>
                             </>
                           )}
@@ -391,7 +404,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className="h-10 bg-app-blue text-center p-3 disabled:bg-app-blue"
+                          className="h-12 bg-app-blue text-center px-2 disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -408,8 +421,8 @@ export default function QRMultiRoles({
                               <option value="tascoEEquipment">
                                 {t("TASCOEEquipmentOperator")}
                               </option>
-                              <option value="tascoFShift">
-                                {t("TASCOFShift")}
+                              <option value="tascoFEquipment">
+                                {t("TASCOFEquipmentOperator")}
                               </option>
                             </>
                           )}
@@ -420,7 +433,7 @@ export default function QRMultiRoles({
                     <Holds className="p-1 justify-center row-start-1 row-end-2 ">
                       <Contents width={"section"}>
                         <Selects
-                          className="bg-app-blue h-10 text-center p-3 disabled:bg-app-blue"
+                          className="bg-app-blue h-12 text-center px-2 disabled:bg-app-blue"
                           value={clockInRoleTypes}
                           disabled={startCamera}
                           onChange={(e) => selectView(e.target.value)}
@@ -462,19 +475,24 @@ export default function QRMultiRoles({
                         </Holds>
                       )}
                     </Holds>
-                    <Holds className="h-20 w-full  justify-center">
-                      <Buttons
-                        background={"none"}
-                        shadow={"none"}
-                        onClick={handleAlternativePath}
-                      >
-                        <Texts
-                          size={"p4"}
-                          className="underline underline-offset-4"
-                        >
-                          {t("TroubleScanning")}
-                        </Texts>
-                      </Buttons>
+                    <Holds className="h-20 w-full justify-center">
+                      {clockInRoleTypes !== "tascoAbcdLabor" &&
+                        clockInRoleTypes !== "tascoAbcdEquipment" &&
+                        clockInRoleTypes !== "tascoEEquipment" &&
+                        clockInRoleTypes !== "tascoFEquipment" && (
+                          <Buttons
+                            background={"none"}
+                            shadow={"none"}
+                            onClick={handleAlternativePath}
+                          >
+                            <Texts
+                              size={"p4"}
+                              className="underline underline-offset-4"
+                            >
+                              {t("TroubleScanning")}
+                            </Texts>
+                          </Buttons>
+                        )}
                     </Holds>
                   </Contents>
                 </Holds>
@@ -510,7 +528,7 @@ export default function QRMultiRoles({
                               "tascoAbcdLabor",
                               "tascoAbcdEquipment",
                               "tascoEEquipment",
-                              "tascoFShift",
+                              "tascoFEquipment",
                             ].includes(clockInRoleTypes));
 
                         if (isTascoRole) {
@@ -544,7 +562,7 @@ export default function QRMultiRoles({
                             "tascoAbcdLabor",
                             "tascoAbcdEquipment",
                             "tascoEEquipment",
-                            "tascoFShift",
+                            "tascoFEquipment",
                           ].includes(clockInRoleTypes))
                           ? t("Continue")
                           : t("StartCamera")}

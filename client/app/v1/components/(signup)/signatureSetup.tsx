@@ -9,7 +9,8 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import SignatureSetUpModal from "./signatureSetupModal";
 import { useUserStore } from "@/app/lib/store/userStore";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
+import { Capacitor } from "@capacitor/core";
 
 interface SignatureSetupProps {
   userId: string;
@@ -33,7 +34,8 @@ const SignatureSetup: React.FC<SignatureSetupProps> = ({
   const [bannerMessage, setBannerMessage] = useState<string>("");
 
   const t = useTranslations("SignUpVirtualSignature");
-
+  const ios = Capacitor.getPlatform() === "ios";
+  const android = Capacitor.getPlatform() === "android";
   // Hide the banner after 5 seconds if it is shown
   useEffect(() => {
     if (showBanner) {
@@ -59,18 +61,14 @@ const SignatureSetup: React.FC<SignatureSetupProps> = ({
 
     setIsSubmitting(true);
     try {
-      const API_URL = getApiUrl();
-      const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          signature: base64String,
-        }),
-      }).then((res) => res.json());
+      const res = await apiRequest(`/api/v1/user/${userId}`, "PUT", {
+        signature: base64String,
+      });
 
-      if (!res.success) {
+      if (!res) {
         throw new Error("Error updating signature in DB");
       }
+
       useUserStore.getState().setUser(res.data);
 
       handleNextStep(); // Proceed to the next step only if the image upload is successful
@@ -86,7 +84,11 @@ const SignatureSetup: React.FC<SignatureSetupProps> = ({
   };
 
   return (
-    <div className="h-dvh w-full flex flex-col">
+    <div
+      className={`h-dvh w-full flex flex-col bg-app-dark-blue ${
+        ios ? "pt-8" : android ? "pt-4" : ""
+      }`}
+    >
       {/*Header - fixed at top*/}
       <div className="w-full h-[10%] flex flex-col justify-end py-3">
         <Texts text={"white"} className="justify-end" size={"sm"}>
@@ -148,10 +150,18 @@ const SignatureSetup: React.FC<SignatureSetupProps> = ({
       </div>
 
       {/*Footer - fixed at bottom*/}
-      <div className="w-full h-[10%] bg-white border-t border-slate-200 px-4 py-2">
+      <div className="w-full h-[10%] flex flex-row gap-2 bg-white border-t border-slate-200 px-4 py-2">
+        {/* <Button
+          className="bg-app-orange w-24"
+          onClick={() => setStep(currentStep - 1)}
+          disabled={isSubmitting}
+        >
+          {" "}
+          Back
+        </Button> */}
         <Button
           className={
-            base64String ? "bg-green-500 w-full" : "bg-gray-300 w-full"
+            base64String ? "bg-green-600 w-full" : "bg-gray-300 w-full"
           }
           onClick={handleSubmitImage}
           disabled={isSubmitting}

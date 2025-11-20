@@ -25,6 +25,22 @@ export default function RenderTimeField({
   disabled?: boolean;
   useNativeInput?: boolean;
 }) {
+  function formatTimeForInput(value: Date | string | null | undefined): string {
+    if (!value) return "";
+
+    // If it's already in HH:mm format (from time input), return as-is
+    if (typeof value === "string" && /^\d{2}:\d{2}/.test(value)) {
+      return value.substring(0, 5); // Ensure we only get HH:mm
+    }
+
+    // Otherwise, parse as date and extract time
+    const date = typeof value === "string" ? new Date(value) : value;
+    if (isNaN(date.getTime())) return "";
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  }
+
   return (
     <div key={field.id} className="flex flex-col">
       <Label htmlFor={field.id} className="text-sm font-medium mb-1">
@@ -35,11 +51,12 @@ export default function RenderTimeField({
       <Input
         type="time"
         id={field.id}
-        value={value ? value : ""}
+        value={formatTimeForInput(value)}
         placeholder="Select time"
         className={`w-full border rounded px-2 py-1 cursor-pointer bg-white appearance-none  ${
           error && touchedFields[field.id] ? "border-red-500" : ""
         }`}
+        autoComplete="off"
         onChange={(e) => handleFieldChange(field.id, e.target.value)}
         onBlur={() => handleFieldTouch(field.id)}
         required={field.required}

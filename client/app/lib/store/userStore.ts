@@ -57,6 +57,19 @@ type User = {
   UserSettings: UserSettings;
 };
 
+type SetUserSetUpPayload = {
+  email: string;
+  DOB: string;
+  Contact: {
+    phoneNumber: string;
+    emergencyContact: string;
+    emergencyContactNumber: string;
+  };
+  UserSettings: {
+    language: string;
+  };
+};
+
 type UserStore = {
   user: User | null;
   setUser: (user: User) => void;
@@ -64,6 +77,7 @@ type UserStore = {
   setLanguage: (language: string) => void;
   setUserSettings: (settings: Partial<UserSettings>) => void;
   setImage: (image: string) => void;
+  setUserSetUp: (payload: SetUserSetUpPayload) => void;
   payPeriodTimeSheet: PayPeriodTimesheets[] | null;
   setPayPeriodTimeSheets: (
     payPeriodTimeSheets: PayPeriodTimesheets[] | null
@@ -136,6 +150,28 @@ export const useUserStore = create(
           });
         }
       },
+      setUserSetUp: (payload) => {
+        const user = get().user;
+        if (user) {
+          set({
+            user: {
+              ...user,
+              email: payload.email,
+              DOB: payload.DOB,
+              Contact: {
+                ...user.Contact,
+                phoneNumber: payload.Contact.phoneNumber,
+                emergencyContact: payload.Contact.emergencyContact,
+                emergencyContactNumber: payload.Contact.emergencyContactNumber,
+              },
+              UserSettings: {
+                ...user.UserSettings,
+                language: payload.UserSettings.language,
+              },
+            },
+          });
+        }
+      },
       payPeriodTimeSheet: null,
       setPayPeriodTimeSheets: (payPeriodTimeSheets) =>
         set({ payPeriodTimeSheet: payPeriodTimeSheets }),
@@ -150,6 +186,7 @@ export const useUserStore = create(
         setLanguage: () => {},
         setUserSettings: () => {},
         setImage: () => {},
+        setUserSetUp: () => {},
         setPayPeriodTimeSheets: () => {},
       }),
     }

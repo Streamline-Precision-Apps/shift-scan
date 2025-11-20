@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     "https://shift-scan-server-897456891133.us-west3.run.app/",
     "192.168.1.102",
     "192.168.1.102:3000",
+    "169.254.83.107",
+    "169.254.83.107:3000",
     "localhost:3000",
   ],
   // Suppress WebSocket HMR console warnings
@@ -21,9 +23,9 @@ const nextConfig: NextConfig = {
       // Reduce console noise from webpack HMR
       const originalWarn = console.warn;
       console.warn = (...args) => {
-        const msg = args[0]?.toString() || '';
+        const msg = args[0]?.toString() || "";
         // Filter out WebSocket connection warnings
-        if (msg.includes('WebSocket') || msg.includes('webpack-hmr')) {
+        if (msg.includes("WebSocket") || msg.includes("webpack-hmr")) {
           return;
         }
         originalWarn.apply(console, args);

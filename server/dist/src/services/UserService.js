@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="184d6e1d-2a0f-5983-833a-1e30b1d76e9e")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="22b11b90-e311-5178-9da6-2aaecbf97f03")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 import { hash } from "bcryptjs";
 const ALLOWED_USER_FIELDS = [
@@ -426,5 +426,15 @@ export async function EndSession(id) {
     });
     return newSession;
 }
+export async function handleUserSignature(userId) {
+    return await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+        select: {
+            signature: true,
+        },
+    });
+}
 //# sourceMappingURL=UserService.js.map
-//# debugId=184d6e1d-2a0f-5983-833a-1e30b1d76e9e
+//# debugId=22b11b90-e311-5178-9da6-2aaecbf97f03

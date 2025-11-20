@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b215ede7-5059-5503-8ebd-c36b883b125f")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0ee14ef1-a585-55e4-9451-e4dcc99133ef")}catch(e){}}();
 import { getFirebaseAdmin } from "../lib/firebase.js";
 export async function blobUpload(req, res) {
     try {
@@ -8,6 +8,7 @@ export async function blobUpload(req, res) {
         const userId = req.body.userId;
         const file = req.file;
         const folder = req.body.folder || "profileImages";
+        console.log("file", file);
         if (!userId) {
             return res.status(400).json({ error: "No userId provided" });
         }
@@ -57,4 +58,4 @@ export async function blobDelete(req, res) {
     }
 }
 //# sourceMappingURL=blobsController.js.map
-//# debugId=b215ede7-5059-5503-8ebd-c36b883b125f
+//# debugId=0ee14ef1-a585-55e4-9451-e4dcc99133ef

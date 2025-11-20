@@ -13,37 +13,7 @@ import { Images } from "@/app/v1/components/(reusable)/images";
 import { createFormApproval } from "@/app/lib/actions/formActions";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { FormFieldRenderer } from "../../../_components/FormFieldRenderer";
-
-interface FormField {
-  id: string;
-  label: string;
-  name: string;
-  type: string;
-  required: boolean;
-  order: number;
-  defaultValue?: string;
-  placeholder?: string;
-  maxLength?: number;
-  helperText?: string;
-  options?: string[];
-}
-
-interface FormGrouping {
-  id: string;
-  title: string;
-  order: number;
-  fields: FormField[];
-}
-
-interface FormTemplate {
-  id: string;
-  name: string;
-  formType: string;
-  isActive: boolean;
-  isSignatureRequired: boolean;
-  isApprovalRequired: boolean;
-  groupings: FormGrouping[];
-}
+import type { FormTemplate, FormFieldValue } from "@/app/lib/types/forms";
 
 type ManagerFormApprovalSchema = {
   id: number;
@@ -191,14 +161,14 @@ export default function ManagerFormApproval({
                   Form Details
                 </h3>
               </div>
-              <FormFieldRenderer
+              {/* <FormFieldRenderer
                 formData={formData}
                 formValues={formValues}
                 setFormValues={() => {}}
                 readOnly={true}
                 disabled={true}
                 useNativeInput={true}
-              />
+              /> */}
 
               <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
                 <p className="text-xs text-gray-500">

@@ -120,7 +120,6 @@ export async function createUserAdmin(payload: {
     }[];
 }) {
     try {
-        console.log("Payload in createUserAdmin:", payload);
         // Call API to create user
         const result = await apiRequest(
             "/api/v1/admins/personnel/createUserAdmin",
@@ -206,7 +205,6 @@ export async function editUserAdmin(payload: {
     }[];
 }) {
     try {
-        console.log("Payload in editUserAdmin:", payload);
         // Call API to update user
         const result = await apiRequest(
             `/api/v1/admins/personnel/editUserAdmin/${payload.id}`,
@@ -229,7 +227,7 @@ export async function editUserAdmin(payload: {
 
 export async function deleteCrew(id: string) {
     try {
-        await apiRequest(`/api/v1/admins/personnel/${id}`, "DELETE");
+        await apiRequest(`/api/v1/admins/personnel/deleteCrew/${id}`, "DELETE");
         return { success: true };
     } catch (error) {
         console.error("Error deleting crew:", error);
@@ -242,7 +240,7 @@ export async function deleteCrew(id: string) {
 
 export async function deleteUser(id: string) {
     try {
-        await apiRequest(`/api/v1/admins/personnel/${id}`, "DELETE");
+        await apiRequest(`/api/v1/admins/personnel/deleteUser/${id}`, "DELETE");
         return { success: true };
     } catch (error) {
         console.error("Error deleting user:", error);
@@ -566,6 +564,14 @@ export async function updateJobsiteAdmin(formData: FormData) {
             const cCTagsArray = JSON.parse(cCTagsString || "[]");
             updateData.CCTags = cCTagsArray;
         }
+
+        // Handle address data
+        if (formData.has("Address")) {
+            const addressString = formData.get("Address") as string;
+            const addressData = JSON.parse(addressString || "{}");
+            updateData.Address = addressData;
+        }
+
         const result = await apiRequest(
             `/api/v1/admins/jobsite/${id}`,
             "PUT",
@@ -756,9 +762,9 @@ export async function restoreCostCode(id: string) {
 
 export async function updateTagAdmin(formData: FormData) {
     try {
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
+        // for (const [key, value] of formData.entries()) {
+        //   console.log(`${key}:`, value);
+        // }
 
         const id = formData.get("id") as string;
         if (!id) {
@@ -873,49 +879,49 @@ export async function updateCostCodeAdmin(formData: FormData) {
 // forms actions
 
 export async function archiveFormTemplate(formId: string) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}/archive`,
-      "PUT"
-    );
-    return {
-      success: true,
-      message: "Form archived successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error archiving form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to archive form template",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}/archive`,
+            "PUT"
+        );
+        return {
+            success: true,
+            message: "Form archived successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error archiving form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to archive form template",
+        };
+    }
 }
 
 export async function deleteFormTemplate(formId: string) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}`,
-      "DELETE"
-    );
-    return {
-      success: true,
-      message: "Form deleted successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error deleting form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to delete form template",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}`,
+            "DELETE"
+        );
+        return {
+            success: true,
+            message: "Form deleted successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error deleting form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to delete form template",
+        };
+    }
 }
 
 export async function getFormSubmissions(
@@ -925,185 +931,187 @@ export async function getFormSubmissions(
         to?: Date;
     }
 ) {
-  try {
-    const queryParams = new URLSearchParams();
-    if (dateRange?.from) {
-      queryParams.append("from", dateRange.from.toISOString());
-    }
-    if (dateRange?.to) {
-      queryParams.append("to", dateRange.to.toISOString());
-    }
+    try {
+        const queryParams = new URLSearchParams();
+        if (dateRange?.from) {
+            queryParams.append("from", dateRange.from.toISOString());
+        }
+        if (dateRange?.to) {
+            queryParams.append("to", dateRange.to.toISOString());
+        }
 
-    const url = `/api/v1/admins/forms/template/${formId}/submissions/export${
-      queryParams.toString() ? `?${queryParams.toString()}` : ""
-    }`;
-    const result = await apiRequest(url, "GET");
-    return result.data || result;
-  } catch (error) {
-    console.error("Error fetching form submissions:", error);
-    return null;
-  }
+        const url = `/api/v1/admins/forms/template/${formId}/submissions/export${
+            queryParams.toString() ? `?${queryParams.toString()}` : ""
+        }`;
+        const result = await apiRequest(url, "GET");
+        return result.data || result;
+    } catch (error) {
+        console.error("Error fetching form submissions:", error);
+        return null;
+    }
 }
 
 export async function getFormTemplate(formId: string) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}`,
-      "GET"
-    );
-    return result.data || result;
-  } catch (error) {
-    console.error("Error fetching form template:", error);
-    return null;
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}`,
+            "GET"
+        );
+        return result.data || result;
+    } catch (error) {
+        console.error("Error fetching form template:", error);
+        return null;
+    }
 }
 
 export async function publishFormTemplate(formId: string) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}/publish`,
-      "PUT"
-    );
-    return {
-      success: true,
-      message: "Form published successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error publishing form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to publish form template",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}/publish`,
+            "PUT"
+        );
+        return {
+            success: true,
+            message: "Form published successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error publishing form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to publish form template",
+        };
+    }
 }
 
 export async function saveFormTemplate(data: SaveFormData) {
-  try {
-    const result = await apiRequest(
-      "/api/v1/admins/forms/template",
-      "POST",
-      data as unknown as Record<string, unknown>
-    );
-    return {
-      success: true,
-      message: "Form saved successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error saving form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error ? error.message : "Failed to save form template",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            "/api/v1/admins/forms/template",
+            "POST",
+            data as unknown as Record<string, unknown>
+        );
+        return {
+            success: true,
+            message: "Form saved successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error saving form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to save form template",
+        };
+    }
 }
 
 export async function updateFormTemplate(data: SaveFormData) {
-  try {
-    const { formId } = data;
-    if (!formId) {
-      return { success: false, error: "No formId provided for update" };
+    try {
+        const { formId } = data;
+        if (!formId) {
+            return { success: false, error: "No formId provided for update" };
+        }
+
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}`,
+            "PUT",
+            data as unknown as Record<string, unknown>
+        );
+
+        return {
+            success: true,
+            formId,
+            message: "Form updated successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error updating form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to update form template",
+        };
     }
-
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}`,
-      "PUT",
-      data as unknown as Record<string, unknown>
-    );
-
-    return {
-      success: true,
-      formId,
-      message: "Form updated successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error updating form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to update form template",
-    };
-  }
 }
 
 export async function createFormSubmission(input: CreateFormSubmissionInput) {
-  try {
-    const { formTemplateId } = input;
-    if (!input.submittedBy.id) {
-      throw new Error("Submitted By is required");
+    try {
+        const { formTemplateId } = input;
+        if (!input.submittedBy.id) {
+            throw new Error("Submitted By is required");
+        }
+
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formTemplateId}/submissions`,
+            "POST",
+            input as unknown as Record<string, unknown>
+        );
+
+        return { success: true, submission: result };
+    } catch (error) {
+        console.error("Error creating form submission:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to create form submission",
+        };
     }
-
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formTemplateId}/submissions`,
-      "POST",
-      input as unknown as Record<string, unknown>
-    );
-
-    return { success: true, submission: result };
-  } catch (error) {
-    console.error("Error creating form submission:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to create form submission",
-    };
-  }
 }
 
 export async function updateFormSubmission(input: UpdateFormSubmissionInput) {
-  try {
-    const { submissionId } = input;
+    try {
+        const { submissionId } = input;
 
-    const result = await apiRequest(
-      `/api/v1/admins/forms/submissions/${submissionId}`,
-      "PUT",
-      input as unknown as Record<string, unknown>
-    );
+        const result = await apiRequest(
+            `/api/v1/admins/forms/submissions/${submissionId}`,
+            "PUT",
+            input as unknown as Record<string, unknown>
+        );
 
-    return { success: true, submission: result };
-  } catch (error) {
-    console.error("Error updating form submission:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to update form submission",
-    };
-  }
+        return { success: true, submission: result };
+    } catch (error) {
+        console.error("Error updating form submission:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to update form submission",
+        };
+    }
 }
 
 export async function deleteFormSubmission(submissionId: number) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/submissions/${submissionId}`,
-      "DELETE"
-    );
-    return {
-      success: true,
-      message: "Form submission deleted successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error deleting form submission:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to delete form submission",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/submissions/${submissionId}`,
+            "DELETE"
+        );
+        return {
+            success: true,
+            message: "Form submission deleted successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error deleting form submission:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to delete form submission",
+        };
+    }
 }
 
 export async function ApproveFormSubmission(
@@ -1115,68 +1123,70 @@ export async function ApproveFormSubmission(
         const comment = formData.get("comment") as string;
         const adminUserId = formData.get("adminUserId") as string;
 
-    const body = {
-      action,
-      comment,
-      adminUserId,
-    };
+        const body = {
+            action,
+            comment,
+            adminUserId,
+        };
 
-    const result = await apiRequest(
-      `/api/v1/admins/forms/submissions/${submissionId}/approve`,
-      "PUT",
-      body
-    );
+        const result = await apiRequest(
+            `/api/v1/admins/forms/submissions/${submissionId}/approve`,
+            "PUT",
+            body
+        );
 
-    return { success: true, submission: result };
-  } catch (error) {
-    console.error("Error approving/rejecting form submission:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to approve/reject form submission",
-    };
-  }
+        return { success: true, submission: result };
+    } catch (error) {
+        console.error("Error approving/rejecting form submission:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to approve/reject form submission",
+        };
+    }
 }
 
 export async function getFormSubmissionById(submissionId: number) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/submissions/${submissionId}`,
-      "GET"
-    );
-    return result;
-  } catch (error) {
-    console.error("Error fetching form submission:", error);
-    return null;
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/submissions/${submissionId}`,
+            "GET"
+        );
+        return result;
+    } catch (error) {
+        console.error("Error fetching form submission:", error);
+        return null;
+    }
 }
 
 export async function draftFormTemplate(formId: string) {
-  try {
-    const result = await apiRequest(
-      `/api/v1/admins/forms/template/${formId}/draft`,
-      "PUT"
-    );
-    return {
-      success: true,
-      message: "Form drafted successfully",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error drafting form template:", error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to draft form template",
-    };
-  }
+    try {
+        const result = await apiRequest(
+            `/api/v1/admins/forms/template/${formId}/draft`,
+            "PUT"
+        );
+        return {
+            success: true,
+            message: "Form drafted successfully",
+            data: result,
+        };
+    } catch (error) {
+        console.error("Error drafting form template:", error);
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to draft form template",
+        };
+    }
 }
 
-export async function createTimesheetAdmin(payload: FormData | Record<string, unknown> | undefined) {
+export async function createTimesheetAdmin(
+    payload: FormData | Record<string, unknown> | undefined
+) {
     try {
         const result = await apiRequest(
             "/api/v1/admins/timesheet",
@@ -1332,5 +1342,3 @@ export async function exportTimesheets(
         };
     }
 }
-
-

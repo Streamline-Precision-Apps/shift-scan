@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="c07c75a8-4e77-5fdc-a358-6a0f803fe866")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="f2fccda4-0608-5902-a709-30ae52a68a2c")}catch(e){}}();
 import { getAllFormTemplates, getFormTemplateById, getFormSubmissions, getFormSubmissionByTemplateId, createFormTemplate, updateFormTemplate, deleteFormTemplate, archiveFormTemplate, publishFormTemplate, draftFormTemplate, createFormSubmission, updateFormSubmission, deleteFormSubmission, getFormSubmissionById, approveFormSubmission, } from "../services/adminFormService.js";
 // GET /api/v1/admins/forms/template
 export async function getAllFormTemplatesController(req, res) {
@@ -92,17 +92,16 @@ export async function getFormSubmissionByTemplateIdController(req, res) {
                 .json({ success: false, message: "Missing required parameter: id" });
         }
         // Parse query parameters
-        const page = req.query.page
-            ? parseInt(req.query.page, 10)
-            : 1;
+        const page = req.query.page ? parseInt(req.query.page, 10) : 1;
         const pageSize = req.query.pageSize
             ? parseInt(req.query.pageSize, 10)
             : 25;
+        const search = req.query.search;
         const pendingOnly = req.query.pendingOnly === "true";
         const statusFilter = req.query.statusFilter || "ALL";
         const dateRangeStart = req.query.startDate;
         const dateRangeEnd = req.query.endDate;
-        const result = await getFormSubmissionByTemplateId(id, page, pageSize, pendingOnly, statusFilter, dateRangeStart || null, dateRangeEnd || null);
+        const result = await getFormSubmissionByTemplateId(id, search, page, pageSize, pendingOnly, statusFilter, dateRangeStart || null, dateRangeEnd || null);
         res.status(200).json(result);
     }
     catch (error) {
@@ -316,4 +315,4 @@ export async function approveFormSubmissionController(req, res) {
     }
 }
 //# sourceMappingURL=adminFormController.js.map
-//# debugId=c07c75a8-4e77-5fdc-a358-6a0f803fe866
+//# debugId=f2fccda4-0608-5902-a709-30ae52a68a2c

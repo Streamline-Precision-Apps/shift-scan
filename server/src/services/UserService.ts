@@ -506,3 +506,14 @@ export async function EndSession(id: number) {
   });
   return newSession;
 }
+
+export async function handleUserSignature(userId: string) {
+  return await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      signature: true,
+    },
+  });
+}

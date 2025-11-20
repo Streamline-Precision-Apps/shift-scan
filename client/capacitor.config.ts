@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   webDir: "out",
 
   server: {
-    url: "https://shift-scan-app.vercel.app",
+    url: process.env.NEXT_PUBLIC_CAPACITOR_APP_URL,
     cleartext: true,
   },
   android: {
@@ -35,6 +35,11 @@ const config: CapacitorConfig = {
     },
     CapacitorHttp: {
       enabled: true,
+    },
+    StatusBar: {
+      overlaysWebView: false,
+      style: "DARK",
+      backgroundColor: "#ffffffff",
     },
   },
 };

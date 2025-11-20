@@ -194,10 +194,6 @@ export function CreateTimesheetModal({
     );
 
     const equipmentOptions = useMemo(() => {
-        console.log(
-            "🔧 Building equipmentOptions from equipment:",
-            equipment?.length || 0
-        );
         if (!equipment || !Array.isArray(equipment)) {
             return [];
         }
@@ -208,10 +204,6 @@ export function CreateTimesheetModal({
     }, [equipment]);
 
     const truckOptions = useMemo(() => {
-        console.log(
-            "🚚 Building truckOptions from trucks:",
-            trucks?.length || 0
-        );
         if (!trucks || !Array.isArray(trucks)) {
             return [];
         }
@@ -222,10 +214,6 @@ export function CreateTimesheetModal({
     }, [trucks]);
 
     const materialOptions = useMemo(() => {
-        console.log(
-            "🎨 Building materialOptions from materialTypes:",
-            materialTypes?.length || 0
-        );
         if (!materialTypes || !Array.isArray(materialTypes)) {
             return [];
         }
@@ -291,7 +279,6 @@ export function CreateTimesheetModal({
                 "/api/v1/admins/equipment?pageSize=1000",
                 "GET"
             );
-            console.log("📦 Equipment API Response:", data);
 
             // Handle different response structures - the API returns "equipment" not "equipmentSummary"
             let equipmentData = [];
@@ -304,38 +291,6 @@ export function CreateTimesheetModal({
                 equipmentData = data.equipmentSummary;
             } else if (Array.isArray(data)) {
                 equipmentData = data;
-            }
-
-            console.log(
-                "📦 Processed Equipment Data (array):",
-                equipmentData.length,
-                "items out of",
-                data?.total || "unknown",
-                "total"
-            );
-
-            // Log sample equipment item to see structure
-            if (equipmentData.length > 0) {
-                console.log("📦 Sample equipment item:", equipmentData[0]);
-                // Log all unique equipmentTag values to see what's available
-                const uniqueTags = [
-                    ...new Set(
-                        equipmentData.map(
-                            (e: { equipmentTag?: string }) => e.equipmentTag
-                        )
-                    ),
-                ];
-                console.log("🏷️ Unique equipmentTag values:", uniqueTags);
-                // Count trucks in the equipment array - trucks are tagged as VEHICLE
-                const truckCount = equipmentData.filter(
-                    (e: { equipmentTag?: string }) =>
-                        e.equipmentTag === "VEHICLE"
-                ).length;
-                console.log(
-                    "🚚 Found",
-                    truckCount,
-                    "trucks with equipmentTag === 'VEHICLE'"
-                );
             }
 
             return equipmentData;
@@ -357,12 +312,6 @@ export function CreateTimesheetModal({
                 fetchEquipment(),
             ]);
 
-            console.log("✅ All data fetched:", {
-                users: usersData?.length || 0,
-                jobsites: jobsitesData?.length || 0,
-                equipment: equipmentData?.length || 0,
-            });
-
             // Process equipment to get trucks (vehicles)
             if (
                 equipmentData &&
@@ -373,7 +322,6 @@ export function CreateTimesheetModal({
                     (e: { equipmentTag?: string }) =>
                         e.equipmentTag === "VEHICLE"
                 );
-                console.log("🚚 Filtered Trucks:", filteredTrucks.length);
                 setTrucks(filteredTrucks);
             } else {
                 console.warn(
@@ -397,26 +345,15 @@ export function CreateTimesheetModal({
         fetchAllData();
     }, [fetchAllData]);
 
-    // Re-filter trucks whenever equipment changes (trucks are tagged as VEHICLE)
+    // Re-filter trucks whenever equipment changes (trucks are tagged as TRUCK or VEHICLE)
     useEffect(() => {
-        console.log(
-            "🔄 Equipment changed, re-filtering trucks. Equipment count:",
-            equipment?.length || 0
-        );
         if (equipment && Array.isArray(equipment) && equipment.length > 0) {
             const filteredTrucks = equipment.filter(
-                (e) => e.equipmentTag === "VEHICLE"
-            );
-            console.log(
-                "🚚 Re-filtered Trucks:",
-                filteredTrucks.length,
-                "from",
-                equipment.length,
-                "equipment items"
+                (e) =>
+                    e.equipmentTag === "TRUCK" || e.equipmentTag === "VEHICLE"
             );
             setTrucks(filteredTrucks);
         } else {
-            console.warn("⚠️ No equipment available for truck filtering");
             setTrucks([]);
         }
     }, [equipment]);
@@ -545,20 +482,14 @@ export function CreateTimesheetModal({
                 Date.now() - materialTypesCache.timestamp < 5 * 60 * 1000 &&
                 materialTypesCache.data.length > 0
             ) {
-                console.log(
-                    "📦 Using cached material types:",
-                    materialTypesCache.data.length
-                );
                 setMaterialTypes(materialTypesCache.data);
                 return;
             }
 
-            console.log("🔄 Fetching material types from API...");
             const data = await apiRequest(
                 "/api/v1/admins/timesheet/tasco-material-types",
                 "GET"
             );
-            console.log("📦 Material Types API Response:", data);
 
             // Handle different response structures - API returns {materialTypes: [...], total: X}
             let materialTypesData = [];
@@ -567,10 +498,6 @@ export function CreateTimesheetModal({
             } else if (Array.isArray(data)) {
                 materialTypesData = data;
             }
-            console.log(
-                "📦 Processed Material Types:",
-                materialTypesData.length
-            );
 
             // Update cache
             setMaterialTypesCache({
@@ -585,6 +512,40 @@ export function CreateTimesheetModal({
         }
     }, [materialTypesCache]);
 
+    // Memoized callbacks for useTimesheetAutoSelection to prevent infinite loops
+    const handleSetJobsite = useCallback(
+        (jobsite: { id: string; name: string }) => {
+            setForm((prev) => ({ ...prev, jobsite }));
+        },
+        []
+    );
+
+    const handleSetCostCode = useCallback(
+        (
+            costcode:
+                | { id: string; name: string }
+                | { value: string; label: string }
+        ) => {
+            if ("value" in costcode && "label" in costcode) {
+                setForm((prev) => ({
+                    ...prev,
+                    costcode: { id: costcode.value, name: costcode.label },
+                }));
+            } else {
+                setForm((prev) => ({ ...prev, costcode }));
+            }
+        },
+        []
+    );
+
+    const handleSetMaterial = useCallback((material: string, logIndex = 0) => {
+        setTascoLogs((prev) =>
+            prev.map((log, index) =>
+                index === logIndex ? { ...log, materialType: material } : log
+            )
+        );
+    }, []);
+
     // Auto-selection logic for TASCO shifts
     useTimesheetAutoSelection({
         workType: form.workType.toLowerCase(),
@@ -597,29 +558,9 @@ export function CreateTimesheetModal({
         costCodes: costCode,
         materialTypes,
         jobsites,
-        setJobsite: (jobsite) => {
-            setForm((prev) => ({ ...prev, jobsite }));
-        },
-        setCostCode: (costcode) => {
-            // Convert cost code to expected format
-            if ("value" in costcode && "label" in costcode) {
-                setForm((prev) => ({
-                    ...prev,
-                    costcode: { id: costcode.value, name: costcode.label },
-                }));
-            } else {
-                setForm((prev) => ({ ...prev, costcode }));
-            }
-        },
-        setMaterial: (material, logIndex = 0) => {
-            setTascoLogs((prev) =>
-                prev.map((log, index) =>
-                    index === logIndex
-                        ? { ...log, materialType: material }
-                        : log
-                )
-            );
-        },
+        setJobsite: handleSetJobsite,
+        setCostCode: handleSetCostCode,
+        setMaterial: handleSetMaterial,
     });
 
     const handleChange = async (
@@ -629,13 +570,31 @@ export function CreateTimesheetModal({
         if (e.target.name === "costcode") {
             setForm({ ...form, costcode: { id: "", name: e.target.value } });
         } else {
-            console.log(`Setting ${e.target.name} to ${e.target.value}`);
             setForm({ ...form, [e.target.name]: e.target.value });
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate required fields
+        if (!form.user.id) {
+            toast.error("Please select a user", { duration: 3000 });
+            return;
+        }
+        if (!form.jobsite.id) {
+            toast.error("Please select a jobsite", { duration: 3000 });
+            return;
+        }
+        if (!form.costcode.id && !form.costcode.name) {
+            toast.error("Please select a cost code", { duration: 3000 });
+            return;
+        }
+        if (!form.workType) {
+            toast.error("Please select a work type", { duration: 3000 });
+            return;
+        }
+
         setSubmitting(true);
         try {
             // Map tascoLogs to match server expectations (convert types accordingly)
@@ -775,11 +734,6 @@ export function CreateTimesheetModal({
                     }),
             };
 
-            console.log(
-                "📤 Submitting timesheet payload:",
-                JSON.stringify(data, null, 2)
-            );
-
             const result = await createTimesheetAdmin(data);
             if (result.success) {
                 toast.success("Timesheet created successfully!", {
@@ -802,14 +756,9 @@ export function CreateTimesheetModal({
 
     // Fetch material types and equipment based on work type
     useEffect(() => {
-        console.log("🔄 Work type changed to:", form.workType);
-
         if (form.workType === "TASCO") {
-            console.log("🔄 Fetching material types for TASCO work type...");
-            fetchMaterialTypes();
-            // Optionally re-fetch equipment if needed
+            fetchMaterialTypes(); // Optionally re-fetch equipment if needed
             if (!equipment || equipment.length === 0) {
-                console.log("🔄 Re-fetching equipment (empty)...");
                 apiRequest("/api/v1/admins/equipment", "GET")
                     .then((data) => {
                         let equipmentData = [];
@@ -823,26 +772,18 @@ export function CreateTimesheetModal({
                         } else if (Array.isArray(data)) {
                             equipmentData = data;
                         }
-                        console.log(
-                            "✅ Equipment re-fetched:",
-                            equipmentData.length
-                        );
                         setEquipment(equipmentData);
                     })
                     .catch((error) => {
                         console.error("❌ Error re-fetching equipment:", error);
                     });
-            } else {
-                console.log("✅ Equipment already loaded:", equipment.length);
             }
         }
 
         // Make sure equipment data is loaded for Mechanic work type
         if (form.workType === "MECHANIC") {
-            console.log("🔧 Mechanic work type selected");
             // Always ensure we have equipment data for mechanic projects
             if (!equipment || equipment.length === 0) {
-                console.log("🔄 Fetching equipment for MECHANIC work type...");
                 apiRequest("/api/v1/admins/equipment", "GET")
                     .then((data) => {
                         let equipmentData = [];
@@ -856,50 +797,28 @@ export function CreateTimesheetModal({
                         } else if (Array.isArray(data)) {
                             equipmentData = data;
                         }
-                        console.log(
-                            "✅ Equipment fetched for mechanic:",
-                            equipmentData.length
-                        );
                         setEquipment(equipmentData);
                     })
                     .catch((error) => {
                         console.error("❌ Error fetching equipment:", error);
                     });
-            } else {
-                console.log(
-                    "✅ Equipment already loaded for mechanic:",
-                    equipment.length
-                );
             }
         }
 
         // Make sure trucks are available for TRUCK_DRIVER work type (trucks are tagged as VEHICLE)
         if (form.workType === "TRUCK_DRIVER") {
-            console.log("🚛 Truck driver work type selected");
-            console.log("🚛 Current trucks count:", trucks?.length || 0);
-            console.log("🚛 Current equipment count:", equipment?.length || 0);
-
             // If we have equipment but no trucks, re-filter
             if (
                 equipment &&
                 equipment.length > 0 &&
                 (!trucks || trucks.length === 0)
             ) {
-                console.log("🔄 Re-filtering trucks from equipment...");
                 const filteredTrucks = equipment.filter(
                     (e) => e.equipmentTag === "VEHICLE"
                 );
-                console.log("✅ Filtered trucks:", filteredTrucks.length);
                 setTrucks(filteredTrucks);
             }
         }
-
-        // Log current state of options
-        console.log("📊 Current options state:", {
-            equipmentOptions: equipmentOptions.length,
-            truckOptions: truckOptions.length,
-            materialTypes: materialTypes.length,
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.workType]);
 
@@ -1065,7 +984,13 @@ export function CreateTimesheetModal({
                             type="submit"
                             form="timesheet-form" /* Connect this button to the form */
                             className="bg-sky-500 hover:bg-sky-400 text-white hover:text-white px-4 py-2 rounded"
-                            disabled={submitting}
+                            disabled={
+                                submitting ||
+                                !form.user.id ||
+                                !form.jobsite.id ||
+                                (!form.costcode.id && !form.costcode.name) ||
+                                !form.workType
+                            }
                         >
                             Create & Approve
                         </Button>

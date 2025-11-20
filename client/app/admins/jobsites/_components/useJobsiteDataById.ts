@@ -17,15 +17,11 @@ export type Jobsite = {
   createdById: string;
   updatedAt: Date;
   createdVia: "ADMIN" | "API";
-  Address: {
+  Address?: {
     street: string;
     city: string;
     state: string;
     zipCode: string;
-  };
-  Client: {
-    id: string;
-    name: string;
   };
   CCTags: Array<{
     id: string;
@@ -69,8 +65,6 @@ export const useJobsiteDataById = (id: string) => {
         } else {
           setJobSiteDetails(jobsiteDetails);
         }
-
-        console.log("Fetched tag summary:", tagSummary);
 
         const filteredTags = (tagSummary.tagSummary || []).map(
           (tag: { id: string; name: string }) => ({

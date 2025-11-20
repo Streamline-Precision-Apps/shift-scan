@@ -76,22 +76,28 @@ export default function RenderSearchAssetField({
   let assetType = "client";
 
   if (field.filter) {
-    switch (field.filter.toUpperCase()) {
-      case "Equipment":
+    const filterUpper = field.filter.toUpperCase();
+    switch (filterUpper) {
       case "EQUIPMENT":
         assetOptions = equipmentOptions;
         assetType = "equipment";
+
         break;
-      case "Jobsites":
       case "JOBSITES":
         assetOptions = jobsiteOptions;
         assetType = "jobsite";
+
         break;
-      case "Cost Codes":
+      case "COST CODES":
       case "COST_CODES":
+      case "COSTCODES":
         assetOptions = costCodeOptions;
         assetType = "costCode";
+
         break;
+      default:
+        assetOptions = equipmentOptions;
+        assetType = "equipment";
     }
   }
 

@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="bc0a9c52-21ff-558b-a286-2ece30889d4c")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0b77d3b6-ba3e-52d5-a07f-9800dd7896a7")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 import { FormStatus } from "../../generated/prisma/client.js";
 /**
@@ -286,12 +286,19 @@ export const ServiceCreateFormApproval = async (params) => {
  * @param {boolean} params.isApproved
  */
 export const ServiceUpdateFormApproval = async (params) => {
-    const { id, formSubmissionId, comment, isApproved } = params;
+    const { id, formSubmissionId, comment, managerId, isApproved } = params;
     // Use a transaction to ensure atomicity
     const [approval, updatedSubmission] = await prisma.$transaction([
         prisma.formApproval.update({
             where: { id },
-            data: { comment },
+            data: {
+                comment,
+                Approver: {
+                    connect: {
+                        id: managerId,
+                    },
+                },
+            },
         }),
         prisma.formSubmission.update({
             where: { id: formSubmissionId },
@@ -570,5 +577,50 @@ export const ServiceForm = async (id, userId) => {
     };
     return formattedForm;
 };
+/**
+ * Update a form submission (partial update)
+ * Supports updating data, status, title, and formType.
+ * Returns the updated submission.
+ */
+export const updateFormSubmissionService = async (body) => {
+    const { submissionId, formData, isApprovalRequired, title, formType, submittedAt, } = body;
+    // Fetch the existing submission
+    const existing = await prisma.formSubmission.findUnique({
+        where: { id: submissionId },
+    });
+    if (!existing) {
+        throw new Error("Form submission not found");
+    }
+    // Build update data object
+    const updateData = {
+        updatedAt: new Date(),
+    };
+    if (formData)
+        updateData.data = formData;
+    if (typeof title === "string")
+        updateData.title = title;
+    if (typeof formType === "string")
+        updateData.formType = formType;
+    if (typeof isApprovalRequired === "boolean") {
+        // Update status based on isApprovalRequired, if it expect an approval set to PENDING, else APPROVED
+        updateData.status = isApprovalRequired
+            ? FormStatus.PENDING
+            : FormStatus.APPROVED;
+    }
+    if (typeof submittedAt === "string") {
+        updateData.submittedAt = submittedAt; // Converts ISO string to Date
+    }
+    // Update the submission
+    const updated = await prisma.formSubmission.update({
+        where: { id: submissionId },
+        data: updateData,
+        include: {
+            FormTemplate: true,
+            User: true,
+            Approvals: true,
+        },
+    });
+    return updated;
+};
 //# sourceMappingURL=formsService.js.map
-//# debugId=bc0a9c52-21ff-558b-a286-2ece30889d4c
+//# debugId=0b77d3b6-ba3e-52d5-a07f-9800dd7896a7
