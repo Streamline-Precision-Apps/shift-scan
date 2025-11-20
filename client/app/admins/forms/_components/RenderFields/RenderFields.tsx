@@ -185,6 +185,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Text / Input]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -205,6 +211,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Text Area]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -225,6 +237,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Number]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -246,6 +264,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Date / DateTime]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -266,6 +290,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Time]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -287,6 +317,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Dropdown]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -308,6 +344,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Radio]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -328,6 +370,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string | boolean) => {
+                                  console.log(
+                                    "[Checkbox]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -368,6 +416,12 @@ export default function RenderFields({
                               ? () => {}
                               : (id: string, val: string | string[]) => {
                                   handleFieldChange(id, val);
+                                  console.log(
+                                    "[Multiselect]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                 }
                           }
                           handleFieldTouch={handleFieldTouch}
@@ -400,6 +454,12 @@ export default function RenderFields({
                                     | number
                                     | null
                                 ) => {
+                                  console.log(
+                                    "[SearchPerson]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -431,6 +491,12 @@ export default function RenderFields({
                                     | number
                                     | null
                                 ) => {
+                                  console.log(
+                                    "[SearchAsset]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }
@@ -455,6 +521,12 @@ export default function RenderFields({
                             readOnly
                               ? () => {}
                               : (id: string, val: string) => {
+                                  console.log(
+                                    "[Input]- Changing field",
+                                    id,
+                                    "to value",
+                                    val
+                                  );
                                   handleFieldChange(id, val);
                                 }
                           }

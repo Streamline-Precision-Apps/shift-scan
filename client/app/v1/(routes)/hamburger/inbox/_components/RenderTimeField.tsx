@@ -27,6 +27,13 @@ export default function RenderTimeField({
 }) {
   function formatTimeForInput(value: Date | string | null | undefined): string {
     if (!value) return "";
+
+    // If it's already in HH:mm format (from time input), return as-is
+    if (typeof value === "string" && /^\d{2}:\d{2}/.test(value)) {
+      return value.substring(0, 5); // Ensure we only get HH:mm
+    }
+
+    // Otherwise, parse as date and extract time
     const date = typeof value === "string" ? new Date(value) : value;
     if (isNaN(date.getTime())) return "";
     const hours = String(date.getHours()).padStart(2, "0");
