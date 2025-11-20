@@ -87,7 +87,7 @@ export interface FormSubmission {
   data: Record<string, FormFieldValue>;
   createdAt: Date;
   updatedAt: Date;
-  submittedAt: Date | null;
+  submittedAt: Date;
   status: FormStatus;
   User: UserInfo;
   Approvals?: FormApproval[];
@@ -298,6 +298,14 @@ export interface FormManagerState {
     valid: boolean;
     errors: string[];
   };
+  approveForm: (
+    values: Record<string, FormFieldValue>,
+    approvalStatus: "APPROVED" | "DENIED",
+    managerSignature: string,
+    managerId: string,
+    comment: string,
+    submissionId: number
+  ) => Promise<void>;
 }
 
 // ============================================================================

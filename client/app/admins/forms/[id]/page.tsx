@@ -68,6 +68,7 @@ const FormPage = ({ params }: PageProps) => {
     approvalInbox,
     handleFilterChange,
     onApprovalAction,
+    formTemplatePage,
   } = useSubmissionDataById(id);
   return (
     <div className="w-full p-4 grid grid-rows-[3rem_2rem_1fr] gap-5">
@@ -100,6 +101,7 @@ const FormPage = ({ params }: PageProps) => {
         <div className="h-full w-full overflow-auto pb-10">
           <FormSubmissionDataTable
             formTemplate={formTemplate}
+            formSubmissions={formTemplatePage}
             loading={loading}
             page={page}
             pageSize={pageSize}
@@ -124,8 +126,8 @@ const FormPage = ({ params }: PageProps) => {
           <div className="flex items-center justify-end space-x-2 py-4 ">
             <FooterPagination
               page={loading ? 1 : page}
-              totalPages={loading ? 1 : formTemplate?.totalPages || 1}
-              total={loading ? 0 : formTemplate?.total || 0}
+              totalPages={loading ? 1 : formTemplatePage?.totalPages || 1}
+              total={loading ? 0 : formTemplatePage?.total || 0}
               pageSize={pageSize}
               setPage={setPage}
               setPageSize={setPageSize}

@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useCallback } from "react";
-import { FormIndividualTemplate } from "./types";
 import {
   ApproveFormSubmission,
   archiveFormTemplate,
@@ -17,10 +16,12 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { Fields as FormField } from "./types";
+// import { Fields as FormField } from "./types";
 import { useDashboardData } from "@/app/admins/_pages/sidebar/DashboardDataContext";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { FormTemplate, FormField } from "@/app/lib/types/forms";
+import { FormIndividualTemplate } from "./types";
 
 export default function useSubmissionDataById(id: string) {
   const { refresh } = useDashboardData();
@@ -61,7 +62,9 @@ export default function useSubmissionDataById(id: string) {
   const [showDeleteSubmissionDialog, setShowDeleteSubmissionDialog] =
     useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [formTemplate, setFormTemplate] = useState<FormIndividualTemplate>();
+  const [formTemplate, setFormTemplate] = useState<FormTemplate>();
+  const [formTemplatePage, setFormTemplatePage] =
+    useState<FormIndividualTemplate>();
   const [loading, setLoading] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -110,6 +113,8 @@ export default function useSubmissionDataById(id: string) {
           );
         if (filter.status) params.push(`statusFilter=${filter.status}`);
         params.push(`pendingOnly=${showPendingOnly}`);
+        if (searchTerm.length > 0)
+          params.push(`search=${encodeURIComponent(searchTerm)}`);
         params.push(`page=${page}`);
         params.push(`pageSize=${pageSize}`);
         const query = params.length ? `?${params.join("&")}` : "";
@@ -119,6 +124,16 @@ export default function useSubmissionDataById(id: string) {
         );
 
         setFormTemplate(data);
+        if (searchTerm.length == 0) {
+          setFormTemplatePage(data);
+        } else {
+          const filteredData = filterFormSubmissionsBySearchTerm(
+            data,
+            searchTerm
+          );
+          setFormTemplatePage(filteredData);
+        }
+
         setApprovalInbox(data.pendingForms || 0);
         return data;
       } catch (error) {
@@ -132,6 +147,77 @@ export default function useSubmissionDataById(id: string) {
   }, [id, page, pageSize, filter, refreshKey, searchTerm, showPendingOnly]);
 
   //helper functions
+
+  const filterFormSubmissionsBySearchTerm = (
+    data: FormIndividualTemplate,
+    term: string
+  ) => {
+    if (!data || !data.Submissions) return data;
+    if (!term.trim()) return data;
+
+    const lowered = term.toLowerCase();
+
+    const filtered = data.Submissions.filter((submission) => {
+      // 1. Check ID
+      if (String(submission.id).toLowerCase().includes(lowered)) return true;
+
+      // 2. Check submitter full name
+      const fullName = `${submission.User?.firstName || ""} ${
+        submission.User?.lastName || ""
+      }`
+        .trim()
+        .toLowerCase();
+
+      if (fullName.includes(lowered)) return true;
+
+      // 3. Check any field inside submission.data
+      const dataObj = submission.data || {};
+
+      for (const key in dataObj) {
+        const value = dataObj[key];
+
+        if (value == null) continue;
+
+        // primitive values
+        if (
+          ["string", "number", "boolean"].includes(typeof value) &&
+          String(value).toLowerCase().includes(lowered)
+        ) {
+          return true;
+        }
+
+        // arrays
+        if (Array.isArray(value)) {
+          if (
+            value
+              .map((v) => String(v?.name || v || "").toLowerCase())
+              .some((v) => v.includes(lowered))
+          ) {
+            return true;
+          }
+        }
+
+        // nested objects
+        if (typeof value === "object") {
+          const isMatch = Object.values(value)
+            .map((v) => String(v || "").toLowerCase())
+            .some((v) => v.includes(lowered));
+
+          if (isMatch) return true;
+        }
+      }
+
+      return false;
+    });
+
+    return {
+      ...data,
+      Submissions: filtered, // IMPORTANT: preserve exact key name
+      total: filtered.length,
+      page: 1,
+      totalPages: 1,
+    };
+  };
 
   // Statuses and their display info
   const STATUS_OPTIONS = useMemo(
@@ -298,7 +384,7 @@ export default function useSubmissionDataById(id: string) {
         }
         const groupings = template.FormGrouping;
         const fields = groupings
-          .flatMap((group: { Fields?: FormField[] }) =>
+          .flatMap((group: { Fields: FormField[] }) =>
             Array.isArray(group.Fields) ? group.Fields : []
           )
           .filter(
@@ -506,5 +592,6 @@ export default function useSubmissionDataById(id: string) {
     showPendingOnly,
     approvalInbox,
     onApprovalAction,
+    formTemplatePage,
   };
 }

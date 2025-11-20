@@ -5,63 +5,16 @@ import { toast } from "sonner";
 import { createFormSubmission } from "@/app/lib/actions/adminActions";
 // Import the RenderFields component
 import Spinner from "@/app/v1/components/(animations)/spinner";
-import { FormIndividualTemplate } from "./hooks/types";
 import { X } from "lucide-react";
 import { Label } from "@/app/v1/components/ui/label";
 import { Textarea } from "@/app/v1/components/ui/textarea";
 import { useUserStore } from "@/app/lib/store/userStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
 import RenderFields from "@/app/admins/forms/_components/RenderFields/RenderFields";
-
-export interface Submission {
-  id: string;
-  title: string;
-  formTemplateId: string;
-  userId: string;
-  formType: string;
-  data: Record<string, string | number | boolean | null>;
-  createdAt: string;
-  updatedAt: string;
-  submittedAt: string;
-  status: string;
-  User: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-}
-
-export interface Grouping {
-  id: string;
-  title: string;
-  order: number;
-  Fields: Fields[];
-}
-
-export interface Fields {
-  id: string;
-  formGroupingId: string;
-  label: string;
-  type: string;
-  required: boolean;
-  order: number;
-  placeholder?: string | null;
-  minLength?: number | null;
-  maxLength?: number | null;
-  multiple: boolean | null;
-  content?: string | null;
-  filter?: string | null;
-  Options?: FieldOption[];
-}
-
-interface FieldOption {
-  id: string;
-  fieldId: string;
-  value: string;
-}
+import { FormTemplate, FormFieldValue } from "@/app/lib/types/forms";
 
 interface CreateFormSubmissionModalProps {
-  formTemplate: FormIndividualTemplate;
+  formTemplate: FormTemplate;
   closeModal: () => void;
   onSuccess?: () => void;
 }
@@ -75,9 +28,7 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
   const adminUserId = user?.id || null;
 
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<
-    Record<string, string | number | boolean | null>
-  >({});
+  const [formData, setFormData] = useState<Record<string, FormFieldValue>>({});
   const [submittedBy, setSubmittedBy] = useState<{
     id: string;
     firstName: string;
@@ -175,34 +126,34 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
     fetchCostCodes();
   }, []);
 
+  // Helper to get the field type by fieldId
+  function getFieldType(fieldId: string): string | undefined {
+    for (const group of formTemplate.FormGrouping || []) {
+      for (const field of group.Fields || []) {
+        if (field.id === fieldId) {
+          return field.type;
+        }
+      }
+    }
+    return undefined;
+  }
+
   const handleFieldChange = (
     fieldId: string,
     value: string | Date | string[] | object | boolean | number | null
   ) => {
-    // Convert value to a format compatible with our formData state
-    let compatibleValue: string | number | boolean | null = null;
+    const fieldType = getFieldType(fieldId);
 
-    if (
-      typeof value === "string" ||
-      typeof value === "number" ||
-      typeof value === "boolean"
-    ) {
-      compatibleValue = value;
-    } else if (value instanceof Date) {
-      compatibleValue = value.toISOString();
-    } else if (Array.isArray(value)) {
-      compatibleValue = value.join(",");
-    } else if (value !== null && typeof value === "object") {
-      compatibleValue = JSON.stringify(value);
-    }
-
-    setFormData((prev) => ({ ...prev, [fieldId]: compatibleValue }));
+    // Store the value directly - RenderFields components handle the format they need
+    // We'll only normalize when submitting to the API
+    setFormData((prev) => ({ ...prev, [fieldId]: value }));
   };
 
   // Signature state is now tied to manager signature
   const [signatureChecked, setSignatureChecked] = useState(false);
 
   const handleSubmit = async () => {
+    console.log("[DEBUG] formData before submit:", formData);
     setSubmittedByTouched(true);
     if (!submittedBy) {
       toast.error("'Submitted By' is required", { duration: 3000 });
@@ -223,14 +174,70 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
 
     setLoading(true);
     try {
-      // Process formData to ensure asset data is properly formatted
+      // Process formData to normalize all field types for API submission
       const processedFormData: Record<
         string,
         string | number | boolean | null
-      > = { ...formData };
+      > = {};
+
+      for (const [key, value] of Object.entries(formData)) {
+        // Null/undefined values
+        if (value === null || value === undefined) {
+          processedFormData[key] = null;
+        }
+        // ISO date strings (from date fields)
+        else if (
+          typeof value === "string" &&
+          value.match(/^\d{4}-\d{2}-\d{2}/)
+        ) {
+          processedFormData[key] = value;
+        }
+        // Date objects
+        else if (value instanceof Date) {
+          processedFormData[key] = value.toISOString();
+        }
+        // String and number primitives
+        else if (typeof value === "string" || typeof value === "number") {
+          processedFormData[key] = value;
+        }
+        // Boolean values
+        else if (typeof value === "boolean") {
+          processedFormData[key] = value;
+        }
+        // Arrays (multiselect, search fields with multiple selections)
+        else if (Array.isArray(value)) {
+          processedFormData[key] = value
+            .map((v) => {
+              // Extract name from asset/person objects
+              if (typeof v === "object" && v !== null && "name" in v) {
+                return String((v as { name: unknown }).name);
+              }
+              // Handle primitive values in arrays
+              return String(v);
+            })
+            .filter(Boolean)
+            .join(",");
+        }
+        // Objects (single person/asset selections)
+        else if (typeof value === "object") {
+          if ("name" in value) {
+            processedFormData[key] = String((value as { name: unknown }).name);
+          } else if ("id" in value) {
+            processedFormData[key] = String((value as { id: unknown }).id);
+          } else {
+            processedFormData[key] = String(value);
+          }
+        }
+        // Fallback
+        else {
+          processedFormData[key] = String(value);
+        }
+      }
+
+      console.log("[DEBUG] processedFormData to submit:", processedFormData);
 
       if (formTemplate.isSignatureRequired) {
-        processedFormData.signature = true;
+        processedFormData.signature = "true";
       }
 
       const res = await createFormSubmission({
@@ -262,6 +269,12 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  // Pass formData directly - child components handle their own data formatting
+  // No transformation needed here since components already return properly formatted values
+  const getDisplayFormData = () => {
+    return formData;
   };
 
   return (
@@ -298,9 +311,8 @@ const CreateFormSubmissionModal: React.FC<CreateFormSubmissionModalProps> = ({
               submittedBy={submittedBy}
               setSubmittedBy={setSubmittedBy}
               submittedByTouched={submittedByTouched}
-              formData={formData}
+              formData={getDisplayFormData()}
               handleFieldChange={handleFieldChange}
-              // clientOptions={clientOptions}
               equipmentOptions={equipmentOptions}
               jobsiteOptions={jobsiteOptions}
               costCodeOptions={costCodeOptions}

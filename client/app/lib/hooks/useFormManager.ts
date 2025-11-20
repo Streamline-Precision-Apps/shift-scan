@@ -114,7 +114,6 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
       );
 
       const normalized = normalizeFormTemplate(apiData);
-      console.log("[Normalized Data] - Fetch Data", normalized);
 
       setTemplate(normalized);
       return normalized;
@@ -139,6 +138,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
           `/api/v1/admins/forms/submissions/${submissionId}`,
           "GET"
         );
+
         const normalized = normalizeFormSubmission(apiData, template);
         console.log("[Normalized Submission] - Fetch Data", normalized);
         setSubmission(normalized);
@@ -167,6 +167,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
         `/api/v1/forms/managerFormApproval/${approvalId}`,
         "GET"
       );
+
       const normalized = normalizeFormApproval(apiData);
       console.log("[Normalized Approval] - Fetch Data", normalized);
       setApproval(normalized);
@@ -326,7 +327,13 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
         };
       }
 
-      const valuesToCheck = valuesToValidate || values;
+      // Clone values and ensure signature is present if required
+      let valuesToCheck = valuesToValidate || values;
+      if (template.isSignatureRequired) {
+        if (!Object.prototype.hasOwnProperty.call(valuesToCheck, "signature")) {
+          valuesToCheck = { ...valuesToCheck, signature: null };
+        }
+      }
 
       // Create temporary submission for validation
       const tempSubmission: FormSubmission = {
@@ -338,7 +345,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
         data: valuesToCheck,
         createdAt: submission?.createdAt ?? new Date(),
         updatedAt: new Date(),
-        submittedAt: submission?.submittedAt ?? null,
+        submittedAt: submission?.submittedAt ?? new Date(),
         status: submission?.status ?? FormStatus.DRAFT,
         User: submission?.User ?? { id: "", firstName: "", lastName: "" },
         FormTemplate: template,
@@ -365,6 +372,14 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
 
       const submitValues = valuesToSubmit || values;
 
+      // If signature is required, ensure it is present and valid
+      if (template.isSignatureRequired) {
+        const sig = submitValues["signature"];
+        if (sig === null || sig === undefined || sig === "" || sig === false) {
+          throw new Error("Signature is required before submitting this form.");
+        }
+      }
+
       // Validate before submission
       const validation = validateForm(submitValues);
       if (!validation.valid) {
@@ -387,6 +402,7 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
             formTemplateId: template.id,
             isApprovalRequired: template.isApprovalRequired,
             submissionId: submission.id,
+            submittedAt: new Date().toISOString(),
           }
         );
 
@@ -470,6 +486,44 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
   );
 
   // =========================================================================
+  // APPROVAL HANDLING
+  // =========================================================================
+
+  /**
+   * Approve form (mark as approved)
+   */
+  const approveForm = useCallback(
+    async (
+      values?: Record<string, FormFieldValue>,
+      approvalStatus: "APPROVED" | "DENIED" = "APPROVED",
+      managerSignature: string | undefined = undefined,
+      managerId: string | undefined = undefined,
+      comment: string = "",
+      submissionId: number | undefined = undefined
+    ) => {
+      if (!submissionId && !managerId && !managerSignature) {
+        throw new Error("Missing key approval parameters");
+      }
+
+      const apiPayload = {
+        formSubmissionId: submissionId,
+        signedBy: managerId,
+        signature: managerSignature,
+        comment,
+        approval: approvalStatus,
+      };
+
+      // No approvalId: create a new approval record
+      // You may want to pass signature if available (not shown here)
+      await apiRequest("/api/v1/forms/approval", "POST", apiPayload);
+      // After creation, reload approval state
+      const updatedApproval = await loadApproval();
+      setApproval(updatedApproval);
+    },
+    [approvalId, submissionId, template]
+  );
+
+  // =========================================================================
   // DELETION
   // =========================================================================
 
@@ -516,5 +570,6 @@ export function useFormManager(config: UseFormManagerConfig): FormManagerState {
     saveAsDraft,
     deleteSubmission,
     validateForm,
+    approveForm,
   };
 }

@@ -89,6 +89,7 @@ export default function DynamicForm({ params }: PageProps) {
     saveAsDraft,
     deleteSubmission,
     validateForm,
+    approveForm,
   } = useFormManager({
     formId,
     submissionId,
@@ -155,35 +156,28 @@ export default function DynamicForm({ params }: PageProps) {
    * Handle approval
    */
   const handleApprove = useCallback(
-    async (signature: string, comment: string) => {
+    async (
+      approvalStatus: "APPROVED" | "DENIED",
+      managerSignature: string,
+      managerId: string,
+      comment: string,
+      submissionId: number
+    ) => {
       try {
-        // Call approval endpoint
-        // For now, this is a placeholder
-        // Implementation depends on your approval workflow
-
-        router.push("/hamburger/inbox");
+        await approveForm(
+          values,
+          approvalStatus,
+          managerSignature,
+          managerId,
+          comment,
+          submissionId
+        );
+        router.push("/v1/hamburger/inbox");
       } catch (err) {
         console.error("Approval failed:", err);
       }
     },
-    [router]
-  );
-
-  /**
-   * Handle denial
-   */
-  const handleDeny = useCallback(
-    async (comment: string) => {
-      try {
-        // Call denial endpoint
-        // For now, this is a placeholder
-        console.log("Form denied", { comment });
-        router.push("/hamburger/inbox");
-      } catch (err) {
-        console.error("Denial failed:", err);
-      }
-    },
-    [router]
+    [approveForm, values, router]
   );
 
   /**
@@ -233,7 +227,6 @@ export default function DynamicForm({ params }: PageProps) {
         <FormApprovalView
           requireSignature={template.isSignatureRequired}
           onApprove={handleApprove}
-          onDeny={handleDeny}
           onCancel={handleCancel}
         />
       );
@@ -260,7 +253,6 @@ export default function DynamicForm({ params }: PageProps) {
     handleSaveDraft,
     handleDelete,
     handleApprove,
-    handleDeny,
     handleCancel,
     handleEdit,
   ]);
@@ -272,8 +264,8 @@ export default function DynamicForm({ params }: PageProps) {
   const ios = Capacitor.getPlatform() === "ios";
   return (
     <div
-      className={`h-screen w-full container mx-auto max-w-4xl rounded-[10px] pb-8 px-5 ${
-        android ? "pt-3" : ios ? "pt-6" : "pt-3"
+      className={`h-screen w-full container mx-auto max-w-4xl rounded-[10px] pb-7 px-5 ${
+        android ? "pt-4" : ios ? "pt-12" : "pt-3.5"
       }`}
     >
       {/* Page Header */}

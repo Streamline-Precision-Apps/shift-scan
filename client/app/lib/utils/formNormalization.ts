@@ -1,13 +1,3 @@
-/**
- * FORM NORMALIZATION UTILITIES
- *
- * This module handles converting API responses to canonical form types,
- * and converting canonical types back to API format.
- *
- * All normalization happens in one place to ensure consistency.
- * Components receive already-normalized data with zero transformation.
- */
-
 import {
   FormTemplate,
   FormSubmission,
@@ -60,9 +50,51 @@ export function normalizeFormTemplate(apiResponse: any): FormTemplate {
   }
 
   // Normalize FormGrouping array
-  const normalizedGrouping = (FormGrouping || []).map(
+  let normalizedGrouping = (FormGrouping || []).map(
     (group: any) => normalizeFormGrouping(group) as FormGrouping
   );
+
+  // If signature is required, ensure a signature field exists in the last group
+  if (Boolean(isSignatureRequired)) {
+    // Check if any field has id 'signature'
+    const hasSignatureField = normalizedGrouping.some((group: FormGrouping) =>
+      group.Fields.some((field: FormField) => field.id === "signature")
+    );
+    if (!hasSignatureField) {
+      // Create a signature field
+      const signatureField = {
+        id: "signature",
+        formGroupingId: "", // will be set below
+        label: "Signature",
+        type: "CHECKBOX",
+        required: true,
+        order: 9999,
+        placeholder: undefined,
+        minLength: undefined,
+        maxLength: undefined,
+        multiple: false,
+        content: null,
+        filter: null,
+        Options: undefined,
+      };
+      if (normalizedGrouping.length === 0) {
+        // If no groups exist, create one
+        const groupId = "signature-group";
+        signatureField.formGroupingId = groupId;
+        normalizedGrouping.push({
+          id: groupId,
+          title: "Signatures",
+          order: 9999,
+          Fields: [signatureField],
+        });
+      } else {
+        // Add to last group
+        const lastGroup = normalizedGrouping[normalizedGrouping.length - 1];
+        signatureField.formGroupingId = lastGroup.id;
+        lastGroup.Fields = [...lastGroup.Fields, signatureField];
+      }
+    }
+  }
 
   const template: FormTemplate = {
     id,
@@ -240,7 +272,7 @@ export function normalizeFormSubmission(
     data: normalizedData,
     createdAt: parseDate(createdAt),
     updatedAt: parseDate(updatedAt),
-    submittedAt: submittedAt ? parseDate(submittedAt) : null,
+    submittedAt: submittedAt ? parseDate(submittedAt) : new Date(0),
     status: normalizedStatus,
     User: normalizeUserInfo(User),
     Approvals: normalizedApprovals.length > 0 ? normalizedApprovals : undefined,
@@ -278,6 +310,13 @@ function normalizeSubmissionData(
 
     // Type coercion for special field types
     normalized[key] = normalizeFieldValue(value, fieldIdMap.get(key));
+  }
+
+  // If template requires signature, ensure 'signature' key is present
+  if (template && template.isSignatureRequired) {
+    if (!Object.prototype.hasOwnProperty.call(normalized, "signature")) {
+      normalized["signature"] = null;
+    }
   }
 
   return normalized;
@@ -543,6 +582,10 @@ export function validateFieldStructure(
       validFieldIds.add(field.id);
     }
   }
+  // Defensive: if template requires signature, always allow 'signature' as a valid field
+  if (template.isSignatureRequired) {
+    validFieldIds.add("signature");
+  }
 
   // Check submission data
   for (const fieldId of Object.keys(submission.data)) {
@@ -766,4 +809,42 @@ function findFieldInTemplate(
  * Validation:
  * - validateFieldStructure() - Check entire submission structure
  * - validateFieldValue() - Check single field value
+ */
+
+/**
+ * Converts canonical approval data to API format for approval update/create
+ *
+ * @param params - Approval update params
+ * @returns API payload for approval update
+ */
+export function denormalizeFormApproval({
+  id,
+  formSubmissionId,
+  comment,
+  managerId,
+  isApproved,
+}: {
+  id: string;
+  formSubmissionId: number;
+  comment: string;
+  managerId: string;
+  isApproved: boolean;
+}) {
+  return {
+    id,
+    formSubmissionId,
+    comment,
+    managerId,
+    isApproved,
+  };
+}
+
+/**
+ * FORM NORMALIZATION UTILITIES
+ *
+ * This module handles converting API responses to canonical form types,
+ * and converting canonical types back to API format.
+ *
+ * All normalization happens in one place to ensure consistency.
+ * Components receive already-normalized data with zero transformation.
  */

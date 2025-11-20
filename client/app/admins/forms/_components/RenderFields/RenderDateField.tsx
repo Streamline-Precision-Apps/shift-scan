@@ -61,9 +61,10 @@ export default function RenderDateField({
           }}
           onBlur={() => handleFieldTouch(field.id)}
           placeholder="Select date"
-          className={`border rounded px-2 py-1 bg-white ${
+          className={`w-[95%] border rounded px-2 py-1 bg-white ${
             error && touchedFields[field.id] ? "border-red-500" : ""
           }`}
+          autoComplete="off"
           disabled={disabled}
         />
       ) : (

@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   appName: "Shift Scan",
   webDir: "out",
 
-server: {
+  server: {
     url: process.env.NEXT_PUBLIC_CAPACITOR_APP_URL,
     cleartext: true,
   },

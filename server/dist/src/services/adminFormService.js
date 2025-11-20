@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="869af0cf-7646-5998-b732-102b1048b690")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="c30ba9cf-914e-5530-b289-1e9879e34a68")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 import { FormTemplateCategory, FormTemplateStatus, FieldType, FormStatus, } from "../../generated/prisma/index.js";
 export async function getAllFormTemplates(search, page, pageSize, skip, status, formType) {
@@ -134,10 +134,11 @@ export async function getAllFormTemplates(search, page, pageSize, skip, status, 
         };
     }
 }
-export async function getFormSubmissionByTemplateId(id, page, pageSize, pendingOnly, statusFilter, dateRangeStart, dateRangeEnd) {
-    // If pendingOnly, do not paginate (return all pending submissions)
-    const skip = pendingOnly ? undefined : (page - 1) * pageSize;
-    const take = pendingOnly ? undefined : pageSize;
+export async function getFormSubmissionByTemplateId(id, search, page, pageSize, pendingOnly, statusFilter, dateRangeStart, dateRangeEnd) {
+    // If pendingOnly or searching, do not paginate (return all matching submissions)
+    const isSearching = search !== null && search !== undefined && search !== "";
+    const skip = pendingOnly || isSearching ? undefined : (page - 1) * pageSize;
+    const take = pendingOnly || isSearching ? undefined : pageSize;
     // (moved up)
     // Determine the status condition for queries
     let statusCondition;
@@ -225,9 +226,9 @@ export async function getFormSubmissionByTemplateId(id, page, pageSize, pendingO
         ...formTemplate,
         Submissions: submissions,
         total,
-        page: pendingOnly ? 1 : page,
-        pageSize: pendingOnly ? submissions.length : pageSize,
-        totalPages: pendingOnly ? 1 : Math.ceil(total / pageSize),
+        page: pendingOnly || isSearching ? 1 : page,
+        pageSize: pendingOnly || isSearching ? submissions.length : pageSize,
+        totalPages: pendingOnly || isSearching ? 1 : Math.ceil(total / pageSize),
         pendingForms,
     };
 }
@@ -572,7 +573,12 @@ export async function getFormSubmissionById(submissionId) {
             Approvals: {
                 include: {
                     Approver: {
-                        select: { id: true, firstName: true, lastName: true },
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            signature: true,
+                        },
                     },
                 },
                 orderBy: { updatedAt: "desc" },
@@ -602,4 +608,4 @@ export async function approveFormSubmission(submissionId, action, formData) {
     return updated;
 }
 //# sourceMappingURL=adminFormService.js.map
-//# debugId=869af0cf-7646-5998-b732-102b1048b690
+//# debugId=c30ba9cf-914e-5530-b289-1e9879e34a68

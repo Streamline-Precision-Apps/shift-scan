@@ -45,6 +45,7 @@ export interface UpdateFormApprovalParams {
     formSubmissionId: number;
     comment: string;
     isApproved: boolean;
+    managerId: string;
 }
 /**
  * Get all forms
@@ -412,6 +413,7 @@ export interface UpdateFormSubmissionParams {
     formType?: string;
     isApprovalRequired?: boolean;
     userId?: string;
+    submittedAt?: string;
 }
 /**
  * Update a form submission (partial update)

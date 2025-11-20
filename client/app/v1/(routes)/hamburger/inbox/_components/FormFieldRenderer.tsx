@@ -8,7 +8,6 @@ import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
 import RenderFields from "../../../../../admins/forms/_components/RenderFields/RenderFields";
 import { sortFormTemplate } from "@/app/lib/utils/formOrdering";
-import type { FormIndividualTemplate } from "../_adminComponents/types";
 
 // ============================================================================
 // TYPES
@@ -168,8 +167,17 @@ export const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
    */
   const sortedFormData = useMemo(() => {
     const sorted = sortFormTemplate(formData);
-
-    return sorted;
+    // Always filter out signature and state fields
+    return {
+      ...sorted,
+      FormGrouping: sorted.FormGrouping.map((group) => ({
+        ...group,
+        Fields: group.Fields.filter((field) => {
+          const id = field.id.toLowerCase();
+          return id !== "signature" && id !== "state";
+        }),
+      })),
+    };
   }, [formData]);
 
   /**

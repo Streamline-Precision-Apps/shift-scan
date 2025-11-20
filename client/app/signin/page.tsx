@@ -111,6 +111,12 @@ export default function SignInPage() {
                 useCostCodeStore.getState().setCostCodes(dataJson.costCodes);
               }
               // Successfully authenticated, redirect
+
+              if (!dataJson.user?.accountSetup) {
+                router.push("/signin/signUp");
+                return;
+              }
+
               redirectAfterAuth();
               return;
             }
@@ -162,6 +168,7 @@ export default function SignInPage() {
       }
 
       const userId = data.user?.id || data.userId || data.id;
+      const accountSetup = data.user?.accountSetup;
 
       if (!data.token) {
         throw new Error("No token received from server");
@@ -236,6 +243,12 @@ export default function SignInPage() {
       }
       if (dataJson.costCodes) {
         useCostCodeStore.getState().setCostCodes(dataJson.costCodes);
+      }
+
+      // If account setup is false, redirect to sign up page
+      if (accountSetup === false) {
+        router.push("/signin/signUp");
+        return;
       }
 
       redirectAfterAuth();

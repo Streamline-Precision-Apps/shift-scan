@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="150754be-6d4b-571e-bd34-62fb9d8ccadc")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0b77d3b6-ba3e-52d5-a07f-9800dd7896a7")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 import { FormStatus } from "../../generated/prisma/client.js";
 /**
@@ -286,12 +286,19 @@ export const ServiceCreateFormApproval = async (params) => {
  * @param {boolean} params.isApproved
  */
 export const ServiceUpdateFormApproval = async (params) => {
-    const { id, formSubmissionId, comment, isApproved } = params;
+    const { id, formSubmissionId, comment, managerId, isApproved } = params;
     // Use a transaction to ensure atomicity
     const [approval, updatedSubmission] = await prisma.$transaction([
         prisma.formApproval.update({
             where: { id },
-            data: { comment },
+            data: {
+                comment,
+                Approver: {
+                    connect: {
+                        id: managerId,
+                    },
+                },
+            },
         }),
         prisma.formSubmission.update({
             where: { id: formSubmissionId },
@@ -576,7 +583,7 @@ export const ServiceForm = async (id, userId) => {
  * Returns the updated submission.
  */
 export const updateFormSubmissionService = async (body) => {
-    const { submissionId, formData, isApprovalRequired, title, formType } = body;
+    const { submissionId, formData, isApprovalRequired, title, formType, submittedAt, } = body;
     // Fetch the existing submission
     const existing = await prisma.formSubmission.findUnique({
         where: { id: submissionId },
@@ -600,6 +607,9 @@ export const updateFormSubmissionService = async (body) => {
             ? FormStatus.PENDING
             : FormStatus.APPROVED;
     }
+    if (typeof submittedAt === "string") {
+        updateData.submittedAt = submittedAt; // Converts ISO string to Date
+    }
     // Update the submission
     const updated = await prisma.formSubmission.update({
         where: { id: submissionId },
@@ -613,4 +623,4 @@ export const updateFormSubmissionService = async (body) => {
     return updated;
 };
 //# sourceMappingURL=formsService.js.map
-//# debugId=150754be-6d4b-571e-bd34-62fb9d8ccadc
+//# debugId=0b77d3b6-ba3e-52d5-a07f-9800dd7896a7

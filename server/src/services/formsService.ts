@@ -56,6 +56,7 @@ export interface UpdateFormApprovalParams {
   formSubmissionId: number;
   comment: string;
   isApproved: boolean;
+  managerId: string;
 }
 
 /**
@@ -367,12 +368,19 @@ export const ServiceCreateFormApproval = async (
 export const ServiceUpdateFormApproval = async (
   params: UpdateFormApprovalParams
 ) => {
-  const { id, formSubmissionId, comment, isApproved } = params;
+  const { id, formSubmissionId, comment, managerId, isApproved } = params;
   // Use a transaction to ensure atomicity
   const [approval, updatedSubmission] = await prisma.$transaction([
     prisma.formApproval.update({
       where: { id },
-      data: { comment },
+      data: {
+        comment,
+        Approver: {
+          connect: {
+            id: managerId,
+          },
+        },
+      },
     }),
     prisma.formSubmission.update({
       where: { id: formSubmissionId },
@@ -689,6 +697,7 @@ export interface UpdateFormSubmissionParams {
   formType?: string;
   isApprovalRequired?: boolean;
   userId?: string; // For permission checks if needed
+  submittedAt?: string;
 }
 
 /**
@@ -699,7 +708,14 @@ export interface UpdateFormSubmissionParams {
 export const updateFormSubmissionService = async (
   body: UpdateFormSubmissionParams
 ) => {
-  const { submissionId, formData, isApprovalRequired, title, formType } = body;
+  const {
+    submissionId,
+    formData,
+    isApprovalRequired,
+    title,
+    formType,
+    submittedAt,
+  } = body;
 
   // Fetch the existing submission
   const existing = await prisma.formSubmission.findUnique({
@@ -721,6 +737,9 @@ export const updateFormSubmissionService = async (
     updateData.status = isApprovalRequired
       ? FormStatus.PENDING
       : FormStatus.APPROVED;
+  }
+  if (typeof submittedAt === "string") {
+    updateData.submittedAt = submittedAt; // Converts ISO string to Date
   }
 
   // Update the submission

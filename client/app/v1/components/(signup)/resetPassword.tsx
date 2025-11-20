@@ -9,7 +9,8 @@ import { Holds } from "../(reusable)/holds";
 import { Labels } from "../(reusable)/labels";
 import { Texts } from "../(reusable)/texts";
 import { Images } from "../(reusable)/images";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
+import { Capacitor } from "@capacitor/core";
 
 const ResetPassword = ({
   userId,
@@ -22,6 +23,8 @@ const ResetPassword = ({
   totalSteps: number;
   currentStep: number;
 }) => {
+  const ios = Capacitor.getPlatform() === "ios";
+  const android = Capacitor.getPlatform() === "android";
   // Shared password scoring function (copied from changePassword)
   function getPasswordScore(password: string) {
     let score = 0;
@@ -93,16 +96,11 @@ const ResetPassword = ({
 
     setIsSubmitting(true);
     try {
-      const API_URL = getApiUrl();
-      const res = await fetch(`${API_URL}/api/v1/users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password: newPassword,
-        }),
-      }).then((res) => res.json());
+      const res = apiRequest(`/api/v1/user/${userId}`, "PUT", {
+        password: newPassword,
+      });
 
-      if (!res.success) {
+      if (!res) {
         throw new Error("Failed to update password");
       }
 
@@ -184,7 +182,11 @@ const ResetPassword = ({
   }
 
   return (
-    <div className="h-dvh w-full flex flex-col">
+    <div
+      className={`h-dvh w-full flex flex-col bg-app-dark-blue ${
+        ios ? "pt-8" : android ? "pt-4" : ""
+      }`}
+    >
       <div className="w-full h-[10%] flex flex-col justify-end py-3">
         <Texts text={"white"} className="justify-end" size={"sm"}>
           {t("ChoosePasswordTitle")}

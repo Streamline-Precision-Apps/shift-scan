@@ -9,6 +9,7 @@ export async function blobUpload(req: Request, res: Response) {
     const userId = req.body.userId;
     const file = req.file;
     const folder = req.body.folder || "profileImages";
+    console.log("file", file);
 
     if (!userId) {
       return res.status(400).json({ error: "No userId provided" });

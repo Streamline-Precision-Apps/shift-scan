@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="f2113dea-3aba-5c1c-812e-f0731af7bdc8")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="e70ad532-5e46-5885-8435-3ee25aa8b0fb")}catch(e){}}();
 import { ServiceManagerFormApprovals, ServiceFormSubmissions, ServiceTeamSubmissions, ServiceFormDraft, ServiceForm, } from "../services/formsService.js";
 // Controller for forms endpoints
 import express from "express";
@@ -62,7 +62,7 @@ export const getEmployeeRequests = async (req, res) => {
         if (permission === "USER") {
             return res.status(401).json({ error: "Unauthorized User Permission" });
         }
-        const filter = req.query.filter;
+        const filter = req.params.filter;
         const skip = parseInt(req.query.skip || "0");
         const take = parseInt(req.query.take || "10");
         const requests = await ServiceGetEmployeeRequests({
@@ -197,6 +197,7 @@ export const savePending = async (req, res) => {
 export const createFormApproval = async (req, res) => {
     try {
         const { formSubmissionId, signedBy, signature, comment, approval } = req.body;
+        console.log("Creating approval with signedBy:", req.body);
         const result = await ServiceCreateFormApproval({
             formSubmissionId,
             signedBy,
@@ -215,11 +216,12 @@ export const createFormApproval = async (req, res) => {
 };
 export const updateFormApproval = async (req, res) => {
     try {
-        const { id, formSubmissionId, comment, isApproved } = req.body;
+        const { id, formSubmissionId, comment, managerId, isApproved } = req.body;
         const result = await ServiceUpdateFormApproval({
             id,
             formSubmissionId,
             comment,
+            managerId,
             isApproved,
         });
         res.status(200).json(result);
@@ -315,4 +317,4 @@ export const getFormTemplate = async (req, res) => {
     }
 };
 //# sourceMappingURL=formsController.js.map
-//# debugId=f2113dea-3aba-5c1c-812e-f0731af7bdc8
+//# debugId=e70ad532-5e46-5885-8435-3ee25aa8b0fb

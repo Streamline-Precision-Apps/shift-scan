@@ -10,7 +10,8 @@ import { ProgressBar } from "./progressBar";
 import { Button } from "../ui/button";
 import { usePermissions } from "@/app/lib/context/permissionContext";
 import { useUserStore } from "@/app/lib/store/userStore";
-import { getApiUrl } from "@/app/lib/utils/api-Utils";
+import { apiRequest, getApiUrl } from "@/app/lib/utils/api-Utils";
+import { Capacitor } from "@capacitor/core";
 
 type UserSettings = {
   userId: string;
@@ -35,7 +36,8 @@ export default function NotificationSettings({
   totalSteps,
   currentStep,
 }: prop) {
-  console.log(userId);
+  const ios = Capacitor.getPlatform() === "ios";
+  const android = Capacitor.getPlatform() === "android";
   const t = useTranslations("SignUpPermissions");
   const [showBanner, setShowBanner] = useState(false);
   const [bannerMessage, setBannerMessage] = useState("");
@@ -110,23 +112,18 @@ export default function NotificationSettings({
     }
     try {
       setIsSubmitting(true);
-      const API_URL = getApiUrl();
 
-      const res = await fetch(`${API_URL}/api/v1users/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          UserSettings: {
-            cameraAccess: updatedData?.cameraAccess,
-            locationAccess: updatedData?.locationAccess,
-            generalReminders: updatedData?.generalReminders,
-            personalReminders: updatedData?.personalReminders,
-            cookiesAccess: true,
-          },
-        }),
-      }).then((res) => res.json());
+      const res = await apiRequest(`/api/v1/user/${userId}`, "PUT", {
+        UserSettings: {
+          cameraAccess: updatedData?.cameraAccess,
+          locationAccess: updatedData?.locationAccess,
+          generalReminders: updatedData?.generalReminders,
+          personalReminders: updatedData?.personalReminders,
+          cookiesAccess: true,
+        },
+      });
 
-      if (!res.success) {
+      if (!res) {
         throw new Error("Failed to update password");
       }
 
@@ -142,7 +139,11 @@ export default function NotificationSettings({
   };
 
   return (
-    <div className="h-dvh w-full flex flex-col">
+    <div
+      className={`h-dvh w-full flex flex-col bg-app-dark-blue ${
+        ios ? "pt-8" : android ? "pt-4" : ""
+      }`}
+    >
       <div className="w-full h-[10%] flex flex-col justify-end py-3">
         <Texts text={"white"} className="justify-end" size={"sm"}>
           {t("AcceptAllPermissions")}
