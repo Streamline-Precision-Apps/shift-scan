@@ -1,5 +1,9 @@
 "use client";
-import { SingleCombobox } from "@/app/v1/components/ui/single-combobox";
+import {
+  ComboboxOption,
+  SingleCombobox,
+} from "@/app/v1/components/ui/single-combobox";
+import { MobileSingleCombobox } from "@/app/v1/components/ui/mobile-combobox";
 import { Label } from "@/app/v1/components/ui/label";
 export interface Fields {
   id: string;
@@ -120,32 +124,63 @@ export default function RenderSearchAssetField({
         </Label>
 
         {/* Combobox for selecting assets */}
-        <SingleCombobox
-          options={assetOptions}
-          value={""}
-          onChange={(val, option) => {
-            if (option) {
-              // Check if asset is already selected
-              const isSelected = selectedAssets.some(
-                (a: Asset) => a.id === option.value
-              );
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={assetOptions}
+            value={selectedAssets.map((a) => a.id)}
+            multiple={true}
+            onChange={(
+              val: string | string[],
+              option?:
+                | import("@/app/v1/components/ui/mobile-combobox").ComboboxOption
+                | import("@/app/v1/components/ui/mobile-combobox").ComboboxOption[]
+            ) => {
+              const selectedIds = Array.isArray(val) ? val : val ? [val] : [];
+              const updatedAssets = selectedIds
+                .map((id) => {
+                  const found = assetOptions.find((o) => o.value === id);
+                  return found
+                    ? { id: found.value, name: found.label, type: assetType }
+                    : null;
+                })
+                .filter(Boolean) as Asset[];
+              handleFieldChange(field.id, updatedAssets);
+            }}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        ) : (
+          <SingleCombobox
+            options={assetOptions}
+            value={""}
+            onChange={(
+              val: string,
+              option?: { value: string; label: string }
+            ) => {
+              if (option) {
+                // Check if asset is already selected
+                const isSelected = selectedAssets.some(
+                  (a: Asset) => a.id === option.value
+                );
 
-              if (!isSelected) {
-                const newAsset = {
-                  id: option.value,
-                  name: option.label,
-                  type: assetType,
-                };
+                if (!isSelected) {
+                  const newAsset = {
+                    id: option.value,
+                    name: option.label,
+                    type: assetType,
+                  };
 
-                const updatedAssets = [...selectedAssets, newAsset];
-                handleFieldChange(field.id, updatedAssets);
+                  const updatedAssets = [...selectedAssets, newAsset];
+                  handleFieldChange(field.id, updatedAssets);
+                }
               }
-            }
-          }}
-          placeholder={`Select ${assetType}...`}
-          filterKeys={["value", "label"]}
-          disabled={disabled}
-        />
+            }}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        )}
         {/* Display selected assets as tags */}
         {selectedAssets.length > 0 && (
           <div className="max-w-md flex flex-wrap gap-2 mt-3 mb-2">
@@ -198,25 +233,50 @@ export default function RenderSearchAssetField({
           {field.label}{" "}
           {field.required && <span className="text-red-500">*</span>}
         </Label>
-        <SingleCombobox
-          options={assetOptions}
-          value={displayValue}
-          onChange={(val, option) => {
-            if (option) {
-              // Store the selected value in formData instead of a separate asset state
-              handleFieldChange(field.id, {
-                id: option.value,
-                name: option.label,
-                type: assetType,
-              });
-            } else {
-              handleFieldChange(field.id, null);
-            }
-          }}
-          disabled={disabled}
-          placeholder={`Select ${assetType}...`}
-          filterKeys={["value", "label"]}
-        />
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={assetOptions}
+            value={displayValue}
+            onChange={(
+              val: string | string[],
+              option?: ComboboxOption | ComboboxOption[]
+            ) => {
+              const id = Array.isArray(val) ? val[0] : val;
+              if (option && !Array.isArray(option)) {
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                  type: assetType,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+          />
+        ) : (
+          <SingleCombobox
+            options={assetOptions}
+            value={displayValue}
+            onChange={(val, option) => {
+              if (option) {
+                // Store the selected value in formData instead of a separate asset state
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                  type: assetType,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+          />
+        )}
         {/* Display selected asset as tag */}
         {currentValue && (
           <div className="flex flex-wrap gap-2 mt-3 mb-2">

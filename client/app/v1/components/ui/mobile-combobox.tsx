@@ -1,271 +1,261 @@
 "use client";
-
 import * as React from "react";
-import { CheckIcon, ChevronsUpDownIcon, SearchIcon, XIcon } from "lucide-react";
-import { Button } from "@/app/v1/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogOverlay,
+  DialogPortal,
 } from "@/app/v1/components/ui/dialog";
-import { Input } from "@/app/v1/components/ui/input";
-import { useState, useEffect, useRef } from "react";
-import { cn } from "@/app/lib/utils/utils";
+import { Button } from "@/app/v1/components/ui/button";
 
-export interface MobileComboboxOption {
+import { XIcon } from "lucide-react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { Checkbox } from "@/app/v1/components/ui/checkbox";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+export interface ComboboxOption {
   value: string;
   label: string;
   [key: string]: string | number | boolean | undefined;
 }
 
-interface MobileComboboxProps {
-  options: MobileComboboxOption[];
-  value: string[];
-  onChange: (value: string[]) => void;
+interface MobileSingleComboboxProps {
+  options: ComboboxOption[];
+  value: string | string[];
+  onChange: (
+    value: string | string[],
+    option?: ComboboxOption | ComboboxOption[]
+  ) => void;
   placeholder?: string;
   label?: string;
-  dialogTitle?: string;
   disabled?: boolean;
+  filterKeys?: string[];
   required?: boolean;
-  errorMessage?: string;
-  multiSelect?: boolean; // Allow selection of multiple items
-  closeOnSelect?: boolean; // Automatically close after selection (for single select)
+  multiple?: boolean;
 }
 
-export function MobileCombobox({
+/**
+ * MobileSingleCombobox
+ *
+ * A mobile-first single-select combobox designed to open a full-screen
+ * dialog/modal with a search input so that the mobile keyboard pops up
+ * and the user can filter & select an option comfortably.
+ */
+
+export function MobileSingleCombobox({
   options,
   value,
   onChange,
   placeholder = "Select...",
   label,
-  dialogTitle = "Select an option",
   disabled = false,
+  filterKeys = ["label"],
   required = false,
-  errorMessage = "This field is required.",
-  multiSelect = false,
-  closeOnSelect = !multiSelect,
-}: MobileComboboxProps) {
+  multiple = false,
+}: MobileSingleComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [touched, setTouched] = useState(false);
-  const [tempSelection, setTempSelection] = useState<string | null>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Focus search input when modal opens
+  // For multi-select, track local selection while dialog is open
+  const [multiSelected, setMultiSelected] = useState<string[]>([]);
+
   useEffect(() => {
-    if (open && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    }
-  }, [open]);
-
-  // Reset search when dialog closes
-  useEffect(() => {
-    if (!open) {
-      setSearch("");
-      setTempSelection(null);
-    }
-  }, [open]);
-
-  // Filter options based on search input
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const showError = required && touched && (!value || value.length === 0);
-
-  // Handle selection
-  const handleSelect = (optionValue: string) => {
-    if (multiSelect) {
-      // Toggle selection for multi-select
-      let newValue: string[];
-      const isSelected = value.includes(optionValue);
-      if (isSelected) {
-        newValue = value.filter((v) => v !== optionValue);
-      } else {
-        newValue = [...value, optionValue];
-      }
-      onChange(newValue);
-
-      // Close dialog if configured to close on select
-      if (closeOnSelect) {
-        setOpen(false);
+    if (open) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+      if (multiple) {
+        setMultiSelected(Array.isArray(value) ? value : value ? [value] : []);
       }
     } else {
-      // For single select, just mark the item as temporarily selected
-      // but don't apply the change yet - wait for confirmation
-      setTempSelection(optionValue);
+      setSearch("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const filteredOptions = useMemo(() => {
+    if (!search.trim()) return options;
+    return options.filter((option) =>
+      (filterKeys || ["label"]).some((key) => {
+        const valueMatch = key
+          .split(".")
+          .reduce<unknown>(
+            (obj, k) =>
+              obj && typeof obj === "object"
+                ? (obj as Record<string, unknown>)[k]
+                : undefined,
+            option
+          );
+        return (
+          (valueMatch ?? "")
+            .toString()
+            .toLowerCase()
+            .indexOf(search.toLowerCase()) !== -1
+        );
+      })
+    );
+  }, [options, search, filterKeys]);
+
+  // For single-select, find label; for multi, show count or summary
+  const selectedLabel = useMemo(() => {
+    if (multiple) {
+      if (Array.isArray(value) && value.length > 0) {
+        if (value.length === 1) {
+          return (
+            options.find((o) => o.value === value[0])?.label || placeholder
+          );
+        }
+        return `${value.length} selected`;
+      }
+      return placeholder;
+    }
+    return options.find((o) => o.value === value)?.label || placeholder;
+  }, [multiple, value, options, placeholder]);
+
+  const showError =
+    required &&
+    touched &&
+    (!value || (Array.isArray(value) && value.length === 0));
+
+  // Handle checkbox toggle for multi-select
+  const handleCheckboxChange = (optionValue: string) => {
+    setMultiSelected((prev) =>
+      prev.includes(optionValue)
+        ? prev.filter((v) => v !== optionValue)
+        : [...prev, optionValue]
+    );
   };
 
-  // Confirm selection for single select mode
-  const confirmSelection = () => {
-    if (tempSelection !== null) {
-      onChange([tempSelection]);
-    }
+  // Confirm selection for multi-select
+  const handleConfirm = () => {
+    onChange(
+      multiSelected,
+      options.filter((o) => multiSelected.includes(o.value))
+    );
     setOpen(false);
   };
 
-  // Get display text for selected values
-  const getSelectedText = () => {
-    if (!value || value.length === 0) return placeholder;
-
-    const selectedLabels = options
-      .filter((option) => value.includes(option.value))
-      .map((option) => option.label);
-
-    if (selectedLabels.length === 0) return placeholder;
-    if (selectedLabels.length === 1) return selectedLabels[0];
-
-    return `${selectedLabels[0]} +${selectedLabels.length - 1}`;
-  };
-
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium mb-1">
-          {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+        <label className={`block text-xs font-semibold mb-1`}>{label}</label>
       )}
+      <button
+        className={`w-full text-left px-3 py-2 rounded border bg-white ${
+          showError ? "border-red-500" : "border-input"
+        }`}
+        type="button"
+        disabled={disabled}
+        onClick={() => {
+          setTouched(true);
+          setOpen(true);
+        }}
+      >
+        {selectedLabel}
+      </button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={cn(
-              "w-full h-12 px-3 py-2 text-base justify-between",
-              "flex items-center relative overflow-hidden ",
-              showError ? "border-red-500" : "",
-              disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-            )}
-            disabled={disabled}
-            onBlur={() => setTouched(true)}
-          >
-            <span className="truncate">{getSelectedText()}</span>
-            <ChevronsUpDownIcon className="ml-2 h-5 w-5 shrink-0 opacity-60" />
-          </Button>
-        </DialogTrigger>
-
-        <DialogContent className="w-[90%] max-w-md mx-auto p-0 h-[70vh] flex flex-col rounded-xl">
-          <DialogHeader className="px-4 py-2 border-b sticky top-0 bg-white z-10 rounded-lg">
-            <DialogTitle>{dialogTitle}</DialogTitle>
-            <div className="relative mt-2">
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                ref={searchInputRef}
-                className="pl-9 pr-4 py-2 h-10 text-base"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+      {/* Dialog used as a full-screen mobile modal */}
+      {open && (
+        <Dialog open onOpenChange={setOpen}>
+          <DialogPortal>
+            <DialogOverlay />
+            <DialogTitle className="sr-only">{label}</DialogTitle>
+            <DialogContent
+              className="bg-white-5 w-full h-screen max-w-full rounded-none pt-12 px-0"
+              showCloseButton={false}
+            >
+              <div className="flex flex-col h-full bg-gray-600 rounded-tr-md rounded-tl-md ">
+                <div className=" flex items-center gap-2 bg-white  border-b border-gray-300  px-1.5 py-2 rounded-t-md">
+                  <input
+                    ref={inputRef}
+                    className="bg-white flex-1 rounded px-3 py-2 text-sm border"
+                    placeholder={`Search ${placeholder}`}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                  >
+                    <XIcon />
+                  </Button>
+                </div>
+                <div
+                  className={`bg-gray-200  rounded-md rounded-t-none overflow-auto  h-[calc(96vh-72px)] relative`}
                 >
-                  <XIcon className="h-4 w-4 text-gray-400" />
-                </button>
-              )}
-            </div>
-          </DialogHeader>
-
-          <div className="overflow-y-auto flex-1">
-            {filteredOptions.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
-                No options found
-              </div>
-            ) : (
-              <div className="py-1">
-                {filteredOptions.map((option) => {
-                  const isSelected = multiSelect
-                    ? value.includes(option.value)
-                    : tempSelection === option.value ||
-                      value.includes(option.value);
-                  return (
-                    <button
-                      key={option.value}
-                      className={cn(
-                        "w-full flex items-center px-4 py-3 text-left text-base",
-                        "hover:bg-gray-100 focus:bg-gray-100 focus:outline-none",
-                        isSelected ? "bg-gray-50" : ""
-                      )}
-                      onClick={() => handleSelect(option.value)}
-                    >
-                      <div
-                        className={cn(
-                          "w-5 h-5 rounded-sm border mr-3 flex items-center justify-center",
-                          isSelected
-                            ? "bg-green-500 border-green-500"
-                            : "border-gray-300"
+                  {filteredOptions.length === 0 && (
+                    <div className="text-sm text-muted-foreground p-2">
+                      No options found.
+                    </div>
+                  )}
+                  <ul className="flex flex-col gap-1 pb-96 ">
+                    {filteredOptions.map((option) => (
+                      <li key={option.value}>
+                        {multiple ? (
+                          <label
+                            className={`w-full flex items-center gap-2 text-left rounded p-3 bg-white border ${
+                              multiSelected.includes(option.value)
+                                ? "border-app-green"
+                                : "border-slate-200"
+                            } hover:bg-muted-foreground/10 cursor-pointer`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleCheckboxChange(option.value);
+                            }}
+                          >
+                            <Checkbox
+                              checked={multiSelected.includes(option.value)}
+                              color="green"
+                              tabIndex={-1}
+                              className="mr-2"
+                            />
+                            <span className="text-sm">{option.label}</span>
+                          </label>
+                        ) : (
+                          <button
+                            className={`w-full text-left rounded p-3 bg-white border hover:bg-muted-foreground/10`}
+                            onClick={() => {
+                              onChange(option.value, option);
+                              setOpen(false);
+                            }}
+                            type="button"
+                          >
+                            {option.label}
+                          </button>
                         )}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* Confirm button for multi-select - absolute at the bottom */}
+                  {multiple && (
+                    <div className="sticky bottom-0 left-0 right-0 w-full flex flex-row gap-2 justify-end border-t border-gray-200 bg-white pb-8 pt-4 px-6 z-10">
+                      <Button
+                        size={"lg"}
+                        type="button"
+                        variant="outline"
+                        className="bg-white border border-gray-200 hover:bg-gray-300 text-gray-800"
+                        onClick={() => setOpen(false)}
                       >
-                        {isSelected && (
-                          <CheckIcon className="h-4 w-4 text-white" />
-                        )}
-                      </div>
-                      <span className="flex-1 truncate">{option.label}</span>
-                    </button>
-                  );
-                })}
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        size={"lg"}
+                        className="bg-green-500 hover:bg-green-600 text-white disabled:opacity-50"
+                        onClick={handleConfirm}
+                        disabled={multiSelected.length === 0 && required}
+                      >
+                        Confirm
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-
-          {multiSelect && (
-            <div className="border-t p-3 mt-auto bg-white rounded-lg">
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => onChange([])}
-                  size="sm"
-                  className="text-sm"
-                >
-                  Clear All
-                </Button>
-                <Button
-                  onClick={() => setOpen(false)}
-                  size="sm"
-                  className="text-sm"
-                >
-                  Done ({value.length} selected)
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {!multiSelect && (
-            <div className="border-t p-3 mt-auto bg-white rounded-lg">
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  size="sm"
-                  className="text-sm"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={confirmSelection}
-                  size="sm"
-                  className="text-sm bg-green-500 hover:bg-green-600 text-white"
-                  disabled={tempSelection === null}
-                >
-                  Confirm
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {showError && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
+            </DialogContent>
+          </DialogPortal>
+        </Dialog>
+      )}
     </div>
   );
 }
