@@ -46,6 +46,7 @@ export default function RenderMultiselectField({
           } ${disabled ? "bg-slate-100 opacity-50" : ""}`}
         >
           <div className="flex flex-col gap-3">
+            <p className="text-xs text-slate-500">Select all that apply</p>
             {options.length === 0 ? (
               <p className="text-sm text-slate-500 italic">
                 No options available
@@ -54,10 +55,15 @@ export default function RenderMultiselectField({
               options.map((opt) => (
                 <label
                   key={opt.id}
-                  className="flex items-center gap-3 cursor-pointer select-none hover:bg-white rounded px-2 py-1 transition-colors"
+                  className={`flex items-center gap-3 cursor-pointer select-none  hover:bg-white rounded px-2 py-2 transition-colors border ${
+                    arrayValue.includes(opt.value)
+                      ? "border-green-500 bg-white"
+                      : "border-slate-200"
+                  }`}
                 >
-                  <div className="w-6 h-6 flex items-center justify-center">
+                  <div className="w-8 h-8 flex items-center justify-center">
                     <Checkbox
+                      color="green"
                       checked={arrayValue.includes(opt.value)}
                       onCheckedChange={(checked) => {
                         const updatedValue = checked
@@ -67,10 +73,34 @@ export default function RenderMultiselectField({
                       }}
                       id={`${field.id}-${opt.id}`}
                       disabled={disabled}
-                      className="size-5"
                     />
                   </div>
-                  <span className="text-sm text-slate-700">{opt.value}</span>
+                  <span
+                    className="text-sm text-slate-600"
+                    onClick={() => {
+                      if (disabled) return;
+                      const checked = arrayValue.includes(opt.value);
+                      const updatedValue = checked
+                        ? arrayValue.filter((v) => v !== opt.value)
+                        : [...arrayValue, opt.value];
+                      handleFieldChange(field.id, updatedValue);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (disabled) return;
+                        const checked = arrayValue.includes(opt.value);
+                        const updatedValue = checked
+                          ? arrayValue.filter((v) => v !== opt.value)
+                          : [...arrayValue, opt.value];
+                        handleFieldChange(field.id, updatedValue);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {opt.value}
+                  </span>
                 </label>
               ))
             )}
@@ -84,6 +114,7 @@ export default function RenderMultiselectField({
           } ${disabled ? "bg-slate-100 opacity-50" : ""}`}
         >
           <div className="flex flex-col gap-3">
+            <p className="text-xs text-slate-500">Select all that apply</p>
             {options.length === 0 ? (
               <p className="text-sm text-slate-500 italic">
                 No options available
@@ -105,10 +136,35 @@ export default function RenderMultiselectField({
                       }}
                       id={`${field.id}-${opt.id}`}
                       disabled={disabled}
-                      className="size-5"
+                      className="size-5 data-[state=checked]:bg-sky-600 data-[state=checked]:border-sky-600 data-[state=checked]:text-white"
                     />
                   </div>
-                  <span className="text-sm text-slate-700">{opt.value}</span>
+                  <span
+                    className="text-sm text-slate-700"
+                    onClick={() => {
+                      if (disabled) return;
+                      const checked = arrayValue.includes(opt.value);
+                      const updatedValue = checked
+                        ? arrayValue.filter((v) => v !== opt.value)
+                        : [...arrayValue, opt.value];
+                      handleFieldChange(field.id, updatedValue);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        if (disabled) return;
+                        const checked = arrayValue.includes(opt.value);
+                        const updatedValue = checked
+                          ? arrayValue.filter((v) => v !== opt.value)
+                          : [...arrayValue, opt.value];
+                        handleFieldChange(field.id, updatedValue);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {opt.value}
+                  </span>
                 </label>
               ))
             )}
