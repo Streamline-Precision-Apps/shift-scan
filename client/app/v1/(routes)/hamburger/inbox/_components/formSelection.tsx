@@ -137,31 +137,32 @@ export default function FormSelection({
     dependencies: [selectedFilter as unknown as SentContent], // Type assertion to bypass dependency type
   });
 
-  // Handle pull-to-refresh for sentContent
-  const handleRefresh = useCallback(async () => {
-    return resetSentContent();
-  }, [resetSentContent]);
-  // Fetch forms from the database on mount
-  useEffect(() => {
-    const fetchForms = async () => {
-      try {
-        setLoading(true);
-        const url = getApiUrl();
-        const response = await fetch(`${url}/api/v1/forms`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        const data: Form[] = await response.json();
-        setForms(data);
-      } catch (error) {
-        console.error("Error fetching forms:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch forms from the database
+  const fetchForms = useCallback(async () => {
+    try {
+      setLoading(true);
+      const url = getApiUrl();
+      const response = await fetch(`${url}/api/v1/forms`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data: Form[] = await response.json();
+      setForms(data);
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading]);
 
+  useEffect(() => {
     fetchForms();
-  }, []);
+  }, [fetchForms]);
+
+  // Handle pull-to-refresh for sentContent and forms
+  const handleRefresh = useCallback(async () => {
+    await Promise.all([resetSentContent(), fetchForms()]);
+  }, [resetSentContent, fetchForms]);
 
   const [createLoading, setCreateLoading] = useState(false);
   const setFormPage = async () => {

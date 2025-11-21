@@ -29,6 +29,9 @@ export default function RenderCheckboxField({
   // CRITICAL: Only treat actual boolean true as checked
   // This prevents string values from radio buttons being interpreted as "checked"
   const isChecked = typeof value === "boolean" ? value : false;
+  if (field.id === "signature") {
+    return null;
+  }
   return (
     <div key={field.id} className="flex flex-col">
       <div className="flex flex-row items-center gap-2">

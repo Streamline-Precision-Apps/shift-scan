@@ -126,12 +126,14 @@ export default function useSubmissionDataById(id: string) {
         setFormTemplate(data);
         if (searchTerm.length == 0) {
           setFormTemplatePage(data);
+          console.log("Data:", data);
         } else {
           const filteredData = filterFormSubmissionsBySearchTerm(
             data,
             searchTerm
           );
           setFormTemplatePage(filteredData);
+          console.log("Filtered Data:", filteredData);
         }
 
         setApprovalInbox(data.pendingForms || 0);
@@ -371,10 +373,12 @@ export default function useSubmissionDataById(id: string) {
     if (id) {
       try {
         const template = await getFormTemplate(id);
+        console.log("Export Template:", template);
         const submissions = await getFormSubmissions(id, {
           from: exportDateRange.from,
           to: exportDateRange.to,
         });
+        console.log("Export Submissions:", submissions);
 
         if (!template || !template.FormGrouping) {
           toast.error("Form template or groupings not found", {
@@ -392,22 +396,29 @@ export default function useSubmissionDataById(id: string) {
               field !== undefined && !!field.id && !!field.label
           );
 
+        // Determine if we need to include status/signature columns
+        const includeStatus = !!template?.isApprovalRequired;
+        const includeSignature = !!template?.isSignatureRequired;
+
         // Build headers: field labels, plus some submission metadata
         const headers = [
           "Submission ID",
           "Submitted By",
           "Submitted At",
           ...fields.map((field: FormField) => field.label),
+          ...(includeStatus ? ["Status"] : []),
+          ...(includeSignature ? ["Signature"] : []),
         ];
 
         // Build rows from submissions
         const rows = (submissions || []).map((submission: unknown) => {
           const typedSubmission = submission as unknown as {
             id: string;
-            User?: { firstName: string; lastName: string };
+            User?: { firstName: string; lastName: string; signature?: string };
             submittedAt?: Date;
             createdAt: Date;
             data?: Record<string, unknown>;
+            status?: string;
           };
 
           const user = typedSubmission.User
@@ -415,10 +426,10 @@ export default function useSubmissionDataById(id: string) {
             : "";
           const submittedAt =
             (typedSubmission.submittedAt &&
-              format(typedSubmission.submittedAt, "yyyy-MM-dd")) ||
-            format(typedSubmission.createdAt, "yyyy-MM-dd") ||
+              format(typedSubmission.submittedAt, "MM/dd/yyyy")) ||
+            format(typedSubmission.createdAt, "MM/dd/yyyy") ||
             "";
-          return [
+          const row = [
             typedSubmission.id,
             user,
             submittedAt,
@@ -438,6 +449,7 @@ export default function useSubmissionDataById(id: string) {
                     .filter(Boolean)
                     .join(", ");
                 }
+
                 if (typeof value === "object" && value !== null) {
                   const person = value as { name?: string };
                   return person.name || "";
@@ -460,6 +472,27 @@ export default function useSubmissionDataById(id: string) {
                 }
                 return "";
               }
+              if (field.type === "TIME") {
+                if (typeof value === "string" || value instanceof Date) {
+                  const dateObj =
+                    typeof value === "string" ? new Date(value) : value;
+                  if (!isNaN(dateObj.getTime())) {
+                    return format(dateObj, "h:mm a");
+                  }
+                }
+                return "";
+              }
+              if (field.type === "DATE") {
+                if (typeof value === "string" || value instanceof Date) {
+                  const dateObj =
+                    typeof value === "string" ? new Date(value) : value;
+                  if (!isNaN(dateObj.getTime())) {
+                    return format(dateObj, "MM/dd/yyyy");
+                  }
+                }
+                return "";
+              }
+
               // Default: handle objects/arrays as before
               if (typeof value === "object" && value !== null) {
                 if (Array.isArray(value)) {
@@ -470,6 +503,17 @@ export default function useSubmissionDataById(id: string) {
               return value;
             }),
           ];
+          if (includeStatus) {
+            row.push(typedSubmission.status || "");
+          }
+          if (includeSignature) {
+            const data = typedSubmission.data as
+              | Record<string, unknown>
+              | undefined;
+            const hasSignature = data?.signature || data?.Signature;
+            row.push(hasSignature ? "Signed" : "Not Signed");
+          }
+          return row;
         });
 
         const exportData = [headers, ...rows];
@@ -529,7 +573,7 @@ export default function useSubmissionDataById(id: string) {
       toast.error("User not authenticated", { duration: 3000 });
       return;
     }
-    formData.append("comment", "Approved on Dashboard using Quick Approval"); // Example comment
+    formData.append("comment", "Approved by Admin"); // Example comment
     formData.append("adminUserId", ApproverId || ""); // Append the ApproverId from session
 
     const { success } = await ApproveFormSubmission(id, action, formData);
