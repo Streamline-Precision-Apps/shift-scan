@@ -1,7 +1,9 @@
 "use client";
 import { SingleCombobox } from "@/app/v1/components/ui/single-combobox";
+import { MobileSingleCombobox } from "@/app/v1/components/ui/mobile-combobox";
 import { Label } from "@/app/v1/components/ui/label";
 import type { ComboboxOption } from "@/app/v1/components/ui/single-combobox";
+import { X } from "lucide-react";
 export interface Fields {
   id: string;
   formGroupingId: string;
@@ -83,10 +85,7 @@ export default function RenderSearchPersonField({
       ? [formData[field.id] as Person]
       : [];
 
-    // Filter out already selected people from userOptions
-    const filteredUserOptions = userOptions.filter(
-      (option) => !selectedPeople.some((p: Person) => p.id === option.value)
-    );
+    // No need to filter out already selected people, MobileSingleCombobox handles selection state
 
     const showError = field.required && selectedPeople.length === 0;
 
@@ -100,50 +99,67 @@ export default function RenderSearchPersonField({
           {field.label}{" "}
           {field.required && <span className="text-red-500">*</span>}
         </Label>
-
-        {/* Combobox for selecting people */}
-        <SingleCombobox
-          options={filteredUserOptions}
-          value={""}
-          onChange={(val, option) => {
-            if (option) {
-              // Check if person is already selected
-              const isSelected = selectedPeople.some(
-                (p: Person) => p.id === option.value
-              );
-
-              if (!isSelected) {
-                const newPerson = {
-                  id: option.value,
-                  name: option.label,
-                };
-
-                const updatedPeople = [...selectedPeople, newPerson];
-                handleFieldChange(field.id, updatedPeople);
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={userOptions}
+            value={selectedPeople.map((p) => p.id)}
+            multiple={true}
+            onChange={(
+              val: string | string[],
+              option?: ComboboxOption | ComboboxOption[]
+            ) => {
+              const selectedIds = Array.isArray(val) ? val : val ? [val] : [];
+              const updatedPeople = selectedIds
+                .map((id) => {
+                  const found = userOptions.find((o) => o.value === id);
+                  return found ? { id: found.value, name: found.label } : null;
+                })
+                .filter(Boolean) as Person[];
+              handleFieldChange(field.id, updatedPeople);
+            }}
+            placeholder="Select people..."
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        ) : (
+          <SingleCombobox
+            options={userOptions}
+            value={""}
+            onChange={(val, option) => {
+              if (option) {
+                // Check if person is already selected
+                const isSelected = selectedPeople.some(
+                  (p: Person) => p.id === option.value
+                );
+                if (!isSelected) {
+                  const newPerson = {
+                    id: option.value,
+                    name: option.label,
+                  };
+                  const updatedPeople = [...selectedPeople, newPerson];
+                  handleFieldChange(field.id, updatedPeople);
+                }
               }
-            }
-          }}
-          placeholder="Select people..."
-          filterKeys={["value", "label"]}
-          disabled={disabled}
-        />
+            }}
+            placeholder="Select people..."
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        )}
         {/* Display selected people as tags */}
         {selectedPeople.length > 0 && (
           <div className="max-w-md flex flex-wrap gap-2 mt-3 mb-2">
-            {" "}
-            {/* Increased gap and margin */}
             {selectedPeople.map((person: Person, idx: number) => (
               <div
                 key={person.id || `person-${idx}`}
-                className="bg-green-100 text-green-800 text-xl px-3 py-2 rounded-lg flex items-center gap-2"
-                /* Increased padding, rounded-lg, and gap */
+                className={`${
+                  useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+                }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
               >
-                <span className="text-lg font-medium">{person.name}</span>{" "}
-                {/* Larger and bolder text */}
+                <span className=" font-medium">{person.name}</span>
                 <button
                   type="button"
                   className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
-                  /* Larger X, bold, and better vertical alignment */
                   onClick={() => {
                     const updatedPeople = selectedPeople.filter(
                       (_: Person, i: number) => i !== idx
@@ -153,9 +169,9 @@ export default function RenderSearchPersonField({
                       updatedPeople.length ? updatedPeople : null
                     );
                   }}
-                  aria-label={`Remove ${person.name}`} /* Accessibility improvement */
+                  aria-label={`Remove ${person.name}`}
                 >
-                  ×
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
@@ -170,6 +186,7 @@ export default function RenderSearchPersonField({
   } else {
     const showError = error && touchedFields[field.id];
     const selectedPerson = formData[field.id] as Person | undefined;
+    const displayValue = selectedPerson?.id || "";
 
     return (
       <div
@@ -181,27 +198,54 @@ export default function RenderSearchPersonField({
           {field.label}{" "}
           {field.required && <span className="text-red-500">*</span>}
         </Label>
-        <SingleCombobox
-          options={userOptions}
-          value={selectedPerson?.id || ""}
-          onChange={(val, option) => {
-            if (option) {
-              // Store the selected value in formData instead of a separate asset state
-              handleFieldChange(field.id, {
-                id: option.value,
-                name: option.label,
-              });
-            } else {
-              handleFieldChange(field.id, null);
-            }
-          }}
-          disabled={disabled}
-        />
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={userOptions}
+            value={displayValue}
+            onChange={(
+              val: string | string[],
+              option?: ComboboxOption | ComboboxOption[]
+            ) => {
+              const id = Array.isArray(val) ? val[0] : val;
+              if (option && !Array.isArray(option)) {
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+            placeholder="Select person..."
+            filterKeys={["value", "label"]}
+          />
+        ) : (
+          <SingleCombobox
+            options={userOptions}
+            value={displayValue}
+            onChange={(val, option) => {
+              if (option) {
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+          />
+        )}
         {/* Display selected person as tag */}
         {selectedPerson && (
           <div className="flex flex-wrap gap-2 mt-3 mb-2">
-            <div className="bg-green-100 text-green-800 text-lg px-3 py-2 rounded-lg flex items-center gap-2">
-              <span className="text-lg font-medium">{selectedPerson.name}</span>
+            <div
+              className={`${
+                useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+              }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
+            >
+              <span className=" font-medium">{selectedPerson.name}</span>
               <button
                 type="button"
                 className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
@@ -210,7 +254,7 @@ export default function RenderSearchPersonField({
                 }}
                 aria-label={`Remove ${selectedPerson.name}`}
               >
-                ×
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>

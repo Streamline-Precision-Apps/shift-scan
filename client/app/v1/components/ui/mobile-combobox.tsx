@@ -176,20 +176,27 @@ export function MobileSingleCombobox({
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      if (multiple) {
+                        setSearch("");
+                        inputRef.current?.focus();
+                      } else {
+                        setOpen(false);
+                      }
+                    }}
                   >
                     <XIcon />
                   </Button>
                 </div>
                 <div
-                  className={`bg-gray-200  rounded-md rounded-t-none overflow-auto  h-[calc(96vh-72px)] relative`}
+                  className={`bg-white rounded-md rounded-t-none overflow-auto  h-[calc(96vh-72px)] relative`}
                 >
                   {filteredOptions.length === 0 && (
                     <div className="text-sm text-muted-foreground p-2">
                       No options found.
                     </div>
                   )}
-                  <ul className="flex flex-col gap-1 pb-96 ">
+                  <ul className="flex flex-col  gap-1 pb-96 p-2 bg-gray-200  ">
                     {filteredOptions.map((option) => (
                       <li key={option.value}>
                         {multiple ? (
@@ -214,7 +221,7 @@ export function MobileSingleCombobox({
                           </label>
                         ) : (
                           <button
-                            className={`w-full text-left rounded p-3 bg-white border hover:bg-muted-foreground/10`}
+                            className={`w-full text-left rounded p-3 bg-white border border-slate-200`}
                             onClick={() => {
                               onChange(option.value, option);
                               setOpen(false);

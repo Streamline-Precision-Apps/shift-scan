@@ -33,6 +33,7 @@ export default function RenderCheckboxField({
     <div key={field.id} className="flex flex-col">
       <div className="flex flex-row items-center gap-2">
         <Checkbox
+          color="green"
           checked={isChecked}
           onCheckedChange={(checked) => {
             handleFieldChange(field.id, checked);

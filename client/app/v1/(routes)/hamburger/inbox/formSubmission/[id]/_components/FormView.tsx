@@ -132,10 +132,18 @@ export function FormView({
 }: FormViewProps) {
   const { template, values, updateValue, loading, error, submission } =
     useFormContext();
-  const [userOptions, setUserOptions] = useState<{ value: string; label: string }[]>([]);
-  const [equipmentOptions, setEquipmentOptions] = useState<{ value: string; label: string }[]>([]);
-  const [jobsiteOptions, setJobsiteOptions] = useState<{ value: string; label: string }[]>([]);
-  const [costCodeOptions, setCostCodeOptions] = useState<{ value: string; label: string }[]>([]);
+  const [userOptions, setUserOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [equipmentOptions, setEquipmentOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [jobsiteOptions, setJobsiteOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [costCodeOptions, setCostCodeOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
   const { costCodes } = useCostCodeStore();
   const { jobsites } = useProfitStore();
@@ -175,7 +183,9 @@ export function FormView({
     const fetchUsers = async (): Promise<void> => {
       try {
         const employeesRes = await apiRequest(`/api/v1/user/all`, "GET");
-        const employees = Array.isArray(employeesRes.data) ? employeesRes.data : [];
+        const employees = Array.isArray(employeesRes.data)
+          ? employeesRes.data
+          : [];
         if (Array.isArray(employees)) {
           const options = employees.map((user: any) => ({
             value: user.id,
@@ -253,7 +263,7 @@ export function FormView({
         costCodeOptions={costCodeOptions}
         readOnly={readOnly || disabled}
         disabled={disabled}
-        useNativeInput={useNativeInput}
+        useNativeInput={true}
         hideSubmittedBy={true}
       />
       {/* Additional content (signatures, approvals, etc) */}

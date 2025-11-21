@@ -5,6 +5,7 @@ import {
 } from "@/app/v1/components/ui/single-combobox";
 import { MobileSingleCombobox } from "@/app/v1/components/ui/mobile-combobox";
 import { Label } from "@/app/v1/components/ui/label";
+import { X } from "lucide-react";
 export interface Fields {
   id: string;
   formGroupingId: string;
@@ -187,9 +188,11 @@ export default function RenderSearchAssetField({
             {selectedAssets.map((asset: Asset, idx: number) => (
               <div
                 key={asset.id || `asset-${idx}`}
-                className="bg-green-100 text-green-800 text-xl px-3 py-2 rounded-lg flex items-center gap-2"
+                className={`${
+                  useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+                }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
               >
-                <span className="text-lg font-medium">{asset.name}</span>
+                <span className="font-medium">{asset.name}</span>
                 <button
                   type="button"
                   className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
@@ -204,7 +207,7 @@ export default function RenderSearchAssetField({
                   }}
                   aria-label={`Remove ${asset.name}`}
                 >
-                  ×
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
@@ -280,8 +283,12 @@ export default function RenderSearchAssetField({
         {/* Display selected asset as tag */}
         {currentValue && (
           <div className="flex flex-wrap gap-2 mt-3 mb-2">
-            <div className="bg-green-100 text-green-800 text-lg px-3 py-2 rounded-lg flex items-center gap-2">
-              <span className="text-lg font-medium">{currentValue.name}</span>
+            <div
+              className={`${
+                useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+              }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
+            >
+              <span className=" font-medium">{currentValue.name}</span>
               <button
                 type="button"
                 className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
@@ -290,7 +297,7 @@ export default function RenderSearchAssetField({
                 }}
                 aria-label={`Remove ${currentValue.name}`}
               >
-                ×
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>

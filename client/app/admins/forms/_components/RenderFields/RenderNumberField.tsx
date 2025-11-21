@@ -25,6 +25,27 @@ export default function RenderNumberField({
   disabled?: boolean;
   useNativeInput?: boolean;
 }) {
+  // Only allow numbers (including decimals) in the input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    // Remove all non-numeric characters except dot and minus
+    val = val.replace(/[^0-9.-]/g, "");
+    // Prevent multiple dots or minus signs
+    if ((val.match(/\./g) || []).length > 1) {
+      val = val.replace(/\.(?=.*\.)/g, "");
+    }
+    if ((val.match(/-/g) || []).length > 1) {
+      val = val.replace(/-(?=.*-)/g, "");
+    }
+    handleFieldChange(field.id, val);
+  };
+
+  // Show error if value is not a valid number
+  const isInvalidNumber =
+    value !== null && value !== "" && isNaN(Number(value));
+  const showError = (touchedFields[field.id] && error) || isInvalidNumber;
+  const errorMessage = isInvalidNumber ? "Please enter a valid number." : error;
+
   return (
     <div key={field.id} className="flex flex-col">
       <Label className="text-sm font-medium mb-1">
@@ -32,18 +53,19 @@ export default function RenderNumberField({
         {field.required && <span className="text-red-500">*</span>}
       </Label>
       <Input
-        type="number"
+        type="text"
+        inputMode="decimal"
+        pattern="[0-9]*"
         className={`border rounded px-2 py-1 ${
-          touchedFields[field.id] && error ? "border-red-500" : ""
+          showError ? "border-red-500" : ""
         }`}
         value={value !== null ? value : ""}
-        onChange={(e) => handleFieldChange(field.id, e.target.value)}
+        onChange={handleInputChange}
         onBlur={() => handleFieldTouch(field.id)}
         disabled={disabled}
+        autoComplete="off"
       />
-      {touchedFields[field.id] && error && (
-        <p className="text-xs text-red-500 mt-1">{error}</p>
-      )}
+      {showError && <p className="text-xs text-red-500 mt-1">{errorMessage}</p>}
     </div>
   );
 }

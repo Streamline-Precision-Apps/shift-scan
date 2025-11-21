@@ -109,7 +109,7 @@ export default function RenderMultiselectField({
       ) : (
         // Custom checkbox multiselect with improved UI
         <div
-          className={`border-2 rounded-lg p-4 bg-slate-50 transition-colors ${
+          className={`border-2 rounded-lg p-4 bg-gray-50 transition-colors ${
             error ? "border-red-500 bg-red-50" : "border-slate-200"
           } ${disabled ? "bg-slate-100 opacity-50" : ""}`}
         >
@@ -123,10 +123,11 @@ export default function RenderMultiselectField({
               options.map((opt) => (
                 <label
                   key={opt.id}
-                  className="flex items-center gap-3 cursor-pointer select-none hover:bg-white rounded px-2 py-1 transition-colors"
+                  className="flex items-center gap-3 cursor-pointer select-none  rounded px-2  transition-colors"
                 >
-                  <div className="w-6 h-6 flex items-center justify-center">
+                  <div className="w-4 h-4 flex items-center justify-center">
                     <Checkbox
+                      color="green"
                       checked={arrayValue.includes(opt.value)}
                       onCheckedChange={(checked) => {
                         const updatedValue = checked
@@ -136,7 +137,7 @@ export default function RenderMultiselectField({
                       }}
                       id={`${field.id}-${opt.id}`}
                       disabled={disabled}
-                      className="size-5 data-[state=checked]:bg-sky-600 data-[state=checked]:border-sky-600 data-[state=checked]:text-white"
+                      className="size-5"
                     />
                   </div>
                   <span
