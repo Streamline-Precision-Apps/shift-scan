@@ -220,7 +220,10 @@ export async function getFormSubmissionByTemplateId(
   dateRangeEnd: string | null
 ) {
   // Helper to parse 'YYYY-MM-DD' as local date
-  function parseLocalDateString(dateStr: string): Date | undefined {
+  function parseUTCDateString(
+    dateStr: string,
+    endOfDay = false
+  ): Date | undefined {
     const [yearStr, monthStr, dayStr] = dateStr.split("-");
     const year = Number(yearStr);
     const month = Number(monthStr);
@@ -235,25 +238,29 @@ export async function getFormSubmissionByTemplateId(
     ) {
       return undefined;
     }
-    return new Date(year, month - 1, day);
+    if (endOfDay) {
+      // 23:59:59.999 UTC
+      return new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+    } else {
+      // 00:00:00.000 UTC
+      return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    }
   }
 
   let normalizedStart: Date | undefined = undefined;
   let normalizedEnd: Date | undefined = undefined;
   if (dateRangeStart) {
-    const start = parseLocalDateString(dateRangeStart);
+    const start = parseUTCDateString(dateRangeStart, false);
     if (start) {
-      start.setHours(0, 0, 0, 0);
       normalizedStart = start;
-      console.log("Normalized Start Date:", normalizedStart);
+      console.log("Normalized Start Date (UTC):", normalizedStart);
     }
   }
   if (dateRangeEnd) {
-    const end = parseLocalDateString(dateRangeEnd);
+    const end = parseUTCDateString(dateRangeEnd, true);
     if (end) {
-      end.setHours(23, 59, 59, 999);
       normalizedEnd = end;
-      console.log("Normalized End Date:", normalizedEnd);
+      console.log("Normalized End Date (UTC):", normalizedEnd);
     }
   }
   // If pendingOnly or searching, do not paginate (return all matching submissions)
