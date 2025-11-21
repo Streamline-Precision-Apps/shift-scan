@@ -1,7 +1,7 @@
 import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
 import { BackgroundGeolocation } from "@capgo/background-geolocation";
-import { getApiUrl } from "../utils/api-Utils";
+import { apiRequest, getApiUrl } from "../utils/api-Utils";
 
 export interface LocationLog {
   userId: string;
@@ -39,7 +39,7 @@ let currentSessionId: number | null = null;
 let lastFirestoreWriteTime: number = 0;
 // WRITE_INTERVAL_MS: how often we actually POST location to your backend.
 // Set to 5 minutes to prevent excessive API calls during continuous tracking.
-const WRITE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+const WRITE_INTERVAL_MS = 1 * 60 * 1000; // 1 minute for testing was 5 mins
 
 // Track if a location send is currently in flight to prevent concurrent sends
 let locationSendInProgress = false;
@@ -62,7 +62,6 @@ const MAX_BACKOFF_MS = 30 * 1000; // 30s cap
 type QueuedRequest = {
   id: string; // unique id for the queued item
   url: string;
-  options: RequestInit;
   attempts: number;
   createdAt: number;
 };
@@ -91,7 +90,6 @@ function enqueueRequest(req: Omit<QueuedRequest, "id" | "createdAt">) {
   const item: QueuedRequest = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     url: req.url,
-    options: req.options,
     attempts: req.attempts,
     createdAt: Date.now(),
   };
@@ -131,19 +129,21 @@ function getBackoffDelay(attempt: number) {
  */
 async function sendLocation(
   url: string,
-  payload: unknown,
+  payload: {
+    userId: string;
+    sessionId: number;
+    coords: {
+      lat: number;
+      lng: number;
+      accuracy?: number;
+      speed?: number | null;
+      heading?: number | null;
+    } | null;
+  },
   attempts = 0
 ): Promise<{ success: boolean; enqueued?: boolean }> {
-  const options: RequestInit = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  };
-
   try {
-    const res = await fetch(url, options);
+    const res = await apiRequest(url, "POST", payload);
     if (!res.ok) {
       // Treat non-2xx as error so we can retry / enqueue
       throw new Error(`Non-OK response: ${res.status}`);
@@ -177,7 +177,7 @@ async function sendLocation(
     try {
       enqueueRequest({
         url,
-        options,
+
         attempts: attempts,
       });
       console.info("Enqueued location request for later delivery");
@@ -209,7 +209,7 @@ export async function processLocationQueue() {
     }
 
     try {
-      const res = await fetch(item.url, item.options);
+      const res = await apiRequest(item.url, "POST");
       if (res.ok) {
         removeQueuedRequestById(item.id);
         console.info("Flushed queued location item:", item.id);
@@ -402,9 +402,8 @@ async function startForegroundLocationWatch() {
             },
           };
 
-          const url = getApiUrl();
           // Keep your endpoint exactly as it was
-          await sendLocation(`${url}/api/location?clockType=clockIn`, payload);
+          await sendLocation(`/api/location?clockType=clockIn`, payload);
 
           lastFirestoreWriteTime = currentTime;
           console.debug("Foreground location sent successfully");
@@ -537,8 +536,7 @@ export async function startBackgroundLocationWatch() {
             },
           };
 
-          const url = getApiUrl();
-          await sendLocation(`${url}/api/location?clockType=clockIn`, payload);
+          await sendLocation(`/api/location?clockType=clockIn`, payload);
 
           lastFirestoreWriteTime = currentTime;
           console.debug("Background location sent successfully");
@@ -640,14 +638,10 @@ export async function stopClockOutTracking() {
       const url = getApiUrl();
       try {
         // Keep your endpoint exactly as you used previously
-        await sendLocation(`${url}/api/location?clockType=clockOut`, {
+        await sendLocation(`/api/location?clockType=clockOut`, {
           userId: currentUserId,
           sessionId: currentSessionId,
           coords: null,
-          device: {
-            platform:
-              typeof navigator !== "undefined" ? navigator.userAgent : null,
-          },
         });
       } catch (err) {
         console.warn(
@@ -766,9 +760,13 @@ export async function getStoredCoordinates(): Promise<{
 //=============================================================================
 
 export async function fetchLatestUserLocation(userId: string) {
-  const res = await fetch(`/api/location/${userId}`);
-  if (!res.ok) return null;
-  return await res.json();
+  try {
+    const data = await apiRequest(`/api/location/${userId}`, "GET");
+    return data;
+  } catch (err) {
+    console.warn("Failed to fetch latest user location:", err);
+    return null;
+  }
 }
 
 export function getLastKnownCoordinates() {

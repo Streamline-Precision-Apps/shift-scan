@@ -1,6 +1,6 @@
 "use client";
 import { SingleCombobox } from "@/app/v1/components/ui/single-combobox";
-import { MobileSingleCombobox } from "@/app/v1/components/ui/mobile-combobox";
+import { MobileSingleCombobox } from "@/app/v1/components/ui/mobileFormCombobox";
 import { Label } from "@/app/v1/components/ui/label";
 import type { ComboboxOption } from "@/app/v1/components/ui/single-combobox";
 import { X } from "lucide-react";

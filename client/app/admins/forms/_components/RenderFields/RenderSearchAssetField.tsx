@@ -3,7 +3,7 @@ import {
   ComboboxOption,
   SingleCombobox,
 } from "@/app/v1/components/ui/single-combobox";
-import { MobileSingleCombobox } from "@/app/v1/components/ui/mobile-combobox";
+import { MobileSingleCombobox } from "@/app/v1/components/ui/mobileFormCombobox";
 import { Label } from "@/app/v1/components/ui/label";
 import { X } from "lucide-react";
 export interface Fields {
@@ -132,9 +132,7 @@ export default function RenderSearchAssetField({
             multiple={true}
             onChange={(
               val: string | string[],
-              option?:
-                | import("@/app/v1/components/ui/mobile-combobox").ComboboxOption
-                | import("@/app/v1/components/ui/mobile-combobox").ComboboxOption[]
+              option?: ComboboxOption | ComboboxOption[]
             ) => {
               const selectedIds = Array.isArray(val) ? val : val ? [val] : [];
               const updatedAssets = selectedIds
