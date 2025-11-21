@@ -30,6 +30,7 @@ import {
 } from "@/app/lib/actions/adminActions";
 import Spinner from "@/app/v1/components/(animations)/spinner";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
+import { PanelCenterMobilePreview } from "./components/panels/PannelCenterMobilePreview";
 
 export default function FormBuilder({
   onCancel,
@@ -53,6 +54,7 @@ export default function FormBuilder({
     isApprovalRequired: false,
     FormGrouping: [],
   });
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
 
   const [popoverOpenFieldId, setPopoverOpenFieldId] = useState<string | null>(
     null
@@ -91,18 +93,26 @@ export default function FormBuilder({
           );
           console.log("Fetched form data:", data);
 
-          // Map the response data to the form state
-          const formGrouping = data.FormGrouping.map((group: FormGrouping) => ({
-            ...group,
-            Fields: group.Fields.map((field: FormField) => ({
-              ...field,
-              Options: field.Options || [],
-            })),
-          }));
+          // Map and order the response data to the form state
+          // 1. Sort FormGrouping (sections) by their 'order' property
+          const formGrouping = [...data.FormGrouping]
+            .map((group: FormGrouping) => ({
+              ...group,
+              Fields: [...group.Fields]
+                .map((field: FormField) => ({
+                  ...field,
+                  Options: field.Options || [],
+                }))
+                .sort((a, b) => a.order - b.order),
+            }))
+            .sort((a, b) => a.order - b.order);
 
-          setFormFields(
-            formGrouping.flatMap((group: FormGrouping) => group.Fields)
-          );
+          // 2. Flatten fields in section order, then by field order, then sort by field order
+          const orderedFields = formGrouping
+            .flatMap((group: FormGrouping) => group.Fields)
+            .sort((a, b) => a.order - b.order);
+
+          setFormFields(orderedFields);
           setFormSections(formGrouping);
           setFormSettings({
             id: data.id,
@@ -374,6 +384,7 @@ export default function FormBuilder({
           formFields={formFields}
           formSettings={formSettings}
           updateFormSettings={updateFormSettings}
+          setShowMobilePreview={setShowMobilePreview}
         />
 
         {/* Center Panel */}
@@ -383,80 +394,93 @@ export default function FormBuilder({
             {formFields.length === 0 ? (
               <PanelCenterPlaceholder loading={loading} addField={addField} />
             ) : (
-              <div className="w-full h-full pb-[500px]">
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext items={formFields.map((field) => field.id)}>
-                    <div className="w-full px-4 pt-3 rounded-lg">
-                      <div className="space-y-4">
-                        {formFields.map((field) => (
-                          <FormFieldComponent
-                            key={field.id}
-                            field={field}
-                            editingFieldId={editingFieldId}
-                            updateField={updateField}
-                            removeField={removeField}
-                            popoverOpenFieldId={popoverOpenFieldId}
-                            setPopoverOpenFieldId={setPopoverOpenFieldId}
-                            advancedOptionsOpen={advancedOptionsOpen}
-                            setAdvancedOptionsOpen={setAdvancedOptionsOpen}
-                            validationErrors={validationErrors}
-                            setValidationErrors={setValidationErrors}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </SortableContext>
-                </DndContext>
+              <>
+                {showMobilePreview ? (
+                  <PanelCenterMobilePreview
+                    loading={loading}
+                    addField={addField}
+                    formSettings={formSettings}
+                  />
+                ) : (
+                  <div className="w-full h-full pb-[500px]">
+                    <DndContext
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <SortableContext
+                        items={formFields.map((field) => field.id)}
+                      >
+                        <div className="w-full px-4 pt-3 rounded-lg">
+                          <div className="space-y-4">
+                            {formFields.map((field) => (
+                              <FormFieldComponent
+                                key={field.id}
+                                field={field}
+                                editingFieldId={editingFieldId}
+                                updateField={updateField}
+                                removeField={removeField}
+                                popoverOpenFieldId={popoverOpenFieldId}
+                                setPopoverOpenFieldId={setPopoverOpenFieldId}
+                                advancedOptionsOpen={advancedOptionsOpen}
+                                setAdvancedOptionsOpen={setAdvancedOptionsOpen}
+                                validationErrors={validationErrors}
+                                setValidationErrors={setValidationErrors}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </SortableContext>
+                    </DndContext>
 
-                {/* Additional UI for approval and signature requirements */}
-                {formSettings && formSettings.isApprovalRequired && (
-                  <div className="w-full flex flex-col px-4 mt-2">
-                    <div className="bg-white border-slate-200 border rounded-md flex flex-row items-center gap-2 px-4 py-2">
-                      <div className="flex items-center w-8 h-8 rounded-lg bg-sky-300 justify-center">
-                        <img
-                          src="/team.svg"
-                          alt="Signature"
-                          className="w-4 h-4"
-                        />
+                    {/* Additional UI for approval and signature requirements */}
+                    {formSettings && formSettings.isApprovalRequired && (
+                      <div className="w-full flex flex-col px-4 mt-2">
+                        <div className="bg-white border-slate-200 border rounded-md flex flex-row items-center gap-2 px-4 py-2">
+                          <div className="flex items-center w-8 h-8 rounded-lg bg-sky-300 justify-center">
+                            <img
+                              src="/team.svg"
+                              alt="Signature"
+                              className="w-4 h-4"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">
+                              Submission Requires Approval
+                            </p>
+                            <p className="text-xs">
+                              Form must be reviewed and approved before
+                              completion.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold">
-                          Submission Requires Approval
-                        </p>
-                        <p className="text-xs">
-                          Form must be reviewed and approved before completion.
-                        </p>
+                    )}
+
+                    {formSettings && formSettings.requireSignature && (
+                      <div className="w-full flex flex-col px-4 mt-2">
+                        <div className="bg-white border-slate-200 border rounded-md flex flex-row items-center gap-2 px-4 py-2">
+                          <div className="flex items-center w-8 h-8 rounded-lg bg-lime-300 justify-center">
+                            <img
+                              src="/formEdit.svg"
+                              alt="Signature"
+                              className="w-4 h-4"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">
+                              Requires Digital Signature
+                            </p>
+                            <p className="text-xs">
+                              A digital signature is needed to complete the
+                              submission.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
-
-                {formSettings && formSettings.requireSignature && (
-                  <div className="w-full flex flex-col px-4 mt-2">
-                    <div className="bg-white border-slate-200 border rounded-md flex flex-row items-center gap-2 px-4 py-2">
-                      <div className="flex items-center w-8 h-8 rounded-lg bg-lime-300 justify-center">
-                        <img
-                          src="/formEdit.svg"
-                          alt="Signature"
-                          className="w-4 h-4"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">
-                          Requires Digital Signature
-                        </p>
-                        <p className="text-xs">
-                          A digital signature is needed to complete the
-                          submission.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              </>
             )}
           </ScrollArea>
         </div>
