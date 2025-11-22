@@ -35,8 +35,6 @@ let currentUserId: string | null = null;
 // Store the current session ID for use in callbacks
 let currentSessionId: number | null = null;
 
-// add a variable to track the last time a write to FireStore occurred
-let lastFirestoreWriteTime: number = 0;
 // WRITE_INTERVAL_MS: how often we actually POST location to your backend.
 // Set to 5 minutes to prevent excessive API calls during continuous tracking.
 const WRITE_INTERVAL_MS = 1 * 60 * 1000; // 1 minute for testing was 5 mins
@@ -56,77 +54,9 @@ const BASE_BACKOFF_MS = 1000; // 1 second base
 const MAX_BACKOFF_MS = 30 * 1000; // 30s cap
 
 //=============================================================================
-// UTIL: Queue persistence for failed requests (localStorage-based)
+// SEND LOCATION - Only call the function directly, no queue or retry logic
 //=============================================================================
 
-type QueuedRequest = {
-  id: string; // unique id for the queued item
-  url: string;
-  attempts: number;
-  createdAt: number;
-};
-
-function readQueue(): QueuedRequest[] {
-  try {
-    const raw = localStorage.getItem(LOCATION_QUEUE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as QueuedRequest[];
-  } catch (err) {
-    console.warn("Failed to read location queue:", err);
-    return [];
-  }
-}
-
-function writeQueue(queue: QueuedRequest[]) {
-  try {
-    localStorage.setItem(LOCATION_QUEUE_KEY, JSON.stringify(queue));
-  } catch (err) {
-    console.warn("Failed to write location queue:", err);
-  }
-}
-
-function enqueueRequest(req: Omit<QueuedRequest, "id" | "createdAt">) {
-  const queue = readQueue();
-  const item: QueuedRequest = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-    url: req.url,
-    attempts: req.attempts,
-    createdAt: Date.now(),
-  };
-  queue.push(item);
-  writeQueue(queue);
-  return item.id;
-}
-
-function removeQueuedRequestById(id: string) {
-  const queue = readQueue();
-  const filtered = queue.filter((q) => q.id !== id);
-  writeQueue(filtered);
-}
-
-//=============================================================================
-// EXPONENTIAL BACKOFF + SEND HELPER
-//=============================================================================
-
-async function sleep(ms: number) {
-  return new Promise((res) => setTimeout(res, ms));
-}
-
-function getBackoffDelay(attempt: number) {
-  // exponential backoff with jitter
-  const exp = Math.min(BASE_BACKOFF_MS * 2 ** (attempt - 1), MAX_BACKOFF_MS);
-  const jitter = Math.random() * 300; // 0-300ms jitter
-  return exp + jitter;
-}
-
-/**
- * sendLocation - tries to POST the location to the same API endpoint you had,
- * uses retries with exponential backoff, and if all fails it enqueues the request
- * to localStorage for later retries.
- *
- * @param url - the full url (already including query string)
- * @param payload - LocationLog or clockOut payload
- */
 async function sendLocation(
   url: string,
   payload: {
@@ -139,112 +69,23 @@ async function sendLocation(
       speed?: number | null;
       heading?: number | null;
     } | null;
-  },
-  attempts = 0
-): Promise<{ success: boolean; enqueued?: boolean }> {
+  }
+): Promise<{ success: boolean }> {
   try {
     const res = await apiRequest(url, "POST", payload);
     if (!res.ok) {
-      // Treat non-2xx as error so we can retry / enqueue
-      throw new Error(`Non-OK response: ${res.status}`);
-    }
-
-    // Successfully sent - try to process any queued items afterwards
-    if (
-      typeof window !== "undefined" &&
-      "navigator" in window &&
-      navigator.onLine
-    ) {
-      // best-effort flush
-      processLocationQueue().catch((e) =>
-        console.warn("processLocationQueue failed after send:", e)
+      console.warn(
+        "sendLocation: API request failed",
+        res.status,
+        res.statusText
       );
+      return { success: false };
     }
-
     return { success: true };
   } catch (err) {
-    console.warn("sendLocation failed attempt", attempts, err);
-
-    // If we've already tried less than MAX_RETRY_ATTEMPTS, retry with backoff
-    if (attempts < MAX_RETRY_ATTEMPTS) {
-      const nextAttempt = attempts + 1;
-      const delay = getBackoffDelay(nextAttempt);
-      await sleep(delay);
-      return sendLocation(url, payload, nextAttempt);
-    }
-
-    // Exhausted retries -> enqueue for later processing
-    try {
-      enqueueRequest({
-        url,
-
-        attempts: attempts,
-      });
-      console.info("Enqueued location request for later delivery");
-      return { success: false, enqueued: true };
-    } catch (enqueueErr) {
-      console.error("Failed to enqueue location request:", enqueueErr);
-      return { success: false, enqueued: false };
-    }
+    console.warn("sendLocation: error sending location", err);
+    return { success: false };
   }
-}
-
-//=============================================================================
-// PROCESS QUEUE
-//=============================================================================
-
-export async function processLocationQueue() {
-  // Only run in environments with localStorage and fetch
-  if (typeof localStorage === "undefined") return;
-
-  let queue = readQueue();
-  if (!queue.length) return;
-
-  // iterate over a copy to allow mutation
-  for (const item of [...queue]) {
-    // If navigator exists and offline, stop trying
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
-      console.info("Offline - stopping queue processing");
-      return;
-    }
-
-    try {
-      const res = await apiRequest(item.url, "POST");
-      if (res.ok) {
-        removeQueuedRequestById(item.id);
-        console.info("Flushed queued location item:", item.id);
-      } else {
-        // Increase attempts and update queue item
-        const q = readQueue();
-        const idx = q.findIndex((qq) => qq.id === item.id);
-        if (idx >= 0) {
-          q[idx].attempts = (q[idx].attempts || 0) + 1;
-          writeQueue(q);
-        }
-        console.warn(
-          "Queued item failed to send (non-OK). Will retry later:",
-          item.id,
-          res.status
-        );
-      }
-    } catch (err) {
-      console.warn(
-        "Error flushing queued location item, will retry later:",
-        err
-      );
-      // If fetch throws (network), stop processing and wait for next online event
-      return;
-    }
-  }
-}
-
-// Auto flush when we come back online (browser only)
-if (typeof window !== "undefined" && typeof navigator !== "undefined") {
-  window.addEventListener("online", () => {
-    processLocationQueue().catch((e) =>
-      console.warn("processLocationQueue (online) failed:", e)
-    );
-  });
 }
 
 //=============================================================================
@@ -353,15 +194,6 @@ async function startForegroundLocationWatch() {
         }
 
         const currentTime = Date.now();
-        // Throttle writes - only send every WRITE_INTERVAL_MS
-        if (currentTime - lastFirestoreWriteTime < WRITE_INTERVAL_MS) {
-          console.debug(
-            `Throttling foreground location (${
-              currentTime - lastFirestoreWriteTime
-            }ms since last write)`
-          );
-          return;
-        }
 
         // Prevent concurrent location sends
         if (locationSendInProgress) {
@@ -405,7 +237,6 @@ async function startForegroundLocationWatch() {
           // Keep your endpoint exactly as it was
           await sendLocation(`/api/location?clockType=clockIn`, payload);
 
-          lastFirestoreWriteTime = currentTime;
           console.debug("Foreground location sent successfully");
         } catch (err) {
           console.error("Failed to handle foreground location:", err);
@@ -488,15 +319,6 @@ export async function startBackgroundLocationWatch() {
         }
 
         const currentTime = Date.now();
-        // Throttle writes - only send every WRITE_INTERVAL_MS (shared with foreground)
-        if (currentTime - lastFirestoreWriteTime < WRITE_INTERVAL_MS) {
-          console.debug(
-            `Throttling background location (${
-              currentTime - lastFirestoreWriteTime
-            }ms since last write)`
-          );
-          return;
-        }
 
         // Prevent concurrent location sends
         if (locationSendInProgress) {
@@ -538,7 +360,6 @@ export async function startBackgroundLocationWatch() {
 
           await sendLocation(`/api/location?clockType=clockIn`, payload);
 
-          lastFirestoreWriteTime = currentTime;
           console.debug("Background location sent successfully");
         } catch (err) {
           console.error("Failed to send background location to backend:", err);
@@ -608,13 +429,6 @@ export async function startClockInTracking(userId: string, sessionId: number) {
 
     console.log("Location tracking started (foreground + background)");
 
-    // Try to flush any queued items immediately if online
-    if (typeof navigator !== "undefined" && navigator.onLine) {
-      processLocationQueue().catch((e) =>
-        console.warn("processLocationQueue failed on start:", e)
-      );
-    }
-
     return { success: true };
   } catch (err) {
     console.error("Failed to start tracking on clock in:", err);
@@ -677,7 +491,6 @@ export async function stopClockOutTracking() {
       isBackgroundTrackingActive = false;
     }
 
-    lastFirestoreWriteTime = 0; // reset for next session
     console.log("Location tracking stopped");
     return { success: true };
   } catch (err) {
@@ -692,20 +505,6 @@ export async function stopClockOutTracking() {
 export function isTrackingActive(): boolean {
   return isUserClockedIn;
 }
-
-/**
- * Reset tracking state (useful for testing or cleanup)
- * WARNING: Only call this if you know tracking needs to be force-reset
- */
-// export function resetTrackingState(): void {
-//   console.warn("Force resetting tracking state");
-//   isUserClockedIn = false;
-//   isBackgroundTrackingActive = false;
-//   watchId = null;
-//   currentUserId = null;
-//   currentSessionId = null;
-//   lastFirestoreWriteTime = 0;
-// }
 
 //=============================================================================
 // Get current coordinates (for immediate clock-in snapshot)
