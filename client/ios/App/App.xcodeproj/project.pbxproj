@@ -14,10 +14,12 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
-		905BDDFBBA3062AAD1EFDCBB /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95F28420B63818BB2018D7FF /* Pods_App.framework */; };
+		706A48F8C336842BF08086DC /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28F4175E8F6BEC015D463C89 /* Pods_App.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2039DCE477EC072500DC39B6 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
+		28F4175E8F6BEC015D463C89 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		3C3175C32EBBF77A00E21E06 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -28,9 +30,7 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
-		95F28420B63818BB2018D7FF /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C39BD5CEFA626D773ADFB6A5 /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
-		DA10B2DB6CD93AA52D07AECE /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
+		7BBF18465BC489D3D6DF2972 /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,17 +38,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				905BDDFBBA3062AAD1EFDCBB /* Pods_App.framework in Frameworks */,
+				706A48F8C336842BF08086DC /* Pods_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		12CD14B0AC5B2CA14261F394 /* Frameworks */ = {
+		3C9F316A8090425BB24047B9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				95F28420B63818BB2018D7FF /* Pods_App.framework */,
+				28F4175E8F6BEC015D463C89 /* Pods_App.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -58,8 +58,8 @@
 			children = (
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
-				740691AF5CC47B739A62BA9D /* Pods */,
-				12CD14B0AC5B2CA14261F394 /* Frameworks */,
+				ADF7084F12567D537E367DC9 /* Pods */,
+				3C9F316A8090425BB24047B9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,11 +87,11 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		740691AF5CC47B739A62BA9D /* Pods */ = {
+		ADF7084F12567D537E367DC9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C39BD5CEFA626D773ADFB6A5 /* Pods-App.debug.xcconfig */,
-				DA10B2DB6CD93AA52D07AECE /* Pods-App.release.xcconfig */,
+				7BBF18465BC489D3D6DF2972 /* Pods-App.debug.xcconfig */,
+				2039DCE477EC072500DC39B6 /* Pods-App.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -104,11 +104,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "App" */;
 			buildPhases = (
-				81DA62D20E14B4FFCF7D6E51 /* [CP] Check Pods Manifest.lock */,
+				83835953C76D52AEBFC683CC /* [CP] Check Pods Manifest.lock */,
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
-				3A9DECED738AA21E0803EDA6 /* [CP] Embed Pods Frameworks */,
+				118D3D03744F99424D378005 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -170,7 +170,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3A9DECED738AA21E0803EDA6 /* [CP] Embed Pods Frameworks */ = {
+		118D3D03744F99424D378005 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -185,7 +185,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-App/Pods-App-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		81DA62D20E14B4FFCF7D6E51 /* [CP] Check Pods Manifest.lock */ = {
+		83835953C76D52AEBFC683CC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -349,7 +349,7 @@
 		};
 		504EC3171FED79650016851F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C39BD5CEFA626D773ADFB6A5 /* Pods-App.debug.xcconfig */;
+			baseConfigurationReference = 7BBF18465BC489D3D6DF2972 /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
@@ -378,7 +378,7 @@
 		};
 		504EC3181FED79650016851F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA10B2DB6CD93AA52D07AECE /* Pods-App.release.xcconfig */;
+			baseConfigurationReference = 2039DCE477EC072500DC39B6 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
