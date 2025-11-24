@@ -145,11 +145,12 @@ async function startForegroundLocationWatch() {
         lastCallbackTime = now;
         if (err || !pos) return;
         if (!s.isUserClockedIn) return;
-        if (s.currentSessionId === 0) {
+        if (!s.currentSessionId || s.preWarmActive) {
           s.setLastKnownCoordinates({
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
           });
+
           return;
         }
         if (s.locationSendInProgress) return;
@@ -225,11 +226,12 @@ export async function startBackgroundLocationWatch() {
         const s = useSessionStore.getState();
         if (error || !location) return;
         if (!s.isUserClockedIn) return;
-        if (s.currentSessionId === 0) {
+        if (!s.currentSessionId || s.preWarmActive) {
           s.setLastKnownCoordinates({
             lat: location.latitude,
             lng: location.longitude,
           });
+
           return;
         }
         if (s.locationSendInProgress) return;
@@ -337,6 +339,7 @@ export async function startClockInTracking(userId: string, sessionId: number) {
     }
 
     // Store user and session IDs for callbacks
+
     s.setCurrentUserId(userId);
     s.setCurrentSession(s.currentSessionId);
     s.setIsUserClockedIn(true);
@@ -542,11 +545,10 @@ export async function fetchLatestUserLocation(userId: string) {
  */
 export async function preStartLocationTracking(userId: string) {
   const s = useSessionStore.getState();
-  // Store userId temporarily
   s.setCurrentUserId(userId);
-  // Fake sessionId 0 for pre-warm
-  s.setCurrentSession(0);
-  s.setIsUserClockedIn(true); // allow watch callbacks to run
+  s.setPreWarmActive(true);
+  s.setIsUserClockedIn(true);
+  startForegroundLocationWatch();
   // Start foreground watch only; skip background to reduce unnecessary writes
   startForegroundLocationWatch();
 }
