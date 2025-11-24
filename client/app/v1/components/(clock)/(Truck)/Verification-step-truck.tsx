@@ -86,7 +86,8 @@ export default function TruckVerificationStep({
   const router = useRouter();
   const { savedTimeSheetData, refetchTimesheet } = useTimeSheetData();
   const { permissionStatus } = usePermissions();
-  const { currentSessionId, setCurrentSession } = useSessionStore();
+  const { currentSessionId, setCurrentSession, setPreWarmActive } =
+    useSessionStore();
 
   if (!user) return null; // Conditional rendering for session
   const id = user.id;
@@ -104,28 +105,34 @@ export default function TruckVerificationStep({
         return;
       }
 
+      // Disable pre-warm tracking
+      setPreWarmActive(false);
       // Get current coordinates
       const coordinates = await getStoredCoordinates();
-
       // Simplified session logic
-      let sessionId = null;
-      if (currentSessionId === null) {
-        // No session exists, create a new one
-        sessionId = await createNewSession(id);
-        setCurrentSession(sessionId);
-      } else {
-        // Session exists, check if it has an endTime
-        const currentSession = useSessionStore
-          .getState()
-          .getSession(currentSessionId);
-        if (!currentSession || currentSession.endTime) {
-          // No session or session ended, create a new one
+      let sessionId = currentSessionId;
+      if (type !== "switchJobs") {
+        if (currentSessionId === null) {
+          // No session exists, create a new one
           sessionId = await createNewSession(id);
           setCurrentSession(sessionId);
         } else {
-          // Session is still active, reuse it
-          sessionId = currentSessionId;
+          // Session exists, check if it has an endTime
+          const currentSession = useSessionStore
+            .getState()
+            .getSession(currentSessionId);
+          if (!currentSession || currentSession.endTime) {
+            // No session or session ended, create a new one
+            sessionId = await createNewSession(id);
+            setCurrentSession(sessionId);
+          } else {
+            // Session is still active, reuse it
+            sessionId = currentSessionId;
+          }
         }
+      } else {
+        // For switchJobs, always use the current session
+        sessionId = currentSessionId;
       }
 
       // Build the payload for handleTruckTimeSheet

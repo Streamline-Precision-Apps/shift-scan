@@ -28,6 +28,7 @@ export type SessionStoreState = {
   isBackgroundTrackingActive: boolean;
   periodicSendTimer: any | null;
   lastKnownCoordinates: { lat: number; lng: number } | null;
+  preWarmActive: boolean;
   // Session management
   addSession: (session: Session) => void;
   updateSession: (id: number, session: Partial<Session>) => void;
@@ -50,6 +51,7 @@ export type SessionStoreState = {
   setIsBackgroundTrackingActive: (val: boolean) => void;
   setPeriodicSendTimer: (val: any | null) => void;
   setLastKnownCoordinates: (val: { lat: number; lng: number } | null) => void;
+  setPreWarmActive: (val: boolean) => void;
 };
 
 export const useSessionStore = create<SessionStoreState>()(
@@ -69,6 +71,8 @@ export const useSessionStore = create<SessionStoreState>()(
       lastKnownCoordinates: null,
 
       // Session management
+      preWarmActive: false,
+      setPreWarmActive: (val: boolean) => set(() => ({ preWarmActive: val })),
       addSession: (session: Session) =>
         set((state) => ({
           sessions: [...state.sessions, session],
