@@ -12,6 +12,7 @@ export type Session = {
   timesheetId: Timesheets[];
   startTime: string; // ISO string
   endTime?: string | null; // ISO string
+  lastLocationSentAt?: number;
 };
 
 // Store type
@@ -30,6 +31,8 @@ export type SessionStoreState = {
   // Timesheet management
   setTimesheetId: (sessionId: number, timesheetId: number) => void;
   clearSessions: () => void;
+  // Location management
+  setLastLocationSentAt: (sessionId: number, timestamp: number) => void;
 };
 
 export const useSessionStore = create<SessionStoreState>()(
@@ -92,6 +95,23 @@ export const useSessionStore = create<SessionStoreState>()(
         set(() => ({
           sessions: [],
           currentSessionId: null,
+        })),
+
+      getLastLocationSentAt: (sessionId: number) => {
+        const state = get();
+        const session = state.sessions.find(
+          (session) => session.id === sessionId
+        );
+        return session?.lastLocationSentAt;
+      },
+
+      setLastLocationSentAt: (sessionId: number, timestamp: number) =>
+        set((state) => ({
+          sessions: state.sessions.map((session) =>
+            session.id === sessionId
+              ? { ...session, lastLocationSentAt: timestamp }
+              : session
+          ),
         })),
     }),
     {
