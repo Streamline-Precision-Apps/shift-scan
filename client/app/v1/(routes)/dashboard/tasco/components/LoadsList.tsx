@@ -8,7 +8,7 @@ import { Inputs } from "@/app/v1/components/(reusable)/inputs";
 import { LoadType, TascoFLoad } from "./tascoClientPage";
 
 const SCREEN_TYPE_OPTIONS = [
-  { value: "", label: "Select Screen Type" },
+  { value: "", label: "Select Type" },
   { value: "UNSCREENED", label: "Unscreened" },
   { value: "SCREENED", label: "Screened" },
 ];
@@ -70,9 +70,9 @@ export default function LoadsList({
     <div className="w-full">
       {editedLoads.map((load, index) => (
         <SlidingDiv key={load.id} onSwipeLeft={() => handleDelete(load.id)}>
-          <div className="flex items-center border-[3px] border-black rounded-[10px] bg-white mb-1 last:mb-0 w-full relative">
+          <div className="flex flex-row items-center border-[3px] border-black rounded-[10px] bg-white mb-1 last:mb-0 w-full relative">
             {/* Weight Input - Left Side (Narrower) */}
-            <div className="flex-none w-2/5 p-1">
+            <div className="flex-1 p-1">
               <Inputs
                 type="number"
                 name="weight"
@@ -91,11 +91,8 @@ export default function LoadsList({
               />
             </div>
 
-            {/* Vertical Divider - Full Height */}
-            <div className="absolute left-2/5 top-0 bottom-0 w-px bg-black"></div>
-
             {/* Screen Type Select - Right Side (Wider) */}
-            <div className="flex-1 p-1">
+            <div className="flex-1 p-1 border-l-[3px] border-black">
               <select
                 value={load.screenType || ""}
                 onChange={(e) => handleScreenTypeChange(index, e.target.value)}

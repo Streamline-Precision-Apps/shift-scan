@@ -1,7 +1,6 @@
 "use client";
 import "@/app/globals.css";
 import { Bases } from "@/app/v1/components/(reusable)/bases";
-import { Suspense, use } from "react";
 import { Holds } from "@/app/v1/components/(reusable)/holds";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { Images } from "@/app/v1/components/(reusable)/images";

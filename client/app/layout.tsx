@@ -3,7 +3,10 @@ import "./globals.css";
 import ClientIntlProvider from "./lib/client/ClientIntlProvider";
 import AppProviders from "./v1/providers";
 import StatusBarSetup from "./lib/client/statusBar";
+import { Button } from "./v1/components/ui/button";
 
+import Link from "next/link";
+// import BugLogPage from "./lib/utils/buglog";
 export const viewport: Viewport = {
   themeColor: "#57BDE9",
   viewportFit: "cover",
@@ -47,7 +50,9 @@ export default function RootLayout({
         <ClientIntlProvider>
           <AppProviders>
             <StatusBarSetup />
+
             {children}
+            {/* <BugLogPage /> debugging component - provider disabled too */}
           </AppProviders>
         </ClientIntlProvider>
       </body>

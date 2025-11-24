@@ -20,6 +20,11 @@ import {
   TabsTrigger,
 } from "@/app/v1/components/ui/tabs";
 import { Button } from "@/app/v1/components/ui/button";
+import FormBridge from "../../../RenderFields/FormBridge";
+import { FormFieldValue } from "@/app/lib/types/forms";
+import { FormTemplate } from "@/app/lib/types/forms";
+import { use, useEffect, useState } from "react";
+import { ta } from "date-fns/locale";
 
 type FormTemplateCategory =
   | "MAINTENANCE"
@@ -42,16 +47,29 @@ interface FormEditorPanelLeftProps {
     key: keyof FormSettings,
     value: string | boolean
   ) => void;
+  setShowMobilePreview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PanelLeft: React.FC<FormEditorPanelLeftProps> = ({
   formSettings,
   formFields,
   updateFormSettings,
+  setShowMobilePreview,
 }) => {
+  const [tab, setTab] = useState("settings");
+
+  useEffect(() => {
+    if (tab === "preview") {
+      setShowMobilePreview(true);
+    } else {
+      setShowMobilePreview(false);
+    }
+  }, [tab]);
   return (
     <div className="flex flex-col col-span-1 min-w-[250px] w-1/5 h-full bg-white  rounded-tl-lg rounded-bl-lg ">
       <Tabs
+        value={tab}
+        onValueChange={setTab}
         defaultValue="settings"
         className="w-full h-full flex flex-col bg-white rounded-tl-lg rounded-bl-lg p-1"
       >
@@ -62,6 +80,7 @@ export const PanelLeft: React.FC<FormEditorPanelLeftProps> = ({
           >
             Settings
           </TabsTrigger>
+
           <TabsTrigger
             value="preview"
             className="w-full text-xs data-[state=inactive]:text-black data-[state=active]:bg-white py-1 "
@@ -213,7 +232,7 @@ export const PanelLeft: React.FC<FormEditorPanelLeftProps> = ({
               <div className="w-full h-full px-2 flex-1 overflow-y-auto justify-start items-center flex flex-col rounded-lg p-4 mt-6">
                 <img
                   src="/formInspect.svg"
-                  alt="Form Preview Placeholder"
+                  alt="Form Structure Placeholder"
                   className="w-full h-6 mb-2"
                 />
                 <p className="text-xs text-gray-500">No questions added yet</p>
@@ -286,6 +305,8 @@ export const PanelLeft: React.FC<FormEditorPanelLeftProps> = ({
             )}
           </div>
         </TabsContent>
+
+        {/* Mobile-style Preview Tab */}
       </Tabs>
     </div>
   );

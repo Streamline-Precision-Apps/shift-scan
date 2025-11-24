@@ -1,6 +1,11 @@
 "use client";
-import { SingleCombobox } from "@/app/v1/components/ui/single-combobox";
+import {
+  ComboboxOption,
+  SingleCombobox,
+} from "@/app/v1/components/ui/single-combobox";
+import { MobileSingleCombobox } from "@/app/v1/components/ui/mobileFormCombobox";
 import { Label } from "@/app/v1/components/ui/label";
+import { X } from "lucide-react";
 export interface Fields {
   id: string;
   formGroupingId: string;
@@ -34,12 +39,14 @@ export default function RenderSearchAssetField({
   field,
   handleFieldChange,
   formData,
-  // clientOptions,
   equipmentOptions,
   jobsiteOptions,
   costCodeOptions,
   handleFieldTouch,
   touchedFields,
+  error,
+  disabled,
+  useNativeInput = false,
 }: {
   equipmentOptions: { value: string; label: string }[];
   jobsiteOptions: { value: string; label: string }[];
@@ -71,33 +78,28 @@ export default function RenderSearchAssetField({
   formData: Record<string, unknown>;
   handleFieldTouch: (fieldId: string) => void;
   touchedFields: Record<string, boolean>;
+  error?: string | null;
+  disabled?: boolean;
+  useNativeInput?: boolean;
 }) {
-  let assetOptions = equipmentOptions;
+  let assetOptions = [{ value: "", label: "" }];
   let assetType = "client";
 
   if (field.filter) {
-    const filterUpper = field.filter.toUpperCase();
-    switch (filterUpper) {
+    switch (field.filter.toUpperCase()) {
       case "EQUIPMENT":
-        assetOptions = equipmentOptions;
+        assetOptions = equipmentOptions || [];
         assetType = "equipment";
-
         break;
       case "JOBSITES":
-        assetOptions = jobsiteOptions;
+        assetOptions = jobsiteOptions || [];
         assetType = "jobsite";
-
         break;
       case "COST CODES":
       case "COST_CODES":
-      case "COSTCODES":
-        assetOptions = costCodeOptions;
+        assetOptions = costCodeOptions || [];
         assetType = "costCode";
-
         break;
-      default:
-        assetOptions = equipmentOptions;
-        assetType = "equipment";
     }
   }
 
@@ -123,43 +125,75 @@ export default function RenderSearchAssetField({
         </Label>
 
         {/* Combobox for selecting assets */}
-        <SingleCombobox
-          options={assetOptions}
-          value={""}
-          onChange={(val, option) => {
-            if (option) {
-              // Check if asset is already selected
-              const isSelected = selectedAssets.some(
-                (a: Asset) => a.id === option.value
-              );
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={assetOptions}
+            value={selectedAssets.map((a) => a.id)}
+            multiple={true}
+            onChange={(
+              val: string | string[],
+              option?: ComboboxOption | ComboboxOption[]
+            ) => {
+              const selectedIds = Array.isArray(val) ? val : val ? [val] : [];
+              const updatedAssets = selectedIds
+                .map((id) => {
+                  const found = assetOptions.find((o) => o.value === id);
+                  return found
+                    ? { id: found.value, name: found.label, type: assetType }
+                    : null;
+                })
+                .filter(Boolean) as Asset[];
+              handleFieldChange(field.id, updatedAssets);
+            }}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        ) : (
+          <SingleCombobox
+            options={assetOptions}
+            value={""}
+            onChange={(
+              val: string,
+              option?: { value: string; label: string }
+            ) => {
+              if (option) {
+                // Check if asset is already selected
+                const isSelected = selectedAssets.some(
+                  (a: Asset) => a.id === option.value
+                );
 
-              if (!isSelected) {
-                const newAsset = {
-                  id: option.value,
-                  name: option.label,
-                  type: assetType,
-                };
+                if (!isSelected) {
+                  const newAsset = {
+                    id: option.value,
+                    name: option.label,
+                    type: assetType,
+                  };
 
-                const updatedAssets = [...selectedAssets, newAsset];
-                handleFieldChange(field.id, updatedAssets);
+                  const updatedAssets = [...selectedAssets, newAsset];
+                  handleFieldChange(field.id, updatedAssets);
+                }
               }
-            }
-          }}
-          placeholder={`Select ${assetType}...`}
-          filterKeys={["value", "label"]}
-        />
+            }}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+            disabled={disabled}
+          />
+        )}
         {/* Display selected assets as tags */}
         {selectedAssets.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2 mb-1">
+          <div className="max-w-md flex flex-wrap gap-2 mt-3 mb-2">
             {selectedAssets.map((asset: Asset, idx: number) => (
               <div
-                key={idx}
-                className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded flex items-center gap-1"
+                key={asset.id || `asset-${idx}`}
+                className={`${
+                  useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+                }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
               >
-                <span>{asset.name}</span>
+                <span className="font-medium">{asset.name}</span>
                 <button
                   type="button"
-                  className="text-green-800 hover:text-green-900"
+                  className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
                   onClick={() => {
                     const updatedAssets = selectedAssets.filter(
                       (_: Asset, i: number) => i !== idx
@@ -169,21 +203,27 @@ export default function RenderSearchAssetField({
                       updatedAssets.length ? updatedAssets : null
                     );
                   }}
+                  aria-label={`Remove ${asset.name}`}
                 >
-                  ×
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
           </div>
         )}
         {/* Show error message if required and no assets selected */}
-        {showError && touchedFields[field.id] && (
-          <p className="text-xs text-red-500 mt-1">This field is required.</p>
+        {(showError || error) && touchedFields[field.id] && (
+          <p className="text-xs text-red-500 mt-1">
+            {error || "This field is required."}
+          </p>
         )}
       </div>
     );
   } else {
     // For single asset selection (existing behavior)
+    const currentValue = formData[field.id] as Asset | undefined;
+    const displayValue = currentValue?.id || "";
+
     return (
       <div
         key={field.id}
@@ -194,26 +234,79 @@ export default function RenderSearchAssetField({
           {field.label}{" "}
           {field.required && <span className="text-red-500">*</span>}
         </Label>
-        <SingleCombobox
-          options={assetOptions}
-          value={(formData[field.id] as Asset | undefined)?.id || ""}
-          onChange={(val, option) => {
-            if (option) {
-              // Store the selected value in formData instead of a separate asset state
-              handleFieldChange(field.id, {
-                id: option.value,
-                name: option.label,
-                type: assetType,
-              });
-            } else {
-              handleFieldChange(field.id, null);
-            }
-          }}
-        />
-        {/* Show error message if required and no assets selected */}
-        {field.required && touchedFields[field.id] && (
-          <p className="text-xs text-red-500 mt-1">This field is required.</p>
+        {useNativeInput ? (
+          <MobileSingleCombobox
+            options={assetOptions}
+            value={displayValue}
+            onChange={(
+              val: string | string[],
+              option?: ComboboxOption | ComboboxOption[]
+            ) => {
+              const id = Array.isArray(val) ? val[0] : val;
+              if (option && !Array.isArray(option)) {
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                  type: assetType,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+          />
+        ) : (
+          <SingleCombobox
+            options={assetOptions}
+            value={displayValue}
+            onChange={(val, option) => {
+              if (option) {
+                // Store the selected value in formData instead of a separate asset state
+                handleFieldChange(field.id, {
+                  id: option.value,
+                  name: option.label,
+                  type: assetType,
+                });
+              } else {
+                handleFieldChange(field.id, null);
+              }
+            }}
+            disabled={disabled}
+            placeholder={`Select ${assetType}...`}
+            filterKeys={["value", "label"]}
+          />
         )}
+        {/* Display selected asset as tag */}
+        {currentValue && (
+          <div className="flex flex-wrap gap-2 mt-3 mb-2">
+            <div
+              className={`${
+                useNativeInput ? "text-lg px-3 py-2  " : "text-xs px-3 py-1 "
+              }   rounded-lg flex items-center gap-2 bg-green-100 text-green-800  `}
+            >
+              <span className=" font-medium">{currentValue.name}</span>
+              <button
+                type="button"
+                className="text-green-800 hover:text-green-900 text-2xl font-bold leading-none"
+                onClick={() => {
+                  handleFieldChange(field.id, null);
+                }}
+                aria-label={`Remove ${currentValue.name}`}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+        {/* Show error message if required and no asset selected */}
+        {((field.required && !currentValue) || error) &&
+          touchedFields[field.id] && (
+            <p className="text-xs text-red-500 mt-1">
+              {error || "This field is required."}
+            </p>
+          )}
       </div>
     );
   }

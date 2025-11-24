@@ -6,7 +6,10 @@ import { useEquipmentStore } from "@/app/lib/store/equipmentStore";
 import { useProfitStore } from "@/app/lib/store/profitStore";
 import { useCostCodeStore } from "@/app/lib/store/costCodeStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
-import RenderFields from "../../../../../admins/forms/_components/RenderFields/RenderFields";
+// NOTE: This file now uses the unified FormBridge via the compatibility
+// wrapper. When the migration completes, the wrapper and legacy files can be
+// removed in favor of directly importing `FormBridge`.
+import FormBridgeWrapper from "../../../../../admins/forms/_components/RenderFields/FormBridgeWrapper";
 import { sortFormTemplate } from "@/app/lib/utils/formOrdering";
 
 // ============================================================================
@@ -202,7 +205,7 @@ export const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({
   // =========================================================================
 
   return (
-    <RenderFields
+    <FormBridgeWrapper
       formTemplate={sortedFormData}
       userOptions={userOptions}
       submittedBy={null}
