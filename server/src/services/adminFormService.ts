@@ -219,6 +219,50 @@ export async function getFormSubmissionByTemplateId(
   dateRangeStart: string | null,
   dateRangeEnd: string | null
 ) {
+  // Helper to parse 'YYYY-MM-DD' as local date
+  function parseUTCDateString(
+    dateStr: string,
+    endOfDay = false
+  ): Date | undefined {
+    const [yearStr, monthStr, dayStr] = dateStr.split("-");
+    const year = Number(yearStr);
+    const month = Number(monthStr);
+    const day = Number(dayStr);
+    if (
+      Number.isNaN(year) ||
+      Number.isNaN(month) ||
+      Number.isNaN(day) ||
+      typeof year !== "number" ||
+      typeof month !== "number" ||
+      typeof day !== "number"
+    ) {
+      return undefined;
+    }
+    if (endOfDay) {
+      // 23:59:59.999 UTC
+      return new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+    } else {
+      // 00:00:00.000 UTC
+      return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    }
+  }
+
+  let normalizedStart: Date | undefined = undefined;
+  let normalizedEnd: Date | undefined = undefined;
+  if (dateRangeStart) {
+    const start = parseUTCDateString(dateRangeStart, false);
+    if (start) {
+      normalizedStart = start;
+      console.log("Normalized Start Date (UTC):", normalizedStart);
+    }
+  }
+  if (dateRangeEnd) {
+    const end = parseUTCDateString(dateRangeEnd, true);
+    if (end) {
+      normalizedEnd = end;
+      console.log("Normalized End Date (UTC):", normalizedEnd);
+    }
+  }
   // If pendingOnly or searching, do not paginate (return all matching submissions)
   const isSearching = search !== null && search !== undefined && search !== "";
   const skip = pendingOnly || isSearching ? undefined : (page - 1) * pageSize;
@@ -288,11 +332,11 @@ export async function getFormSubmissionByTemplateId(
         status: "DRAFT",
       },
       ...(statusCondition && { status: statusCondition }),
-      ...(dateRangeStart || dateRangeEnd
+      ...(normalizedStart || normalizedEnd
         ? {
             submittedAt: {
-              ...(dateRangeStart && { gte: new Date(dateRangeStart) }),
-              ...(dateRangeEnd && { lte: new Date(dateRangeEnd) }),
+              ...(normalizedStart && { gte: normalizedStart }),
+              ...(normalizedEnd && { lte: normalizedEnd }),
             },
           }
         : {}),

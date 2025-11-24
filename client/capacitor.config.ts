@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   webDir: "out",
 
   server: {
-    url: process.env.NEXT_PUBLIC_CAPACITOR_APP_URL,
+    url: "http://192.168.1.102:3000",
     cleartext: true,
   },
   android: {

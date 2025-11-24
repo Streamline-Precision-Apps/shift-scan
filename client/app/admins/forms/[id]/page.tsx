@@ -100,7 +100,7 @@ const FormPage = ({ params }: PageProps) => {
       <div className="h-[85vh] rounded-lg w-full relative bg-white overflow-hidden">
         <div className="h-full w-full overflow-auto pb-10">
           <FormSubmissionDataTable
-            formTemplate={formTemplate}
+            formTemplate={formTemplatePage}
             formSubmissions={formTemplatePage}
             loading={loading}
             page={page}

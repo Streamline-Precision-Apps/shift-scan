@@ -1,7 +1,8 @@
 import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
 import { BackgroundGeolocation } from "@capgo/background-geolocation";
-import { getApiUrl } from "../utils/api-Utils";
+import { apiRequest } from "../utils/api-Utils";
+import { useSessionStore } from "../store/sessionStore";
 
 export interface LocationLog {
   userId: string;
@@ -20,231 +21,89 @@ export interface LocationLog {
 
 const isNative = Capacitor.isNativePlatform();
 
-// Store the watch ID globally (module scope)
-let watchId: string | null = null;
+// Geolocation tracking state
+let watchId: string | null = null; // Foreground watch ID
+let periodicSendTimer: ReturnType<typeof setInterval> | null = null; // Periodic timer
+let isBackgroundTrackingActive = false; // Background tracking flag
+let isUserClockedIn = false; // User clock-in flag
+let currentUserId: string | null = null; // Current user ID
+let currentSessionId: number | null = null; // Current session ID
+let lastLocationSentAt: number | null = null; // Last upload timestamp
+let locationSendInProgress = false; // Prevent concurrent uploads
+let lastKnownCoordinates: { lat: number; lng: number } | null = null; // Last known coords
 
-// Track whether background location is active
-let isBackgroundTrackingActive = false;
+// LocalStorage key for permission request
+const LOCATION_PERMISSION_REQUESTED_KEY = "location_permission_requested";
 
-// Track whether user is clocked in
-let isUserClockedIn = false;
-
-// Store the current user ID for use in callbacks
-let currentUserId: string | null = null;
-
-// Store the current session ID for use in callbacks
-let currentSessionId: number | null = null;
-
-// add a variable to track the last time a write to FireStore occurred
-let lastFirestoreWriteTime: number = 0;
-// WRITE_INTERVAL_MS: how often we actually POST location to your backend.
-// Set to 5 minutes to prevent excessive API calls during continuous tracking.
+// Minimum interval between location uploads (ms)
 const WRITE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
-// Track if a location send is currently in flight to prevent concurrent sends
-let locationSendInProgress = false;
-
-let lastKnownCoordinates: { lat: number; lng: number } | null = null;
-
-// LOCAL STORAGE KEY for permissions and queue
-const LOCATION_PERMISSION_REQUESTED_KEY = "location_permission_requested";
-const LOCATION_QUEUE_KEY = "location_request_queue_v1";
-
-// Max backoff settings
-const MAX_RETRY_ATTEMPTS = 5;
-const BASE_BACKOFF_MS = 1000; // 1 second base
-const MAX_BACKOFF_MS = 30 * 1000; // 30s cap
-
-//=============================================================================
-// UTIL: Queue persistence for failed requests (localStorage-based)
-//=============================================================================
-
-type QueuedRequest = {
-  id: string; // unique id for the queued item
-  url: string;
-  options: RequestInit;
-  attempts: number;
-  createdAt: number;
-};
-
-function readQueue(): QueuedRequest[] {
-  try {
-    const raw = localStorage.getItem(LOCATION_QUEUE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as QueuedRequest[];
-  } catch (err) {
-    console.warn("Failed to read location queue:", err);
-    return [];
+// Initialize globals from sessionStore (persisted session)
+try {
+  const sessionState = useSessionStore.getState();
+  const currentSession = sessionState.getCurrentSession();
+  if (currentSession) {
+    currentUserId = currentSession.userId;
+    currentSessionId = currentSession.id;
+    isUserClockedIn = !currentSession.endTime;
+    lastLocationSentAt = currentSession.lastLocationSentAt || null;
   }
+} catch (err) {
+  // Defensive: avoid crash if store is not available
+  console.warn(
+    "[locationTracking] Could not initialize globals from sessionStore",
+    err
+  );
 }
 
-function writeQueue(queue: QueuedRequest[]) {
-  try {
-    localStorage.setItem(LOCATION_QUEUE_KEY, JSON.stringify(queue));
-  } catch (err) {
-    console.warn("Failed to write location queue:", err);
-  }
-}
-
-function enqueueRequest(req: Omit<QueuedRequest, "id" | "createdAt">) {
-  const queue = readQueue();
-  const item: QueuedRequest = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-    url: req.url,
-    options: req.options,
-    attempts: req.attempts,
-    createdAt: Date.now(),
-  };
-  queue.push(item);
-  writeQueue(queue);
-  return item.id;
-}
-
-function removeQueuedRequestById(id: string) {
-  const queue = readQueue();
-  const filtered = queue.filter((q) => q.id !== id);
-  writeQueue(filtered);
+// Keep globals in sync with sessionStore
+try {
+  useSessionStore.subscribe((state) => {
+    const session = state.getCurrentSession();
+    if (session) {
+      currentUserId = session.userId;
+      currentSessionId = session.id;
+      isUserClockedIn = !session.endTime;
+      lastLocationSentAt = session.lastLocationSentAt || null;
+    } else {
+      currentUserId = null;
+      currentSessionId = null;
+      isUserClockedIn = false;
+      lastLocationSentAt = null;
+    }
+  });
+} catch (err) {
+  // Defensive: avoid crash if store is not available
+  console.warn("[locationTracking] Could not subscribe to sessionStore", err);
 }
 
 //=============================================================================
-// EXPONENTIAL BACKOFF + SEND HELPER
+// SEND LOCATION - Only call the function directly, no queue or retry logic
 //=============================================================================
 
-async function sleep(ms: number) {
-  return new Promise((res) => setTimeout(res, ms));
-}
-
-function getBackoffDelay(attempt: number) {
-  // exponential backoff with jitter
-  const exp = Math.min(BASE_BACKOFF_MS * 2 ** (attempt - 1), MAX_BACKOFF_MS);
-  const jitter = Math.random() * 300; // 0-300ms jitter
-  return exp + jitter;
-}
-
-/**
- * sendLocation - tries to POST the location to the same API endpoint you had,
- * uses retries with exponential backoff, and if all fails it enqueues the request
- * to localStorage for later retries.
- *
- * @param url - the full url (already including query string)
- * @param payload - LocationLog or clockOut payload
- */
 async function sendLocation(
   url: string,
-  payload: unknown,
-  attempts = 0
-): Promise<{ success: boolean; enqueued?: boolean }> {
-  const options: RequestInit = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  };
-
+  payload: {
+    userId: string;
+    sessionId: number;
+    coords: {
+      lat: number;
+      lng: number;
+      accuracy?: number;
+      speed?: number | null;
+      heading?: number | null;
+    } | null;
+  }
+): Promise<{ success: boolean }> {
   try {
-    const res = await fetch(url, options);
-    if (!res.ok) {
-      // Treat non-2xx as error so we can retry / enqueue
-      throw new Error(`Non-OK response: ${res.status}`);
-    }
-
-    // Successfully sent - try to process any queued items afterwards
-    if (
-      typeof window !== "undefined" &&
-      "navigator" in window &&
-      navigator.onLine
-    ) {
-      // best-effort flush
-      processLocationQueue().catch((e) =>
-        console.warn("processLocationQueue failed after send:", e)
-      );
-    }
-
+    await apiRequest(url, "POST", payload);
+    //we can check for a response body here if needed
     return { success: true };
   } catch (err) {
-    console.warn("sendLocation failed attempt", attempts, err);
-
-    // If we've already tried less than MAX_RETRY_ATTEMPTS, retry with backoff
-    if (attempts < MAX_RETRY_ATTEMPTS) {
-      const nextAttempt = attempts + 1;
-      const delay = getBackoffDelay(nextAttempt);
-      await sleep(delay);
-      return sendLocation(url, payload, nextAttempt);
-    }
-
-    // Exhausted retries -> enqueue for later processing
-    try {
-      enqueueRequest({
-        url,
-        options,
-        attempts: attempts,
-      });
-      console.info("Enqueued location request for later delivery");
-      return { success: false, enqueued: true };
-    } catch (enqueueErr) {
-      console.error("Failed to enqueue location request:", enqueueErr);
-      return { success: false, enqueued: false };
-    }
+    // Only log on failure
+    console.warn("sendLocation: error sending location", err);
+    return { success: false };
   }
-}
-
-//=============================================================================
-// PROCESS QUEUE
-//=============================================================================
-
-export async function processLocationQueue() {
-  // Only run in environments with localStorage and fetch
-  if (typeof localStorage === "undefined") return;
-
-  let queue = readQueue();
-  if (!queue.length) return;
-
-  // iterate over a copy to allow mutation
-  for (const item of [...queue]) {
-    // If navigator exists and offline, stop trying
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
-      console.info("Offline - stopping queue processing");
-      return;
-    }
-
-    try {
-      const res = await fetch(item.url, item.options);
-      if (res.ok) {
-        removeQueuedRequestById(item.id);
-        console.info("Flushed queued location item:", item.id);
-      } else {
-        // Increase attempts and update queue item
-        const q = readQueue();
-        const idx = q.findIndex((qq) => qq.id === item.id);
-        if (idx >= 0) {
-          q[idx].attempts = (q[idx].attempts || 0) + 1;
-          writeQueue(q);
-        }
-        console.warn(
-          "Queued item failed to send (non-OK). Will retry later:",
-          item.id,
-          res.status
-        );
-      }
-    } catch (err) {
-      console.warn(
-        "Error flushing queued location item, will retry later:",
-        err
-      );
-      // If fetch throws (network), stop processing and wait for next online event
-      return;
-    }
-  }
-}
-
-// Auto flush when we come back online (browser only)
-if (typeof window !== "undefined" && typeof navigator !== "undefined") {
-  window.addEventListener("online", () => {
-    processLocationQueue().catch((e) =>
-      console.warn("processLocationQueue (online) failed:", e)
-    );
-  });
 }
 
 //=============================================================================
@@ -305,16 +164,8 @@ export function hasLocationPermissionBeenRequested(): boolean {
  * NOTE: watchPosition fires frequently; throttling is enforced by WRITE_INTERVAL_MS
  */
 async function startForegroundLocationWatch() {
-  if (!isUserClockedIn) {
-    console.log("User not clocked in, skipping foreground tracking");
-    return;
-  }
-
-  if (watchId) {
-    console.log("Foreground tracking already active");
-    return; // already watching
-  }
-
+  if (!isUserClockedIn) return;
+  if (watchId) return;
   try {
     let lastCallbackTime = 0;
     const MIN_CALLBACK_INTERVAL_MS = 2000;
@@ -328,22 +179,8 @@ async function startForegroundLocationWatch() {
         const now = Date.now();
         if (now - lastCallbackTime < MIN_CALLBACK_INTERVAL_MS) return;
         lastCallbackTime = now;
-
-        if (err) {
-          console.error("Geolocation watch error (foreground):", err);
-          return;
-        }
-        if (!pos) {
-          console.error("Geolocation watch: position is null");
-          return;
-        }
-
-        // Only send if user is still clocked in
-        if (!isUserClockedIn) {
-          return;
-        }
-
-        // Pre-warming mode: skip sending if sessionId === 0
+        if (err || !pos) return;
+        if (!isUserClockedIn) return;
         if (currentSessionId === 0) {
           lastKnownCoordinates = {
             lat: pos.coords.latitude,
@@ -351,125 +188,69 @@ async function startForegroundLocationWatch() {
           };
           return;
         }
-
-        const currentTime = Date.now();
-        // Throttle writes - only send every WRITE_INTERVAL_MS
-        if (currentTime - lastFirestoreWriteTime < WRITE_INTERVAL_MS) {
-          console.debug(
-            `Throttling foreground location (${
-              currentTime - lastFirestoreWriteTime
-            }ms since last write)`
-          );
+        if (locationSendInProgress) return;
+        if (!currentUserId || !currentSessionId) return;
+        lastKnownCoordinates = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+        // Throttle: Only send if 5 minutes have passed since lastLocationSentAt
+        if (lastLocationSentAt && now - lastLocationSentAt < WRITE_INTERVAL_MS)
           return;
-        }
-
-        // Prevent concurrent location sends
-        if (locationSendInProgress) {
-          console.debug("Location send already in progress, skipping");
-          return;
-        }
-
-        try {
-          // Use stored user ID and session ID
-          if (!currentUserId || !currentSessionId) {
-            console.error(
-              "User ID or Session ID not available for location tracking"
-            );
-            return;
-          }
-
-          // Update last known coordinates
-          lastKnownCoordinates = {
+        locationSendInProgress = true;
+        const payload: LocationLog = {
+          userId: currentUserId,
+          sessionId: currentSessionId,
+          coords: {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
-          };
-
-          locationSendInProgress = true;
-
-          const payload: LocationLog = {
-            userId: currentUserId,
-            sessionId: currentSessionId,
-            coords: {
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude,
-              accuracy: pos.coords.accuracy,
-              speed: pos.coords.speed ?? null,
-              heading: pos.coords.heading ?? null,
-            },
-            device: {
-              platform:
-                typeof navigator !== "undefined" ? navigator.userAgent : null,
-            },
-          };
-
-          const url = getApiUrl();
-          // Keep your endpoint exactly as it was
-          await sendLocation(`${url}/api/location?clockType=clockIn`, payload);
-
-          lastFirestoreWriteTime = currentTime;
-          console.debug("Foreground location sent successfully");
-        } catch (err) {
-          console.error("Failed to handle foreground location:", err);
-        } finally {
-          locationSendInProgress = false;
+            accuracy: pos.coords.accuracy,
+            speed: pos.coords.speed ?? null,
+            heading: pos.coords.heading ?? null,
+          },
+          device: {
+            platform:
+              typeof navigator !== "undefined" ? navigator.userAgent : null,
+          },
+        };
+        const result = await sendLocation(
+          `/api/location?clockType=clockIn`,
+          payload
+        );
+        if (result.success) {
+          lastLocationSentAt = now;
+          try {
+            useSessionStore
+              .getState()
+              .setLastLocationSentAt(currentSessionId, now);
+          } catch {}
         }
+        locationSendInProgress = false;
       }
     );
-    console.log("Foreground location tracking started");
   } catch (err) {
+    // Only log critical errors
     console.error("Failed to start foreground geolocation watch:", err);
   }
 }
 
-//=============================================================================
-// BACKGROUND TRACKING - Uses @capgo/background-geolocation
-//=============================================================================
+// Background tracking: uses @capgo/background-geolocation
 
 export async function startBackgroundLocationWatch() {
-  if (!isUserClockedIn) {
-    console.log("User not clocked in, skipping background tracking");
+  if (!isUserClockedIn || isBackgroundTrackingActive || !BackgroundGeolocation)
     return;
-  }
-
-  if (isBackgroundTrackingActive) {
-    console.log("Background tracking already active");
-    return;
-  }
-
-  if (!BackgroundGeolocation) {
-    console.error("BackgroundGeolocation plugin not available");
-    return;
-  }
-
   try {
     await BackgroundGeolocation.start(
       {
         backgroundMessage: "Location tracking in progress",
         backgroundTitle: "Shift Scan",
-        requestPermissions: false, // Permission already requested at registration
-        stale: false, // Don't deliver stale locations
-        distanceFilter: 50, // Only update when moved 50+ meters
+        requestPermissions: false,
+        stale: false,
+        distanceFilter: 50,
       },
       async (location, error) => {
-        if (error) {
-          if (error.code === "NOT_AUTHORIZED") {
-            console.error("Location permission not granted");
-          }
-          console.error("BackgroundGeolocation error:", error);
-          return;
-        }
-
-        if (!location) {
-          console.error("Background location is null");
-          return;
-        }
-
-        // Only send if user is still clocked in
-        if (!isUserClockedIn) {
-          return;
-        }
-
-        // Pre-warming mode: skip sending if sessionId === 0
+        if (error || !location) return;
+        if (!isUserClockedIn) return;
         if (currentSessionId === 0) {
           lastKnownCoordinates = {
             lat: location.latitude,
@@ -477,106 +258,98 @@ export async function startBackgroundLocationWatch() {
           };
           return;
         }
-
-        // Validate location freshness when stale: false
-        if (location.time && Date.now() - location.time > 60000) {
-          console.warn("Location is older than 60 seconds, potentially stale");
-        }
-
-        // Check if location is simulated (useful for detecting mock locations in testing)
-        if ((location as any).simulated) {
-          console.log("Using simulated location (testing environment)");
-        }
-
-        const currentTime = Date.now();
-        // Throttle writes - only send every WRITE_INTERVAL_MS (shared with foreground)
-        if (currentTime - lastFirestoreWriteTime < WRITE_INTERVAL_MS) {
-          console.debug(
-            `Throttling background location (${
-              currentTime - lastFirestoreWriteTime
-            }ms since last write)`
-          );
+        if (locationSendInProgress) return;
+        if (!currentUserId || !currentSessionId) return;
+        lastKnownCoordinates = {
+          lat: location.latitude,
+          lng: location.longitude,
+        };
+        // Throttle: Only send if 5 minutes have passed since lastLocationSentAt
+        const now = Date.now();
+        if (lastLocationSentAt && now - lastLocationSentAt < WRITE_INTERVAL_MS)
           return;
-        }
-
-        // Prevent concurrent location sends
-        if (locationSendInProgress) {
-          console.debug("Location send already in progress, skipping");
-          return;
-        }
-
-        try {
-          if (!currentUserId || !currentSessionId) {
-            console.error(
-              "User ID or Session ID not available for background location tracking"
-            );
-            return;
-          }
-
-          // Update last known coordinates
-          lastKnownCoordinates = {
+        locationSendInProgress = true;
+        const payload: LocationLog = {
+          userId: currentUserId,
+          sessionId: currentSessionId,
+          coords: {
             lat: location.latitude,
             lng: location.longitude,
-          };
-
-          locationSendInProgress = true;
-
-          const payload: LocationLog = {
-            userId: currentUserId,
-            sessionId: currentSessionId,
-            coords: {
-              lat: location.latitude,
-              lng: location.longitude,
-              accuracy: location.accuracy,
-              speed: location.speed ?? null,
-              heading: (location as any).bearing ?? null,
-            },
-            device: {
-              platform:
-                typeof navigator !== "undefined" ? navigator.userAgent : null,
-            },
-          };
-
-          const url = getApiUrl();
-          await sendLocation(`${url}/api/location?clockType=clockIn`, payload);
-
-          lastFirestoreWriteTime = currentTime;
-          console.debug("Background location sent successfully");
-        } catch (err) {
-          console.error("Failed to send background location to backend:", err);
-        } finally {
-          locationSendInProgress = false;
+            accuracy: location.accuracy,
+            speed: location.speed ?? null,
+            heading: (location as any).bearing ?? null,
+          },
+          device: {
+            platform:
+              typeof navigator !== "undefined" ? navigator.userAgent : null,
+          },
+        };
+        const result = await sendLocation(
+          `/api/location?clockType=clockIn`,
+          payload
+        );
+        if (result.success) {
+          lastLocationSentAt = now;
+          try {
+            useSessionStore
+              .getState()
+              .setLastLocationSentAt(currentSessionId, now);
+          } catch {}
         }
+        locationSendInProgress = false;
       }
     );
-
     isBackgroundTrackingActive = true;
-    console.log("Background location tracking started successfully");
   } catch (err) {
-    // Catch "Location Tracking Already Started" error
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    if (errorMsg.includes("already") || errorMsg.includes("already started")) {
-      console.warn(
-        "BackgroundGeolocation already started, marking as active:",
-        errorMsg
-      );
-      isBackgroundTrackingActive = true;
-    } else {
-      console.error("Failed to start background geolocation:", err);
-    }
+    // Only log critical errors
+    console.error("Failed to start background geolocation:", err);
   }
 }
 
-//=============================================================================
-// CLOCK IN/OUT TRACKING - Called when user clocks in/out
-//=============================================================================
+// Periodic location sending
+
+async function sendPeriodicLocation() {
+  if (!isUserClockedIn || !currentUserId || !currentSessionId) return;
+  if (!lastKnownCoordinates) return;
+  if (locationSendInProgress) return;
+  const now = Date.now();
+  if (lastLocationSentAt && now - lastLocationSentAt < WRITE_INTERVAL_MS)
+    return;
+  locationSendInProgress = true;
+  try {
+    const payload: LocationLog = {
+      userId: currentUserId,
+      sessionId: currentSessionId,
+      coords: {
+        lat: lastKnownCoordinates.lat,
+        lng: lastKnownCoordinates.lng,
+      },
+      device: {
+        platform: typeof navigator !== "undefined" ? navigator.userAgent : null,
+      },
+    };
+    const result = await sendLocation(
+      `/api/location?clockType=clockIn`,
+      payload
+    );
+    if (result.success) {
+      lastLocationSentAt = now;
+      try {
+        useSessionStore.getState().setLastLocationSentAt(currentSessionId, now);
+      } catch {}
+    }
+  } catch (err) {
+    // Only log critical errors
+    console.error("[Periodic] Failed to send location:", err);
+  } finally {
+    locationSendInProgress = false;
+  }
+}
 
 /**
- * START TRACKING when user clocks in
- * Starts BOTH foreground (Geolocation) and background (BackgroundGeolocation) tracking simultaneously
- * Only tracks if user is clocked in
- * @param userId - The authenticated user's ID (pass from the component that has access to the user)
- * @param sessionId - The current session ID (from the shift)
+ * Start all tracking when user clocks in (foreground + background)
+ * @param userId - Authenticated user ID
+ * @param sessionId - Current session ID
  */
 export async function startClockInTracking(userId: string, sessionId: number) {
   try {
@@ -584,8 +357,7 @@ export async function startClockInTracking(userId: string, sessionId: number) {
       throw new Error("User ID and Session ID are required to start tracking");
     }
 
-    // 🔴 GUARD: Prevent duplicate tracking initialization
-    // Check BEFORE setting flags to catch re-entrance
+    // Prevent duplicate tracking initialization
     if (isUserClockedIn && watchId && isBackgroundTrackingActive) {
       console.warn(
         "Tracking already started - ignoring duplicate startClockInTracking call"
@@ -593,28 +365,23 @@ export async function startClockInTracking(userId: string, sessionId: number) {
       return { success: true };
     }
 
-    // Store the user ID and session ID for use in callbacks
+    // Store user and session IDs for callbacks
     currentUserId = userId;
     currentSessionId = sessionId;
 
-    // Mark user as clocked in IMMEDIATELY to prevent race conditions
+    // Mark user as clocked in immediately
     isUserClockedIn = true;
     console.log("User clocked in - starting location tracking");
 
-    // Start BOTH foreground and background tracking simultaneously (fire-and-forget)
-    // Foreground: Active when app is open
-    startForegroundLocationWatch(); // fire-and-forget
+    // Start foreground and background tracking (fire-and-forget)
+    startForegroundLocationWatch();
+    startBackgroundLocationWatch();
 
-    // Background: Active when app is closed or device is locked
-    startBackgroundLocationWatch(); // fire-and-forget
-
-    console.log("Location tracking started (foreground + background)");
-
-    // Try to flush any queued items immediately if online
-    if (typeof navigator !== "undefined" && navigator.onLine) {
-      processLocationQueue().catch((e) =>
-        console.warn("processLocationQueue failed on start:", e)
-      );
+    // Start periodic timer for location upload
+    if (!periodicSendTimer) {
+      periodicSendTimer = setInterval(() => {
+        sendPeriodicLocation();
+      }, WRITE_INTERVAL_MS);
     }
 
     return { success: true };
@@ -628,101 +395,88 @@ export async function startClockInTracking(userId: string, sessionId: number) {
 }
 
 /**
- * STOP TRACKING when user clocks out
- * Stops BOTH foreground and background tracking and posts final location
+ * Stop all tracking when user clocks out (foreground + background)
+ * Posts final location
  */
 export async function stopClockOutTracking() {
   try {
-    console.log("User clocked out - stopping location tracking");
-
-    // Only close the session, do not fetch or send location
+    // Post final clock-out location (do not block cleanup on failure)
     if (currentUserId && currentSessionId) {
-      const url = getApiUrl();
       try {
-        // Keep your endpoint exactly as you used previously
-        await sendLocation(`${url}/api/location?clockType=clockOut`, {
+        await sendLocation(`/api/location?clockType=clockOut`, {
           userId: currentUserId,
           sessionId: currentSessionId,
           coords: null,
-          device: {
-            platform:
-              typeof navigator !== "undefined" ? navigator.userAgent : null,
-          },
         });
       } catch (err) {
-        console.warn(
-          "Failed to post clock out session (will be enqueued):",
-          err
-        );
+        // Only warn if posting fails
+        console.warn("Failed to post clock out session:", err);
       }
     }
 
+    // Reset lastLocationSentAt in both global and session store
+    lastLocationSentAt = null;
+    try {
+      // Defensive: sessionId may be null, but set anyway; use 0 to reset
+      if (currentSessionId) {
+        useSessionStore.getState().setLastLocationSentAt(currentSessionId, 0);
+      }
+    } catch {}
+
+    // Always clean up all state
     isUserClockedIn = false;
     currentUserId = null;
     currentSessionId = null;
-
-    // Reset the in-flight flag
     locationSendInProgress = false;
 
-    // Stop both tracking methods
+    // Stop foreground tracking
     if (watchId) {
       try {
         await Geolocation.clearWatch({ id: watchId });
       } catch (err) {
+        // Only warn if clearWatch fails
         console.warn("clearWatch threw:", err);
       }
       watchId = null;
     }
 
+    // Stop background tracking
     if (isBackgroundTrackingActive && BackgroundGeolocation) {
       try {
         await BackgroundGeolocation.stop();
       } catch (err) {
+        // Only warn if stop fails
         console.warn("BackgroundGeolocation.stop threw:", err);
       }
       isBackgroundTrackingActive = false;
     }
 
-    lastFirestoreWriteTime = 0; // reset for next session
-    console.log("Location tracking stopped");
+    // Stop periodic timer
+    if (periodicSendTimer) {
+      clearInterval(periodicSendTimer);
+      periodicSendTimer = null;
+    }
+
     return { success: true };
   } catch (err) {
+    // Only log critical errors
     console.error("Failed to stop tracking on clock out:", err);
     return { success: false, error: err };
   }
 }
 
 /**
- * Check if user is currently being tracked (clocked in)
+ * Returns true if user is currently being tracked (clocked in)
  */
 export function isTrackingActive(): boolean {
   return isUserClockedIn;
 }
 
-/**
- * Reset tracking state (useful for testing or cleanup)
- * WARNING: Only call this if you know tracking needs to be force-reset
- */
-// export function resetTrackingState(): void {
-//   console.warn("Force resetting tracking state");
-//   isUserClockedIn = false;
-//   isBackgroundTrackingActive = false;
-//   watchId = null;
-//   currentUserId = null;
-//   currentSessionId = null;
-//   lastFirestoreWriteTime = 0;
-// }
-
-//=============================================================================
-// Get current coordinates (for immediate clock-in snapshot)
-//=============================================================================
-
-const GEOLOCATION_TIMEOUT = 2000; // 2 seconds - quick snapshot for clock operations
+const GEOLOCATION_TIMEOUT = 2000; // ms, quick snapshot for clock ops
 
 /**
- * Get fresh, current coordinates quickly
- * Single attempt, fast timeout - fail fast for clock-in/out
- * @returns Fresh coordinates or null if unable to obtain
+ * Get a fresh, current coordinate snapshot (fast timeout)
+ * @returns Coordinates or null if unavailable
  */
 export async function getStoredCoordinates(): Promise<{
   lat: number;
@@ -730,26 +484,24 @@ export async function getStoredCoordinates(): Promise<{
 } | null> {
   try {
     if (isNative) {
-      // Native Capacitor Geolocation - single attempt, 2 second timeout
+      // Native Capacitor Geolocation - single attempt
       const pos = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
         timeout: GEOLOCATION_TIMEOUT,
-        maximumAge: 0, // No caching - always fresh
+        maximumAge: 0, // No caching
       });
 
       if (!pos) {
         console.warn("[Geolocation] Position is null");
         return null;
       }
-
-      console.log("[Geolocation] Fresh coordinates obtained");
       return {
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
       };
     }
 
-    // Not on native platform - return null quickly
+    // Not on native platform
     console.warn("[Geolocation] Not on native platform");
     return null;
   } catch (err) {
@@ -766,13 +518,13 @@ export async function getStoredCoordinates(): Promise<{
 //=============================================================================
 
 export async function fetchLatestUserLocation(userId: string) {
-  const res = await fetch(`/api/location/${userId}`);
-  if (!res.ok) return null;
-  return await res.json();
-}
-
-export function getLastKnownCoordinates() {
-  return lastKnownCoordinates;
+  try {
+    const data = await apiRequest(`/api/location/${userId}`, "GET");
+    return data;
+  } catch (err) {
+    console.warn("Failed to fetch latest user location:", err);
+    return null;
+  }
 }
 
 /**
@@ -790,6 +542,4 @@ export async function preStartLocationTracking(userId: string) {
 
   // Start foreground watch only; skip background to reduce unnecessary writes
   startForegroundLocationWatch();
-
-  console.log("GPS pre-warming started (foreground only)");
 }

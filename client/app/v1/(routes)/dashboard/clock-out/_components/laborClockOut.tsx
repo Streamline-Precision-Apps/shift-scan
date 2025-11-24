@@ -2,6 +2,7 @@
 import { sendNotification } from "@/app/lib/actions/generatorActions";
 // import { updateTimeSheet } from "@/app/lib/actions/timeSheetActions";
 import { useUserStore } from "@/app/lib/store/userStore";
+import { useSessionStore } from "@/app/lib/store/sessionStore";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
 import {
   stopClockOutTracking,
@@ -68,6 +69,7 @@ export const LaborClockOut = ({
   const router = useRouter();
   const { user } = useUserStore();
   const { reset } = useCookieStore();
+  const { currentSessionId, updateSession } = useSessionStore.getState();
   // Prefetch coordinates as soon as possible
 
   if (!user) return null;
@@ -94,8 +96,13 @@ export const LaborClockOut = ({
 
       // 🔴 CRITICAL: Stop tracking FIRST before doing anything else
       // This must complete before component unmounts
-
       await stopClockOutTracking();
+
+      // 🟢 End the session in the session store
+
+      if (currentSessionId) {
+        updateSession(currentSessionId, { endTime: body.endTime });
+      }
 
       // Now update state and redirect
       reset(); // Clear cookie store immediately

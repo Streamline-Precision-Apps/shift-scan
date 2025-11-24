@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
-  ColumnDef,
 } from "@tanstack/react-table";
 
 import {
@@ -17,21 +16,8 @@ import {
   TableRow,
 } from "@/app/v1/components/ui/table";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/app/v1/components/ui/tooltip";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/app/v1/components/ui/popover";
-import { Button } from "@/app/v1/components/ui/button";
 import React, { Dispatch, SetStateAction, useMemo, Suspense } from "react";
-import { format } from "date-fns";
-import { highlight } from "../../../_pages/highlight";
-import { Check, X } from "lucide-react";
+import { getFormSubmissionTableColumns } from "./formSubmissionTableColumns";
 import LoadingFormSubmissionTableState from "./loadingFormSubmissionTableState";
 import { FormTemplate } from "@/app/lib/types/forms";
 import { FormIndividualTemplate, Submission } from "./hooks/types";
@@ -85,360 +71,30 @@ export function FormSubmissionDataTable({
     ).sort((a: Field, b: Field) => a.order - b.order);
   }, [formSubmissions]);
 
-  // Dynamically create columns based on the form fields
-  const columns = useMemo(() => {
-    const baseColumns: ColumnDef<Submission>[] = [
-      // ID column
-      {
-        accessorKey: "id",
-        header: "ID",
-        cell: ({ row }) => {
-          const submission = row.original;
-          return (
-            <div className="text-xs text-center">
-              {highlight(submission.id.toString(), searchTerm || "")}
-            </div>
-          );
-        },
-      },
-      {
-        accessorKey: "submittedAt",
-        header: "Date Submitted",
-        cell: ({ row }) => {
-          const submission = row.original;
-          return (
-            <div className="text-xs text-center">
-              {submission.submittedAt
-                ? highlight(
-                    format(new Date(submission.submittedAt), "M/d/yyyy"),
-                    searchTerm || ""
-                  )
-                : "-"}
-            </div>
-          );
-        },
-      },
-      // Submitted By column
-      {
-        accessorKey: "submittedBy",
-        header: "Created By",
-        cell: ({ row }) => {
-          const submission = row.original;
-          return (
-            <div className="text-xs text-center">
-              {highlight(
-                `${submission.User.firstName} ${submission.User.lastName}`,
-                searchTerm || ""
-              )}
-            </div>
-          );
-        },
-      },
-    ];
-    // Add dynamic field columns based on the form template
-    const fieldColumns: ColumnDef<Submission>[] = fields.map(
-      (field: Field) => ({
-        id: field.id,
-        accessorKey: `data.${field.id}`,
-        header: field.label,
-        cell: ({ row }: { row: { original: Submission } }) => {
-          const submission = row.original;
-          // Use the same fallback pattern as in SubmissionTable
-          const val = (submission.data?.[field.id] ??
-            submission.data?.[field.label]) as
-            | string
-            | number
-            | boolean
-            | object
-            | Array<unknown>
-            | null
-            | undefined;
-
-          // If the field is a date or time, format it
-          let display: string | number | undefined = val as
-            | string
-            | number
-            | undefined;
-          let isObject = false;
-          let isArrayOfObjects = false;
-
-          if (val && (field.type === "DATE" || field.type === "TIME")) {
-            try {
-              if (
-                typeof val === "string" ||
-                typeof val === "number" ||
-                val instanceof Date
-              ) {
-                const dateObj = new Date(val);
-                if (!isNaN(dateObj.getTime())) {
-                  display = format(dateObj, "P");
-                } else {
-                  display = String(val);
-                }
-              } else {
-                display = String(val);
-              }
-            } catch {
-              display = String(val);
-            }
-          } else if (val && field.type === "CHECKBOX") {
-            display = val ? "Yes" : "No";
-          } else if (Array.isArray(val)) {
-            if (
-              val.length > 0 &&
-              typeof val[0] === "object" &&
-              val[0] !== null &&
-              "name" in val[0]
-            ) {
-              // Array of objects with name property
-              isArrayOfObjects = true;
-            } else {
-              display = (val as (string | number)[]).join(", ");
-            }
-          } else if (
-            val &&
-            typeof val === "object" &&
-            val !== null &&
-            "name" in val
-          ) {
-            // Single object with name property
-            isObject = true;
-            display = (val as { name?: string }).name || "";
-          }
-
-          return (
-            <div className="text-xs text-center">
-              {isArrayOfObjects && Array.isArray(val) ? (
-                val.length > 3 ? (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        className="bg-blue-50 rounded-lg px-2 py-1 border border-blue-200 text-xs text-blue-700 cursor-pointer min-w-12"
-                      >
-                        {val.length} items
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 max-h-64 overflow-y-auto">
-                      <div className="flex flex-wrap gap-1 ">
-                        {(val as { id: string; name: string }[]).map(
-                          (item, idx) => (
-                            <div
-                              key={item.id || idx}
-                              className="bg-blue-50 rounded-lg px-2 py-1 inline-block border border-blue-200 mb-1"
-                            >
-                              {highlight(item.name || "", searchTerm || "")}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                ) : (
-                  <div className="flex flex-wrap gap-1">
-                    {(val as { id: string; name: string }[]).map(
-                      (item, idx) => (
-                        <div
-                          key={item.id || idx}
-                          className="bg-sky-200 rounded-lg px-2 py-1 inline-block border border-blue-200"
-                        >
-                          {highlight(item.name || "", searchTerm || "")}
-                        </div>
-                      )
-                    )}
-                  </div>
-                )
-              ) : (
-                highlight(display?.toString?.() ?? "", searchTerm || "")
-              )}
-            </div>
-          );
-        },
-      })
-    );
-
-    // Add standard columns after the dynamic fields
-    const endColumns: ColumnDef<Submission>[] = [
-      // Status column
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-          return (
-            <div className=" text-xs text-center min-w-[50px]">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {row.original.status === "PENDING" ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-yellow-300 rounded-full cursor-pointer font-semibold">
-                      P
-                    </span>
-                  ) : row.original.status === "DRAFT" ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-sky-200 rounded-full cursor-pointer font-semibold">
-                      P
-                    </span>
-                  ) : row.original.status === "APPROVED" ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-green-300 rounded-full cursor-pointer font-semibold">
-                      A
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-red-300 rounded-full cursor-pointer font-semibold">
-                      R
-                    </span>
-                  )}
-                </TooltipTrigger>
-                <TooltipContent
-                  side="top"
-                  align="center"
-                  className="w-[120px] justify-center"
-                >
-                  <div className="text-xs text-center">
-                    {row.original.status === "PENDING"
-                      ? "Pending"
-                      : row.original.status === "DRAFT"
-                      ? "In Progress"
-                      : row.original.status === "APPROVED"
-                      ? "Approved"
-                      : "Rejected"}
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          );
-        },
-      },
-    ];
-
-    // Add signature column if required
-    const signatureColumn: ColumnDef<Submission>[] = isSignatureRequired
-      ? [
-          {
-            accessorKey: "signature",
-            header: "Signature",
-            cell: ({ row }) => {
-              const submission = row.original;
-              const hasSignature =
-                submission.data?.signature || submission.data?.Signature;
-
-              return (
-                <div className="text-xs text-center">
-                  {hasSignature ? (
-                    <span className="text-emerald-600 font-bold">Signed</span>
-                  ) : (
-                    <span className="text-red-500 font-bold">Not Signed</span>
-                  )}
-                </div>
-              );
-            },
-          },
-        ]
-      : [];
-
-    // Actions column
-    const actionsColumn: ColumnDef<Submission>[] = [
-      {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-          const submission = row.original;
-          return (
-            <div className="flex flex-row justify-center">
-              {showPendingOnly && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size={"icon"}
-                      variant={"link"}
-                      aria-label="Approve Timesheet"
-                      onClick={() =>
-                        onApprovalAction?.(submission.id, "APPROVED")
-                      }
-                    >
-                      <Check className="h-4 w-4 " color="green" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Approve</TooltipContent>
-                </Tooltip>
-              )}
-              {showPendingOnly && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size={"icon"}
-                      variant={"link"}
-                      aria-label="Deny Timesheet"
-                      onClick={() =>
-                        onApprovalAction?.(submission.id, "REJECTED")
-                      }
-                    >
-                      <X className="h-4 w-4 " color="red" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Deny</TooltipContent>
-                </Tooltip>
-              )}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size={"icon"}
-                    onClick={() => {
-                      setShowFormSubmission(true);
-                      setSelectedSubmissionId(submission.id);
-                    }}
-                  >
-                    <img
-                      src="/formEdit.svg"
-                      alt="Edit Form"
-                      className="h-4 w-4 cursor-pointer"
-                    />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit Submission</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size={"icon"}
-                    onClick={() => {
-                      openHandleDeleteSubmission(submission.id);
-                    }}
-                  >
-                    <img
-                      src="/trash-red.svg"
-                      alt="Delete Form"
-                      className="h-4 w-4 cursor-pointer"
-                    />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Delete Submission</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          );
-        },
-      },
-    ];
-
-    // Combine all columns
-    return [
-      ...baseColumns,
-      ...fieldColumns,
-      ...endColumns,
-      ...signatureColumn,
-      ...actionsColumn,
-    ];
-  }, [
-    fields,
-    isSignatureRequired,
-    searchTerm,
-    setShowFormSubmission,
-    setSelectedSubmissionId,
-    openHandleDeleteSubmission,
-  ]);
+  // Use the DRY column generator
+  const columns = useMemo(
+    () =>
+      getFormSubmissionTableColumns({
+        fields,
+        isSignatureRequired,
+        searchTerm,
+        setShowFormSubmission,
+        setSelectedSubmissionId,
+        openHandleDeleteSubmission,
+        showPendingOnly,
+        onApprovalAction,
+      }),
+    [
+      fields,
+      isSignatureRequired,
+      searchTerm,
+      setShowFormSubmission,
+      setSelectedSubmissionId,
+      openHandleDeleteSubmission,
+      showPendingOnly,
+      onApprovalAction,
+    ]
+  );
 
   const table = useReactTable({
     data: formSubmissions?.Submissions || [],

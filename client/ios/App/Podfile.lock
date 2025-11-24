@@ -1,6 +1,4 @@
 PODS:
-  - AparajitaCapacitorBiometricAuth (9.1.2):
-    - Capacitor
   - Capacitor (7.4.4):
     - CapacitorCordova
   - CapacitorApp (7.1.0):
@@ -28,23 +26,20 @@ PODS:
     - Capacitor
   - CapacitorScreenOrientation (7.0.2):
     - Capacitor
-  - CapacitorSecureStoragePlugin (0.12.0):
-    - Capacitor
-    - SwiftKeychainWrapper
   - CapacitorSplashScreen (7.0.3):
     - Capacitor
   - CapacitorStatusBar (7.0.3):
     - Capacitor
   - CapgoBackgroundGeolocation (7.2.4):
     - Capacitor
+  - CapgoCapacitorNativeBiometric (7.1.13):
+    - Capacitor
   - IONFileTransferLib (1.0.1)
   - IONFileViewerLib (1.0.3)
   - IONGeolocationLib (1.0.1)
   - OSBarcodeLib (2.0.1)
-  - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
-  - "AparajitaCapacitorBiometricAuth (from `../../node_modules/@aparajita/capacitor-biometric-auth`)"
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorBarcodeScanner (from `../../node_modules/@capacitor/barcode-scanner`)"
@@ -57,10 +52,10 @@ DEPENDENCIES:
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorScreenOrientation (from `../../node_modules/@capacitor/screen-orientation`)"
-  - CapacitorSecureStoragePlugin (from `../../node_modules/capacitor-secure-storage-plugin`)
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapgoBackgroundGeolocation (from `../../node_modules/@capgo/background-geolocation`)"
+  - "CapgoCapacitorNativeBiometric (from `../../node_modules/@capgo/capacitor-native-biometric`)"
 
 SPEC REPOS:
   trunk:
@@ -68,11 +63,8 @@ SPEC REPOS:
     - IONFileViewerLib
     - IONGeolocationLib
     - OSBarcodeLib
-    - SwiftKeychainWrapper
 
 EXTERNAL SOURCES:
-  AparajitaCapacitorBiometricAuth:
-    :path: "../../node_modules/@aparajita/capacitor-biometric-auth"
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
@@ -97,17 +89,16 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/push-notifications"
   CapacitorScreenOrientation:
     :path: "../../node_modules/@capacitor/screen-orientation"
-  CapacitorSecureStoragePlugin:
-    :path: "../../node_modules/capacitor-secure-storage-plugin"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
   CapgoBackgroundGeolocation:
     :path: "../../node_modules/@capgo/background-geolocation"
+  CapgoCapacitorNativeBiometric:
+    :path: "../../node_modules/@capgo/capacitor-native-biometric"
 
 SPEC CHECKSUMS:
-  AparajitaCapacitorBiometricAuth: c7edb43d80486150b81224d3ff7e950b37a3c2f1
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
   CapacitorApp: 26587c2ce485d88ddb39adb21cac64f8e481afe3
   CapacitorBarcodeScanner: 4b6d4ecfff4133af982d09acd423610c14ac0c3f
@@ -120,16 +111,15 @@ SPEC CHECKSUMS:
   CapacitorGeolocation: 84f868bea4c2499aebc3bb3a88fd0a508f87ab87
   CapacitorPushNotifications: bdd621fbd562be34a41f4a7b1750efa000447d5a
   CapacitorScreenOrientation: e0d5b9ef293b269b8f93373355d5b276f50fabea
-  CapacitorSecureStoragePlugin: 50de0808ad398aa401e00f9e58adf88c77cb3c25
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
   CapacitorStatusBar: 0659ddc7b1713764a05831463d215b177a15d054
   CapgoBackgroundGeolocation: 119544441aa746d83a79643048957e35da8f4557
+  CapgoCapacitorNativeBiometric: ede2c497c810fcad523b4e3d1895f989d33fe72b
   IONFileTransferLib: b268561ab0ba7f386eea228c4986b55ba0146ca9
   IONFileViewerLib: 574758ebcaa4b1543669b1c9708f1970e1172b29
   IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
   OSBarcodeLib: 57987d2eb1f916f701f4554e20e349b3cb83f023
-  SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 9ebbf5a50ab2f2408fdd24ba3431a946d5928abb
+PODFILE CHECKSUM: 399c2205fa783485b65c203cf82fa8e126b0afbf
 
 COCOAPODS: 1.16.2

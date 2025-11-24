@@ -1,7 +1,5 @@
 "use client";
 import "../globals.css";
-import StatusBarSetup from "../lib/client/statusBar";
-import { AppProviders } from "./providers";
 
 export default function RootLayout({
   children,

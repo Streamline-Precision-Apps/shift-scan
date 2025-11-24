@@ -47,6 +47,7 @@ export default function RootLayout({
         <ClientIntlProvider>
           <AppProviders>
             <StatusBarSetup />
+
             {children}
           </AppProviders>
         </ClientIntlProvider>

@@ -6,10 +6,10 @@ import { EyeIcon, EyeOff, Fingerprint } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import {
-  BiometricAuth,
-  BiometryErrorType,
-} from "@aparajita/capacitor-biometric-auth";
-import type { CheckBiometryResult } from "@aparajita/capacitor-biometric-auth";
+  NativeBiometric,
+  BiometryType,
+} from "@capgo/capacitor-native-biometric";
+
 import { useTranslations } from "next-intl";
 import { useUserStore } from "../lib/store/userStore";
 import { useProfitStore } from "../lib/store/profitStore";
@@ -17,6 +17,7 @@ import { useEquipmentStore } from "../lib/store/equipmentStore";
 import { useCostCodeStore } from "../lib/store/costCodeStore";
 import { getApiUrl } from "../lib/utils/api-Utils";
 import Spinner from "../v1/components/(animations)/spinner";
+import { set } from "lodash";
 
 export default function SignInPage() {
   const isNative = Capacitor.isNativePlatform();
@@ -25,6 +26,7 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [animateFields, setAnimateFields] = useState(false);
   const [error, setError] = useState("");
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricLoading, setBiometricLoading] = useState(false);
@@ -36,38 +38,22 @@ export default function SignInPage() {
     router.push(target);
   }, [isNative, router]);
 
-  // Update biometry state and handle availability changes
-  const updateBiometryInfo = useCallback((info: CheckBiometryResult): void => {
-    if (info.isAvailable) {
-      // Biometry is available, info.biometryType will tell you the primary type.
-      setBiometricAvailable(true);
-    } else {
-      // Biometry is not available, info.reason and info.code will tell you why.
-
-      setBiometricAvailable(false);
-    }
-  }, []);
-
   // Check biometric availability
   useEffect(() => {
-    const checkBiometryAvailability = async () => {
-      if (isNative) {
-        try {
-          const biometryInfo = await BiometricAuth.checkBiometry();
-          updateBiometryInfo(biometryInfo);
-        } catch (err) {
-          if (err instanceof Error) {
-            console.error("Biometric check failed:", err.message);
-          } else {
-            console.error("Biometric check failed:", err);
-          }
-          setBiometricAvailable(false);
-        }
+    if (!isNative) return;
+
+    const checkBiometry = async () => {
+      try {
+        const info = await NativeBiometric.isAvailable({ useFallback: true });
+        setBiometricAvailable(info.isAvailable);
+      } catch (err) {
+        console.warn("Biometric check failed:", err);
+        setBiometricAvailable(false);
       }
     };
 
-    checkBiometryAvailability();
-  }, [isNative, updateBiometryInfo]);
+    checkBiometry();
+  }, [isNative]);
 
   // Check once if user is already signed in
   useEffect(() => {
@@ -198,23 +184,16 @@ export default function SignInPage() {
         throw new Error("Failed to save credentials locally.");
       }
 
-      // Save credentials for biometric login on native platforms (with delay to ensure storage)
+      // Save credentials for biometrics on native
       if (isNative && biometricAvailable) {
         try {
-          localStorage.setItem("shift_scan_username", username);
-          localStorage.setItem("shift_scan_password", password);
-          const storedUsername = localStorage.getItem("shift_scan_username");
-          const storedPassword = localStorage.getItem("shift_scan_password");
-          if (storedUsername !== username || storedPassword !== password) {
-            console.error(
-              "❌ Biometric credentials in localStorage do not match what was set",
-              { storedUsername, storedPassword }
-            );
-          }
-          // Wait a bit to ensure credentials are persisted before continuing
-          await new Promise((resolve) => setTimeout(resolve, 200));
+          await NativeBiometric.setCredentials({
+            username,
+            password,
+            server: "shift-scan",
+          });
         } catch (bioErr) {
-          console.error("Failed to save biometric credentials:", bioErr);
+          console.warn("Failed to store biometric credentials:", bioErr);
         }
       }
 
@@ -258,53 +237,49 @@ export default function SignInPage() {
     }
   };
 
+  // Biometric login
   const handleBiometricLogin = async () => {
     setBiometricLoading(true);
     setError("");
     try {
-      // Authenticate using biometry
-      await BiometricAuth.authenticate({
-        reason: "To access your Shift Scan account",
-        cancelTitle: "Cancel",
-        allowDeviceCredential: true,
-        iosFallbackTitle: "Use passcode",
-        androidTitle: "Biometric Sign In",
-        androidSubtitle: "Authenticate to sign in",
-        androidConfirmationRequired: false,
+      await NativeBiometric.verifyIdentity({
+        reason: "Log in to Shift Scan",
+        title: "Biometric Login",
+        description: "Authenticate to continue",
+        negativeButtonText: "Cancel",
+        useFallback: true,
       });
 
-      // Retrieve stored credentials
-      const savedUsername = localStorage.getItem("shift_scan_username");
-      const savedPassword = localStorage.getItem("shift_scan_password");
-
-      if (!savedUsername || !savedPassword) {
-        setError(
-          "No stored credentials found. Please sign in with username and password first."
-        );
-        setBiometricLoading(false);
+      const creds = await NativeBiometric.getCredentials({
+        server: "shift-scan",
+      });
+      if (!creds?.username || !creds?.password) {
+        setError("No saved credentials. Sign in with username/password first.");
         return;
       }
+      //animate filling the fields
+      setAnimateFields(true);
+      setUsername(creds.username);
+      const masked = "*".repeat(creds.password.length);
+      setPassword(masked);
 
-      // Perform login with stored credentials
-      await performLogin(savedUsername, savedPassword);
+      await performLogin(creds.username, creds.password);
     } catch (err: any) {
-      // Handle biometric errors
-      if (err.code === BiometryErrorType.userCancel) {
-        // User cancelled - silent fail, don't show error
-        setError("");
-      } else if (err.code === BiometryErrorType.biometryLockout) {
-        setError("Too many failed attempts. Please try again later.");
-      } else if (err.code === BiometryErrorType.biometryNotEnrolled) {
-        setError(
-          "No biometric data found. Please sign in with username and password."
-        );
-      } else if (err.code === BiometryErrorType.passcodeNotSet) {
-        setError("Device passcode not set. Please set a device passcode.");
-      } else {
-        setError(err.message || "Biometric authentication failed.");
+      const code = err.errorCode ?? err.code;
+      switch (code) {
+        case 1:
+          setError("Biometrics not available");
+          break;
+        case 3:
+          setError("No biometric data enrolled");
+          break;
+        // handle other codes based on their doc
+        default:
+          setError("Biometric error: " + code);
       }
-      console.error("Biometric auth error:", err);
+      console.error("Biometric error:", err);
     } finally {
+      setAnimateFields(false);
       setBiometricLoading(false);
     }
   };
@@ -410,6 +385,7 @@ export default function SignInPage() {
                   aria-label={
                     showPassword ? t("hidePassword") : t("showPassword")
                   }
+                  disabled={animateFields}
                   className="absolute inset-y-0 right-2 top-1/2 -translate-y-1/2 text-sm text-app-dark-blue/80 hover:text-app-dark-blue focus:outline-none"
                 >
                   {showPassword ? (
@@ -448,10 +424,15 @@ export default function SignInPage() {
               )}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || animateFields}
                 className="w-full bg-app-dark-blue hover:bg-app-dark-blue/80 disabled:bg-app-dark-blue/50 text-white font-bold py-3 px-8 rounded-xl shadow-lg text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-app-blue"
               >
-                {loading ? t("loading") : t("submit")}
+                <div className="flex flex-row  items-center justify-center gap-2">
+                  {loading || animateFields ? t("loading") : t("submit")}
+                  {loading || animateFields ? (
+                    <Spinner size={20} color={"border-white"} />
+                  ) : null}
+                </div>
               </button>
             </div>
           </form>

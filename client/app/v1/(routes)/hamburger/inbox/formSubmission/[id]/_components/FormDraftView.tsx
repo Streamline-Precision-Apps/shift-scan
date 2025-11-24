@@ -221,7 +221,7 @@ export function FormDraftView({
             </div>
 
             {/* Form fields section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-56">
               <div className="mb-6 w-full flex flex-row justify-between items-center">
                 <h3 className="text-blue-600 font-semibold text-base">
                   Form Details
@@ -237,7 +237,7 @@ export function FormDraftView({
                 additionalContent={
                   <>
                     {template?.isSignatureRequired && (
-                      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-40">
+                      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 ">
                         <div className="mb-2 flex flex-row ">
                           <span className="text-sm font-medium text-gray-700 ">
                             Signature
