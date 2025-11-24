@@ -6,6 +6,7 @@ import StatusBarSetup from "./lib/client/statusBar";
 import { Button } from "./v1/components/ui/button";
 
 import Link from "next/link";
+// import BugLogPage from "./lib/utils/buglog";
 export const viewport: Viewport = {
   themeColor: "#57BDE9",
   viewportFit: "cover",
@@ -51,51 +52,7 @@ export default function RootLayout({
             <StatusBarSetup />
 
             {children}
-            {/* Floating debug button bottom right */}
-            <Link passHref href="/debuglog">
-              <Button
-                style={{
-                  position: "fixed",
-                  right: 24,
-                  bottom: 24,
-                  zIndex: 1000,
-                  background: "#222",
-                  color: "#0f0",
-                  borderRadius: 999,
-                  padding: "14px 22px",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.18)",
-                  textDecoration: "none",
-                  opacity: 0.85,
-                  transition: "opacity 0.2s",
-                }}
-              >
-                Debug Log
-              </Button>
-            </Link>
-            <Link passHref href="/v1/dashboard">
-              <Button
-                style={{
-                  position: "fixed",
-                  left: 24,
-                  bottom: 24,
-                  zIndex: 1000,
-                  background: "#222",
-                  color: "#0f0",
-                  borderRadius: 999,
-                  padding: "14px 22px",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  boxShadow: "0 2px 12px rgba(0,0,0,0.18)",
-                  textDecoration: "none",
-                  opacity: 0.85,
-                  transition: "opacity 0.2s",
-                }}
-              >
-                DashBoard
-              </Button>
-            </Link>
+            {/* <BugLogPage /> debugging component - provider disabled too */}
           </AppProviders>
         </ClientIntlProvider>
       </body>

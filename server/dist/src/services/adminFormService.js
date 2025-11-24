@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 !function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="dfd3d5c5-d96a-526e-9f29-0c600f4c92ea")}catch(e){}}();
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="4cf0d86f-a82e-54e3-9b15-71c98f607067")}catch(e){}}();
+>>>>>>> e6598919 (saving commit, bugs should be all fixed, rebuild backend source maps, 10 times on the hour location is marked.)
 import prisma from "../lib/prisma.js";
 import { FormTemplateCategory, FormTemplateStatus, FieldType, FormStatus, } from "../../generated/prisma/index.js";
 export async function getAllFormTemplates(search, page, pageSize, skip, status, formType) {
@@ -681,4 +685,8 @@ export async function approveFormSubmission(submissionId, action, formData) {
     return updated;
 }
 //# sourceMappingURL=adminFormService.js.map
+<<<<<<< HEAD
 //# debugId=dfd3d5c5-d96a-526e-9f29-0c600f4c92ea
+=======
+//# debugId=4cf0d86f-a82e-54e3-9b15-71c98f607067
+>>>>>>> e6598919 (saving commit, bugs should be all fixed, rebuild backend source maps, 10 times on the hour location is marked.)

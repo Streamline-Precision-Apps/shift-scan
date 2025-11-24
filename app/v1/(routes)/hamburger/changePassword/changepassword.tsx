@@ -28,6 +28,7 @@ export default function ChangePassword({ userId }: { userId: string }) {
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++; // Special character
     return score;
   }
+
   const t = useTranslations("Hamburger-ChangePassword");
   const [showBanner, setShowBanner] = useState(false);
   const [score, setScore] = useState(0);
@@ -47,6 +48,7 @@ export default function ChangePassword({ userId }: { userId: string }) {
   const ios = Capacitor.getPlatform() === "ios";
   const android = Capacitor.getPlatform() === "android";
   const route = useRouter();
+  const signOut = useSignOut();
 
   const viewPasscode1 = () => {
     setViewSecret1(!viewSecret1);
@@ -98,7 +100,9 @@ export default function ChangePassword({ userId }: { userId: string }) {
       await setUserPassword(formData);
 
       // Sign out the user and redirect to sign in page
-      useSignOut();
+      signOut();
+
+      // TODO: add reset method to biometrics later
     } catch (error) {
       console.error("Error updating password:", error);
       setBannerMessage(

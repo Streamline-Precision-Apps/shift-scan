@@ -1,6 +1,4 @@
 "use client";
-import { updateEmployeeEquipmentLog } from "@/app/lib/actions/equipmentActions";
-
 import { Contents } from "@/app/v1/components/(reusable)/contents";
 import { Grids } from "@/app/v1/components/(reusable)/grids";
 import { Holds } from "@/app/v1/components/(reusable)/holds";
@@ -268,31 +266,11 @@ export default function CombinedForm({ id }: { id: string }) {
   };
   const deleteLog = async () => {
     try {
-      // Check if there's a refuel log to delete
+      // Delete refuel log if it exists
       if (state.formState.refuelLogs) {
-        // Call the deleteEquipmentRefuelLog action with the ID of the refuel log
         await deleteEquipmentRefuelLog(state.formState.refuelLogs.id);
-
-        // Update the state to reflect the deletion
-        setState((prev) => ({
-          ...prev,
-          formState: {
-            ...prev.formState,
-            refuelLogs: null, // Set to null since we've deleted the refuel log
-          },
-          hasChanged: true,
-        }));
-
-        setNotification("Refuel log removed", "success");
       }
-    } catch (error) {
-      console.error("Error deleting refuel log:", error);
-      setNotification("Failed to delete refuel log", "error");
-    }
-  };
-
-  const deleteEquipmentLog = async () => {
-    try {
+      // Always delete the equipment log itself
       await deleteEmployeeEquipmentLog(state.formState.id);
       setNotification(t("Deleted"), "success");
       router.replace("/v1/dashboard/equipment");
@@ -302,15 +280,17 @@ export default function CombinedForm({ id }: { id: string }) {
     }
   };
 
+  // deleteEquipmentLog is now handled by deleteLog
+
   const handleDeleteConfirm = useCallback(async () => {
     setIsDeleting(true);
     try {
-      await deleteEquipmentLog();
+      await deleteLog();
       setIsDeleteDialogOpen(false);
     } finally {
       setIsDeleting(false);
     }
-  }, []);
+  }, [deleteLog]);
 
   const handleDeleteCancel = useCallback(() => {
     setIsDeleteDialogOpen(false);

@@ -25,7 +25,7 @@ const isNative = Capacitor.isNativePlatform();
 const LOCATION_PERMISSION_REQUESTED_KEY = "location_permission_requested";
 
 // Minimum interval between location uploads (ms)
-const WRITE_INTERVAL_MS = 1 * 60 * 1000; // 1 minutes for testing
+const WRITE_INTERVAL_MS = 6 * 60 * 1000; // 6 minutes for testing
 
 // All state is now managed in Zustand session store
 
