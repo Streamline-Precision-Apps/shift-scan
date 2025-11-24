@@ -95,8 +95,7 @@ export function MobileCombobox({
         setOpen(false);
       }
     } else {
-      // For single select, just mark the item as temporarily selected
-      // but don't apply the change yet - wait for confirmation
+      // For single select, set the temp selection and visually unselect the previous value
       setTempSelection(optionValue);
     }
   };
@@ -184,10 +183,16 @@ export function MobileCombobox({
             ) : (
               <div className="py-1">
                 {filteredOptions.map((option) => {
-                  const isSelected = multiSelect
-                    ? value.includes(option.value)
-                    : tempSelection === option.value ||
-                      value.includes(option.value);
+                  let isSelected;
+                  if (multiSelect) {
+                    isSelected = value.includes(option.value);
+                  } else {
+                    // In single select, only tempSelection is checked (if set), otherwise current value
+                    isSelected =
+                      tempSelection !== null
+                        ? tempSelection === option.value
+                        : value.includes(option.value);
+                  }
                   return (
                     <button
                       key={option.value}

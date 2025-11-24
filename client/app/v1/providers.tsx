@@ -10,6 +10,7 @@ import { CurrentViewProvider } from "../lib/context/CurrentViewContext";
 import { NotificationProvider } from "../lib/context/NotificationContext";
 import { SavedCostCodeProvider } from "../lib/context/CostCodeContext";
 import { PayPeriodHoursProvider } from "../lib/context/PayPeriodHoursContext";
+// import { DebugLogProvider } from "../lib/context/DebugLogContext";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -22,7 +23,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                 <NotificationProvider>
                   <SavedCostCodeProvider>
                     <PayPeriodHoursProvider>
+                      {/* <DebugLogProvider> */}
                       <PermissionsProvider>{children}</PermissionsProvider>
+                      {/* </DebugLogProvider> */}
                     </PayPeriodHoursProvider>
                   </SavedCostCodeProvider>
                 </NotificationProvider>

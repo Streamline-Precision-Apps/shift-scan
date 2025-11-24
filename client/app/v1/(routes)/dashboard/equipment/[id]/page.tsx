@@ -1,5 +1,5 @@
 "use client";
-import { updateEmployeeEquipmentLog } from "@/app/lib/actions/equipmentActions";
+
 import { useNotification } from "@/app/lib/context/NotificationContext";
 import { Bases } from "@/app/v1/components/(reusable)/bases";
 import { Contents } from "@/app/v1/components/(reusable)/contents";
@@ -8,12 +8,6 @@ import { Holds } from "@/app/v1/components/(reusable)/holds";
 import { useRouter } from "next/navigation";
 import { Suspense, use, useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { differenceInSeconds, parseISO } from "date-fns";
-import {
-  deleteEmployeeEquipmentLog,
-  deleteRefuelLog,
-  updateRefuelLog,
-} from "@/app/lib/actions/truckingActions";
 import { Buttons } from "@/app/v1/components/(reusable)/buttons";
 import { Titles } from "@/app/v1/components/(reusable)/titles";
 import { apiRequest } from "@/app/lib/utils/api-Utils";
@@ -22,8 +16,6 @@ import {
   UnifiedEquipmentState,
   EmployeeEquipmentLogData,
   EquipmentLog,
-  RefuelLogData,
-  Refueled,
   EquipmentState,
 } from "./types";
 
