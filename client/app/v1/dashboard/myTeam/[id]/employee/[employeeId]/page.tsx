@@ -1,17 +1,11 @@
+"use client";
 import TeamMemberClientPage from "./_components/TeamMemberClientPage";
-import { getAllTeamEmployeePairs } from "./_components/getAllTeamEmployeePairs";
 
-// Static params generator for Next.js App Router
-export async function generateStaticParams() {
-  const pairs = await getAllTeamEmployeePairs();
-  return pairs;
-}
-
-// Server Component: receives params and passes to client component
-const TeamMemberPage = async ({
+export default function TeamMemberPage({
   params,
 }: {
   params: { id: string; employeeId: string };
+<<<<<<< HEAD
 }) => {
   const resolvedParams = await params;
   const id = resolvedParams.id;
@@ -20,3 +14,8 @@ const TeamMemberPage = async ({
 };
 
 export default TeamMemberPage;
+=======
+}) {
+  return <TeamMemberClientPage id={params.id} employeeId={params.employeeId} />;
+}
+>>>>>>> 95da5110 (save no static)

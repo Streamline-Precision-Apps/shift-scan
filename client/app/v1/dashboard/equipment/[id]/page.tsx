@@ -1,6 +1,7 @@
+"use client";
 import EquipmentIdClientPageWrapper from "./_components/EquipmentIdClientPageWrapper";
-import { getAllEquipmentLogIds } from "./_components/getAllEquipmentLogIds";
 
+<<<<<<< HEAD
 // Static params generator for Next.js App Router
 export async function generateStaticParams() {
   const ids = await getAllEquipmentLogIds();
@@ -11,7 +12,13 @@ export async function generateStaticParams() {
 const EquipmentLogPage = async ({ params }: { params: { id: string } }) => {
   const resolvedParams = await params;
   const id = resolvedParams.id;
+=======
+export default function EquipmentLogPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
+>>>>>>> 95da5110 (save no static)
   return <EquipmentIdClientPageWrapper id={id} />;
-};
-
-export default EquipmentLogPage;
+}

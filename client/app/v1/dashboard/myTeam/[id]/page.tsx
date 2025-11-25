@@ -1,6 +1,11 @@
+<<<<<<< HEAD
+=======
+"use client";
+import { useUserStore } from "@/app/lib/store/userStore";
+>>>>>>> 95da5110 (save no static)
 import FormPageClient from "./FormPageClient";
-import { getAllTeamIds } from "./_components/getAllTeamIds";
 
+<<<<<<< HEAD
 // Static params generator for Next.js App Router
 export async function generateStaticParams() {
   const ids = await getAllTeamIds();
@@ -13,7 +18,9 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const resolvedParams = await params; // unwrap the promise
   const id = resolvedParams.id;
 
+=======
+export default function Page({ params }: { params: { id: string } }) {
+  const { id } = params;
+>>>>>>> 95da5110 (save no static)
   return <FormPageClient id={id} />;
-};
-
-export default Page;
+}
