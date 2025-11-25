@@ -1270,6 +1270,15 @@ export async function getRecentJobDetails(userId: string) {
   return job;
 }
 
+export async function getAllEquipmentLogs() {
+  const logs = await prisma.employeeEquipmentLog.findMany({
+    select: {
+      id: true,
+    },
+  });
+  return logs;
+}
+
 export async function createEmployeeEquipmentLogService({
   equipmentId,
   timeSheetId,

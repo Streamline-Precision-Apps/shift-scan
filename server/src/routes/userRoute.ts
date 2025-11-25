@@ -19,7 +19,12 @@ import {
   sessionController,
   endSessionController,
   userSignatureController,
+<<<<<<< HEAD
 } from "../controllers/UserController.js";
+=======
+  getAllTeams,
+} from "../controllers/userController.js";
+>>>>>>> a81b5dc7 (got static up and working and built complete)
 
 const router = Router();
 
@@ -130,6 +135,8 @@ router.get("/:userId/crew/:crewId/online", getCrewOnlineStatus);
 router.get("/", verifyToken, getUsers);
 
 router.get("/All", verifyToken, getAllUsers);
+
+router.get("/teams", getAllTeams);
 
 /**
  * @swagger
