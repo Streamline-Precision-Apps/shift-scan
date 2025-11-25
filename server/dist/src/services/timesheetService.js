@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 !function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="fccb4ef6-f456-54d4-8fb0-4ff4cfa91649")}catch(e){}}();
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="70b7f0e3-d899-5ca6-b7a8-36dded7a3276")}catch(e){}}();
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)
 import { formatISO } from "date-fns";
 import { createDateRange } from "../lib/dateUtils.js";
 import prisma from "../lib/prisma.js";
@@ -1043,6 +1047,14 @@ export async function getRecentJobDetails(userId) {
     }
     return job;
 }
+export async function getAllEquipmentLogs() {
+    const logs = await prisma.employeeEquipmentLog.findMany({
+        select: {
+            id: true,
+        },
+    });
+    return logs;
+}
 export async function createEmployeeEquipmentLogService({ equipmentId, timeSheetId, endTime, comment, }) {
     try {
         // Validate equipment existence and status
@@ -1461,4 +1473,8 @@ export async function deleteRefuelLogService(refuelLogId) {
     }
 }
 //# sourceMappingURL=timesheetService.js.map
+<<<<<<< HEAD
 //# debugId=fccb4ef6-f456-54d4-8fb0-4ff4cfa91649
+=======
+//# debugId=70b7f0e3-d899-5ca6-b7a8-36dded7a3276
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)

@@ -556,6 +556,9 @@ export declare function getRecentJobDetails(userId: string): Promise<{
     name: string;
     qrId: string;
 }>;
+export declare function getAllEquipmentLogs(): Promise<{
+    id: string;
+}[]>;
 export declare function createEmployeeEquipmentLogService({ equipmentId, timeSheetId, endTime, comment, }: {
     equipmentId: string;
     timeSheetId: string;

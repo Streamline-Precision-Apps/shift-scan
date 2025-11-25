@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 !function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="26bf91b8-0a87-51ac-8256-55b3bddb0d43")}catch(e){}}();
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="c7909639-568e-5c77-acaf-e9200d70610b")}catch(e){}}();
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)
 import prisma from "../lib/prisma.js";
 import { FormStatus } from "../../generated/prisma/client.js";
 /**
@@ -17,6 +21,16 @@ export const ServiceGetForms = async () => {
         select: {
             id: true,
             name: true,
+        },
+    });
+};
+/**
+ * Get all form submissions
+ */
+export const ServiceGetFormSubmissions = async () => {
+    return await prisma.formSubmission.findMany({
+        select: {
+            id: true,
         },
     });
 };
@@ -621,4 +635,8 @@ export const updateFormSubmissionService = async (body) => {
     return updated;
 };
 //# sourceMappingURL=formsService.js.map
+<<<<<<< HEAD
 //# debugId=26bf91b8-0a87-51ac-8256-55b3bddb0d43
+=======
+//# debugId=c7909639-568e-5c77-acaf-e9200d70610b
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)

@@ -1,6 +1,11 @@
 
+<<<<<<< HEAD
 !function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="ced78969-b0c7-5b2c-923c-e286b5c0ff10")}catch(e){}}();
 import { createGeneralTimesheetService, approveTimesheetsBatchService, updateTimesheetService, getUserTimesheetsByDate, getTimesheetDetailsManager, getManagerCrewTimesheets, createMechanicTimesheetService, createTascoTimesheetService, createTruckDriverTimesheetService, getRecentTimeSheetForUser, getTimesheetActiveStatus, getBannerDataForTimesheet, getLogsForDashboard, getClockOutComment, getEquipmentLogs, getRecentJobDetails, createEmployeeEquipmentLogService, getEmployeeEquipmentLogDetails, deleteEmployeeEquipmentLog, updateEmployeeEquipmentLogService, getClockOutDetailsService, updateClockOutService, getPreviousTimesheet, returnToPreviousTimesheetService, getContinueTimesheetService, deleteRefuelLogService, } from "../services/timesheetService.js";
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="d6df402f-ee2c-57fa-a012-bf87920dff50")}catch(e){}}();
+import { createGeneralTimesheetService, approveTimesheetsBatchService, updateTimesheetService, getUserTimesheetsByDate, getTimesheetDetailsManager, getManagerCrewTimesheets, createMechanicTimesheetService, createTascoTimesheetService, createTruckDriverTimesheetService, getRecentTimeSheetForUser, getTimesheetActiveStatus, getBannerDataForTimesheet, getLogsForDashboard, getClockOutComment, getEquipmentLogs, getRecentJobDetails, createEmployeeEquipmentLogService, getEmployeeEquipmentLogDetails, deleteEmployeeEquipmentLog, updateEmployeeEquipmentLogService, getClockOutDetailsService, updateClockOutService, getPreviousTimesheet, returnToPreviousTimesheetService, getContinueTimesheetService, deleteRefuelLogService, getAllEquipmentLogs, } from "../services/timesheetService.js";
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)
 import Express from "express";
 // GET /v1/timesheet/user/:userId/active-status
 export async function getTimesheetActiveStatusController(req, res) {
@@ -342,6 +347,17 @@ export async function getUserRecentJobsiteDetailsController(req, res) {
             .json({ error: "Failed to fetch recent jobsite details." });
     }
 }
+// GET /v1/timesheet/equipment-log
+export async function getAllEquipmentLogsController(req, res) {
+    try {
+        const logs = await getAllEquipmentLogs();
+        return res.json({ success: true, data: logs });
+    }
+    catch (error) {
+        console.error("[getAllEquipmentLogsController] Error:", error);
+        return res.status(500).json({ error: "Failed to fetch equipment logs." });
+    }
+}
 // POST /v1/timesheet/equipment-log
 export async function createEmployeeEquipmentLogController(req, res) {
     try {
@@ -550,4 +566,8 @@ export async function deleteRefuelLogController(req, res) {
     }
 }
 //# sourceMappingURL=timesheetController.js.map
+<<<<<<< HEAD
 //# debugId=ced78969-b0c7-5b2c-923c-e286b5c0ff10
+=======
+//# debugId=d6df402f-ee2c-57fa-a012-bf87920dff50
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)

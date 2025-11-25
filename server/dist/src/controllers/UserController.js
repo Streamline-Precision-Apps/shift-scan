@@ -131,6 +131,24 @@ export async function getAllUsers(req, res) {
         });
     }
 }
+export async function getAllTeams(req, res) {
+    try {
+        const users = await UserService.getAllTeamsService();
+        res.status(200).json({
+            success: true,
+            data: users,
+            message: "Users retrieved successfully",
+        });
+    }
+    catch (error) {
+        const statusCode = error instanceof Error && error.message.includes("not found") ? 404 : 500;
+        res.status(statusCode).json({
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+            message: "Failed to retrieve user",
+        });
+    }
+}
 // GET /api/users/:id || GET /api/users/:id?query
 export async function getUserById(req, res) {
     try {
@@ -650,5 +668,11 @@ export async function userSignatureController(req, res) {
         });
     }
 }
+<<<<<<< HEAD
 //# sourceMappingURL=UserController.js.map
 //# debugId=42ec4cb8-2bd7-56ba-a726-67d2a895e11a
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="7939b8fb-6db7-5f54-a152-62ba5145f725")}catch(e){}}();
+//# sourceMappingURL=userController.js.map
+//# debugId=7939b8fb-6db7-5f54-a152-62ba5145f725
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)

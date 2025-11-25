@@ -307,6 +307,9 @@ export declare function getCrewMembers(crewId: string): Promise<{
     }[];
     crewType: import("../../generated/prisma/index.js").$Enums.WorkType;
 }>;
+export declare function getAllTeamsService(): Promise<{
+    id: string;
+}[]>;
 export declare function getUserInfo(userId: string): Promise<{
     employeeData: {
         id: string;

@@ -1,6 +1,11 @@
 
+<<<<<<< HEAD
 !function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b804a7ad-e45b-5d7c-9bff-8c63054ad1ca")}catch(e){}}();
 import { ServiceManagerFormApprovals, ServiceFormSubmissions, ServiceTeamSubmissions, ServiceFormDraft, ServiceForm, } from "../services/formsService.js";
+=======
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="5fd2d436-587e-5a26-a3aa-b8963debcb6d")}catch(e){}}();
+import { ServiceManagerFormApprovals, ServiceFormSubmissions, ServiceTeamSubmissions, ServiceFormDraft, ServiceForm, ServiceGetFormSubmissions, } from "../services/formsService.js";
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)
 // Controller for forms endpoints
 import express from "express";
 import { ServiceCreateFormApproval, ServiceCreateFormSubmission, ServiceDeleteFormSubmission, ServiceGetForms, ServiceGetUserSubmissions, ServiceSaveDraft, ServiceSaveDraftToPending, ServiceSavePending, ServiceUpdateFormApproval, updateFormSubmissionService, } from "../services/formsService.js";
@@ -101,6 +106,19 @@ export const updateFormSubmission = async (req, res) => {
         const message = error instanceof Error && error.message
             ? error.message
             : "Failed to create form submission";
+        res.status(400).json({ message });
+    }
+};
+export const getFormsSubmissions = async (req, res) => {
+    try {
+        // Logic to get form submissions (this is a placeholder, replace with actual logic)
+        const submissions = await ServiceGetFormSubmissions();
+        res.status(200).json(submissions);
+    }
+    catch (error) {
+        const message = error instanceof Error && error.message
+            ? error.message
+            : "Failed to retrieve form submissions";
         res.status(400).json({ message });
     }
 };
@@ -317,4 +335,8 @@ export const getFormTemplate = async (req, res) => {
     }
 };
 //# sourceMappingURL=formsController.js.map
+<<<<<<< HEAD
 //# debugId=b804a7ad-e45b-5d7c-9bff-8c63054ad1ca
+=======
+//# debugId=5fd2d436-587e-5a26-a3aa-b8963debcb6d
+>>>>>>> 3a0b6b0f (rebuilding server  to be updated after add some routes to solve static rendering)

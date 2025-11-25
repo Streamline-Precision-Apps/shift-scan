@@ -27,6 +27,7 @@ interface CreateUserRequest extends Request {
 }
 export declare function getUsers(req: Request, res: Response): Promise<void>;
 export declare function getAllUsers(req: Request, res: Response): Promise<void>;
+export declare function getAllTeams(req: Request, res: Response): Promise<void>;
 export declare function getUserById(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 export declare function createUser(req: CreateUserRequest, res: Response): Promise<void>;
 export declare function updateUser(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;

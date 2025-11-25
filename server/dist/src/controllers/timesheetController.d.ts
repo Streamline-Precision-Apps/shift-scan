@@ -89,6 +89,7 @@ export declare function getDashboardLogsController(req: Express.Request, res: Ex
 export declare function getClockOutCommentController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
 export declare function getUserEquipmentLogsController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
 export declare function getUserRecentJobsiteDetailsController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
+export declare function getAllEquipmentLogsController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
 export declare function createEmployeeEquipmentLogController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
 export declare function getEmployeeEquipmentLogDetailsController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
 export declare function deleteEmployeeEquipmentLogController(req: Express.Request, res: Express.Response): Promise<Express.Response<any, Record<string, any>>>;
