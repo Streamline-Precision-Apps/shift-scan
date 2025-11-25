@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0b77d3b6-ba3e-52d5-a07f-9800dd7896a7")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="c7909639-568e-5c77-acaf-e9200d70610b")}catch(e){}}();
 import prisma from "../lib/prisma.js";
 import { FormStatus } from "../../generated/prisma/client.js";
 /**
@@ -17,6 +17,16 @@ export const ServiceGetForms = async () => {
         select: {
             id: true,
             name: true,
+        },
+    });
+};
+/**
+ * Get all form submissions
+ */
+export const ServiceGetFormSubmissions = async () => {
+    return await prisma.formSubmission.findMany({
+        select: {
+            id: true,
         },
     });
 };
@@ -623,4 +633,4 @@ export const updateFormSubmissionService = async (body) => {
     return updated;
 };
 //# sourceMappingURL=formsService.js.map
-//# debugId=0b77d3b6-ba3e-52d5-a07f-9800dd7896a7
+//# debugId=c7909639-568e-5c77-acaf-e9200d70610b

@@ -59,6 +59,12 @@ export declare const ServiceGetForms: () => Promise<{
     name: string;
 }[]>;
 /**
+ * Get all form submissions
+ */
+export declare const ServiceGetFormSubmissions: () => Promise<{
+    id: number;
+}[]>;
+/**
  * Create a form submission
  * @param {Object} params
  * @param {string} params.formTemplateId

@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="572cf966-741d-56b7-a039-be2da390de14")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="70b7f0e3-d899-5ca6-b7a8-36dded7a3276")}catch(e){}}();
 import { formatISO } from "date-fns";
 import prisma from "../lib/prisma.js";
 export async function updateTimesheetService({ id, editorId, changes, changeReason, numberOfChanges, startTime, endTime, Jobsite, CostCode, comment, }) {
@@ -1041,6 +1041,14 @@ export async function getRecentJobDetails(userId) {
     }
     return job;
 }
+export async function getAllEquipmentLogs() {
+    const logs = await prisma.employeeEquipmentLog.findMany({
+        select: {
+            id: true,
+        },
+    });
+    return logs;
+}
 export async function createEmployeeEquipmentLogService({ equipmentId, timeSheetId, endTime, comment, }) {
     try {
         // Validate equipment existence and status
@@ -1459,4 +1467,4 @@ export async function deleteRefuelLogService(refuelLogId) {
     }
 }
 //# sourceMappingURL=timesheetService.js.map
-//# debugId=572cf966-741d-56b7-a039-be2da390de14
+//# debugId=70b7f0e3-d899-5ca6-b7a8-36dded7a3276

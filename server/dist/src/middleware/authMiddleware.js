@@ -1,5 +1,5 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="782161dd-ec70-5444-b6b8-0c64f6e0d9ec")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b1b56872-1f9f-57ce-8e0f-d64c4c794a63")}catch(e){}}();
 import express from "express";
 import jwt from "jsonwebtoken";
 import config from "../lib/config.js";
@@ -15,6 +15,11 @@ export function verifyToken(req, res, next) {
     }
     if (!token)
         return res.status(401).json({ message: "No token provided" });
+    // Allow build token for static export/build processes
+    if (process.env.BUILD_TOKEN && token === process.env.BUILD_TOKEN) {
+        req.user = { id: "build-script" }; // dummy user info
+        return next();
+    }
     try {
         const decoded = jwt.verify(token, config.jwtSecret);
         req.user = decoded;
@@ -35,4 +40,4 @@ export function authorizeRoles(...allowedRoles) {
     };
 }
 //# sourceMappingURL=authMiddleware.js.map
-//# debugId=782161dd-ec70-5444-b6b8-0c64f6e0d9ec
+//# debugId=b1b56872-1f9f-57ce-8e0f-d64c4c794a63
