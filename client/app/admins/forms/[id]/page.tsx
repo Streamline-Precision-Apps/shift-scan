@@ -13,7 +13,9 @@ export async function generateStaticParams() {
 
 // Server Component: receives params and passes id to client component
 const FormPage = async ({ params }: PageProps) => {
-  const { id } = params;
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+
   return <FormPageClient id={id} />;
 };
 

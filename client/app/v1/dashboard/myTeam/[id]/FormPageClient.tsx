@@ -86,31 +86,24 @@ const FormPageClient = ({ id }: FormPageClientProps) => {
 
   useEffect(() => {
     if (!userId || !id) return;
-    let staticTeamInfo: { id: string; name: string; crewType: string } | null =
-      null;
     const fetchCrewData = async () => {
       try {
         setIsLoading(true);
         setAnimateList(false);
-        // Fetch Cache information (static info)
+        // Fetch crew members and crew type
         const crewRes = await apiRequestNoResCheck(
           `/api/v1/user/${userId}/crew/${id}`,
           "GET"
         );
         const json = await crewRes.json();
+        if (!json?.data) {
+          console.error("Crew API response missing data:", json);
+          setCrewMembers([]);
+          setIsLoading(false);
+          return;
+        }
         const { crewMembers, crewType } = json.data;
-
-        // Store static team info in Zustand (only id, name, crewType)
-        staticTeamInfo = { id, name: crewType + " Team", crewType };
-        updateTeamWorkers(
-          id,
-          (crewMembers || []).map((m: CrewMember) => ({
-            id: m.id,
-            firstName: m.firstName,
-            lastName: m.lastName,
-            status: false,
-          }))
-        );
+        console.log("Fetched crewMembers:", crewMembers);
 
         // Fetch dynamic crew status (always on every render)
         const status = await apiRequestNoResCheck(
@@ -119,21 +112,24 @@ const FormPageClient = ({ id }: FormPageClientProps) => {
         );
         const statusData = await status.json();
 
-        const usersArray = Array.isArray(statusData?.Users)
-          ? statusData.Users
+        const usersArray = Array.isArray(statusData.data?.Users)
+          ? statusData.data.Users
           : [];
         const membersWithStatus = (crewMembers || []).map(
           (member: CrewMember) => {
-            const status = usersArray.find(
+            const found = usersArray.find(
               (u: CrewMember) => u.id === member.id
             );
-            return { ...member, clockedIn: status?.clockedIn ?? false };
+            return {
+              ...member,
+              clockedIn: found?.clockedIn ?? false,
+            };
           }
         );
 
         setCrewMembers(membersWithStatus);
         setCrewType(crewType || "");
-        // Update worker status in Zustand store
+        // Update worker status in Zustand store ONCE, with correct status
         updateTeamWorkers(
           id,
           membersWithStatus.map((m: CrewMember) => ({
@@ -185,6 +181,12 @@ const FormPageClient = ({ id }: FormPageClientProps) => {
         "GET"
       );
       const json = await crewRes.json();
+      if (!json?.data) {
+        console.error("Crew API response missing data (refresh):", json);
+        setCrewMembers([]);
+        setIsLoading(false);
+        return;
+      }
       const { crewMembers, crewType } = json.data;
 
       // Fetch online status
@@ -193,19 +195,23 @@ const FormPageClient = ({ id }: FormPageClientProps) => {
         "GET"
       );
       const statusData = await status.json();
-      const usersArray = Array.isArray(statusData?.Users)
-        ? statusData.Users
+
+      const usersArray = Array.isArray(statusData.data?.Users)
+        ? statusData.data.Users
         : [];
       const membersWithStatus = (crewMembers || []).map(
         (member: CrewMember) => {
-          const status = usersArray.find((u: CrewMember) => u.id === member.id);
-          return { ...member, clockedIn: status?.clockedIn ?? false };
+          const found = usersArray.find((u: CrewMember) => u.id === member.id);
+          return {
+            ...member,
+            clockedIn: found?.clockedIn ?? false,
+          };
         }
       );
 
       setCrewMembers(membersWithStatus);
       setCrewType(crewType || "");
-      // Update worker status in Zustand store
+      // Update worker status in Zustand store ONCE, with correct status
       updateTeamWorkers(
         id,
         membersWithStatus.map((m: CrewMember) => ({

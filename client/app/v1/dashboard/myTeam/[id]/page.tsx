@@ -1,4 +1,3 @@
-import { useUserStore } from "@/app/lib/store/userStore";
 import FormPageClient from "./FormPageClient";
 import { getAllTeamIds } from "./_components/getAllTeamIds";
 
@@ -9,8 +8,11 @@ export async function generateStaticParams() {
 }
 
 // Server Component: receives params and passes id to client component
+
 const Page = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+  const resolvedParams = await params; // unwrap the promise
+  const id = resolvedParams.id;
+
   return <FormPageClient id={id} />;
 };
 
