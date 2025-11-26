@@ -1,5 +1,6 @@
 "use client";
 import FormPageClient from "./FormPageClient";
+import { getAllFormTemplatesIds } from "./formTemplates";
 
 export async function generateStaticParams() {
   const ids = await getAllFormTemplatesIds();
