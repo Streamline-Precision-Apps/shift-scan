@@ -1,10 +1,10 @@
 import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 
-const isMobile = process.env.NEXT_PUBLIC_IS_MOBILE === "true";
+const isStaticExport = process.env.EXPORT_STATIC === "true";
 
 const nextConfig: NextConfig = {
-  ...(isMobile ? { output: "export" as const } : {}),
+  ...(isStaticExport ? { output: "export" } : {}),
   reactStrictMode: true,
   images: {
     unoptimized: true,
@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
     "169.254.83.107:3000",
     "localhost:3000",
   ],
+
   // Suppress WebSocket HMR console warnings
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {

@@ -9,7 +9,8 @@ export async function generateStaticParams() {
 
 // Server Component: receives params and passes id to client component
 const EquipmentLogPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
   return <EquipmentIdClientPageWrapper id={id} />;
 };
 

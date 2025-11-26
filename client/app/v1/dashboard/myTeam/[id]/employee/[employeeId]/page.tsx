@@ -13,7 +13,10 @@ const TeamMemberPage = async ({
 }: {
   params: { id: string; employeeId: string };
 }) => {
-  return <TeamMemberClientPage id={params.id} employeeId={params.employeeId} />;
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  const employeeId = resolvedParams.employeeId;
+  return <TeamMemberClientPage id={id} employeeId={employeeId} />;
 };
 
 export default TeamMemberPage;

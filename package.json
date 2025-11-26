@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "static": "NEXT_PUBLIC_IS_MOBILE=true next build",
+    "export": "next export",
+    "static": "EXPORT_STATIC=true npm run build",
     "ios": "open ios/App/App.xcworkspace",
     "android": "npx cap open android"
   },
