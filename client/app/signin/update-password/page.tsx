@@ -3,6 +3,10 @@ import "@/app/globals.css";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
+import { Capacitor } from "@capacitor/core";
+import {
+  NativeBiometric,
+} from "@capgo/capacitor-native-biometric";
 import { Texts } from "@/app/v1/components/(reusable)/texts";
 import { Images } from "@/app/v1/components/(reusable)/images";
 import { useSearchParams } from "next/navigation";
@@ -196,6 +200,31 @@ function ChangePasswordContent() {
       }
 
       if (result.success) {
+        // Update biometric credentials if on native platform
+        if (Capacitor.isNativePlatform()) {
+          try {
+            const username =
+              typeof window !== "undefined"
+                ? localStorage.getItem("username")
+                : null;
+
+            if (username) {
+              await NativeBiometric.setCredentials({
+                username,
+                password: newPassword,
+                server: "shift-scan",
+              });
+              console.log("✅ Biometric credentials updated successfully");
+            }
+          } catch (bioErr) {
+            console.warn(
+              "Failed to update biometric credentials:",
+              bioErr
+            );
+            // Don't fail the password reset if biometric update fails
+          }
+        }
+
         setBannerMessage("✅ Password reset successfully! Redirecting...");
         setBannerColor("green");
         setShowBanner(true);
