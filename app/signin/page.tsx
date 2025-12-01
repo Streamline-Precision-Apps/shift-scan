@@ -17,7 +17,6 @@ import { useEquipmentStore } from "../lib/store/equipmentStore";
 import { useCostCodeStore } from "../lib/store/costCodeStore";
 import { getApiUrl } from "../lib/utils/api-Utils";
 import Spinner from "../v1/components/(animations)/spinner";
-import { set } from "lodash";
 
 export default function SignInPage() {
   const isNative = Capacitor.isNativePlatform();
@@ -164,21 +163,28 @@ export default function SignInPage() {
         throw new Error("User ID not found in response");
       }
 
-      // Store token and userId with error handling
+      // Store token, userId, and username with error handling
       try {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", String(userId));
+        localStorage.setItem("username", username);
         const storedToken = localStorage.getItem("token");
         const storedUserId = localStorage.getItem("userId");
-        if (storedToken !== data.token || storedUserId !== String(userId)) {
+        const storedUsername = localStorage.getItem("username");
+        if (
+          storedToken !== data.token ||
+          storedUserId !== String(userId) ||
+          storedUsername !== username
+        ) {
           console.error("❌ localStorage values do not match what was set", {
             storedToken,
             storedUserId,
+            storedUsername,
           });
         }
       } catch (storageErr) {
         console.error(
-          "Failed to set token/userId in localStorage:",
+          "Failed to set token/userId/username in localStorage:",
           storageErr
         );
         throw new Error("Failed to save credentials locally.");
