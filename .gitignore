@@ -41,11 +41,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
 <<<<<<< HEAD:.gitignore
 =======
+=======
+>>>>>>> 8828c266 (added git ignore pulling from devun branch)
 
 
 
 resources/ios/**/*
+<<<<<<< HEAD
 resources/android/**/*
 >>>>>>> 3d522216 (update app to get all resource it needs):client/.gitignore
+=======
+resources/android/**/*
+>>>>>>> 8828c266 (added git ignore pulling from devun branch)
