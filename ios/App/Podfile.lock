@@ -19,7 +19,11 @@ PODS:
   - CapacitorFileViewer (1.0.5):
     - Capacitor
     - IONFileViewerLib (~> 1.0.3)
+<<<<<<< HEAD
   - CapacitorGeolocation (7.1.5):
+=======
+  - CapacitorGeolocation (7.1.6):
+>>>>>>> 73a1963c (deleted and reinstall capacitor coco)
     - Capacitor
     - IONGeolocationLib (= 1.0.1)
   - CapacitorPushNotifications (7.0.3):
@@ -30,7 +34,11 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (7.0.3):
     - Capacitor
+<<<<<<< HEAD
   - CapgoBackgroundGeolocation (7.2.4):
+=======
+  - CapgoBackgroundGeolocation (7.2.8):
+>>>>>>> 73a1963c (deleted and reinstall capacitor coco)
     - Capacitor
   - CapgoCapacitorNativeBiometric (7.1.13):
     - Capacitor
@@ -108,12 +116,20 @@ SPEC CHECKSUMS:
   CapacitorDevice: 81ae78d5d1942707caad79276badd458bf6ec603
   CapacitorFileTransfer: 591bdf4cbb809fbdaf85aba6ddfa93ff1c4c1b2d
   CapacitorFileViewer: 365f8382725e232f1c3225246fe67b3c90c8ae17
+<<<<<<< HEAD
   CapacitorGeolocation: 84f868bea4c2499aebc3bb3a88fd0a508f87ab87
+=======
+  CapacitorGeolocation: a65213fef581c7b8c5d486abbd5a6d00192a179e
+>>>>>>> 73a1963c (deleted and reinstall capacitor coco)
   CapacitorPushNotifications: bdd621fbd562be34a41f4a7b1750efa000447d5a
   CapacitorScreenOrientation: e0d5b9ef293b269b8f93373355d5b276f50fabea
   CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
   CapacitorStatusBar: 0659ddc7b1713764a05831463d215b177a15d054
+<<<<<<< HEAD
   CapgoBackgroundGeolocation: 119544441aa746d83a79643048957e35da8f4557
+=======
+  CapgoBackgroundGeolocation: 24b2f5555dc6a9c8d2902696da217535236af203
+>>>>>>> 73a1963c (deleted and reinstall capacitor coco)
   CapgoCapacitorNativeBiometric: ede2c497c810fcad523b4e3d1895f989d33fe72b
   IONFileTransferLib: b268561ab0ba7f386eea228c4986b55ba0146ca9
   IONFileViewerLib: 574758ebcaa4b1543669b1c9708f1970e1172b29
