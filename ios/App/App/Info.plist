@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CAPACITOR_DEBUG</key>
-	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -47,21 +45,19 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>App uses this to verify login access </string>
-	<key>NSLocationUsageDescription</key>
-	<string>App tracks users location on clock in and stops tracking on clock out. User Info is only saved for clocked in users.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App tracks user location to obtain a knowledge of user where about for employer, dispatcher, or manager</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App has a background functionality for the app to record location if clocked in.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App tracks location in background on clock In to provide employer knowledge of users time management and efficentcy</string>
+	<string>Location is tracked during shift to affirm users is on designated site.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Location is track in background if the user is clocked in until they clock out</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location pings and share data to database of users travels and route that shift</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera is used to scan barcodes and used for profile pictures, the qr codes are one time uses, and profile images are saved. </string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Users will have the option to upload images to profile pictures. </string>
+	<string>Takes pictures for profile and scans qr codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Biometrics afirm that users is the user and clock them in</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Users can share library to upload pictures.</string>
+	<string>photo library can be accessed for profile picture</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Users can share a picture for there profile picture.</string>
 </dict>
 </plist>
