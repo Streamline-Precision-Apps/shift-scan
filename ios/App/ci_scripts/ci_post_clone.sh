@@ -4,6 +4,10 @@ set -e
 
 echo "📦 Installing dependencies for Xcode Cloud build..."
 
+# Install Node.js using Homebrew (Xcode Cloud has Homebrew pre-installed)
+echo "🔧 Installing Node.js..."
+brew install node
+
 # Navigate to project root (2 levels up from ios/App)
 cd ../..
 
