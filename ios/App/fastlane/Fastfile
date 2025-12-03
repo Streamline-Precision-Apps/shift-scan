@@ -36,7 +36,8 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates",
+      skip_profile_detection: true
     )
   end
 
@@ -60,7 +61,8 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates",
+      skip_profile_detection: true
     )
   end
 
@@ -84,7 +86,8 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates",
+      skip_profile_detection: true
     )
   end
 end
