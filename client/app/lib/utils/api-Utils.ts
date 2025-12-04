@@ -22,7 +22,7 @@ export function getToken() {
           console.warn("Current time:", new Date(currentTime).toLocaleString());
           console.warn("Please sign in again to obtain a new token");
         }
-      } catch (e) {
+      } catch {
         // If token parsing fails, it's likely invalid
         console.error("⚠️ Invalid JWT token format in localStorage");
       }
@@ -62,7 +62,7 @@ export async function apiRequest(
   let fetchBody: string | FormData | undefined;
 
   // Only attach body for non-GET/HEAD requests
-  let includeBody = body && method !== "GET" && method !== "HEAD";
+  const includeBody = body && method !== "GET" && method !== "HEAD";
 
   if (includeBody && body instanceof FormData) {
     // Don't set Content-Type header - browser will set it with boundary
