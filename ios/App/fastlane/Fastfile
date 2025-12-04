@@ -19,15 +19,29 @@ platform :ios do
   desc "Build development IPA for internal testing"
   lane :build_development do
     # Set up App Store Connect API key
-    app_store_connect_api_key(
+    api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "AuthKey.p8",
       in_house: false
     )
 
-    # Enable automatic signing with App Store Connect API
-    setup_ci if is_ci
+    # Get signing certificate
+    cert(
+      api_key: api_key,
+      development: true,
+      force: false
+    )
+
+    # Get provisioning profile
+    sigh(
+      api_key: api_key,
+      app_identifier: "com.shiftscanapp",
+      provisioning_name: "Shift Scan Development",
+      development: true,
+      readonly: true,
+      force: false
+    )
     
     build_app(
       workspace: "App.xcworkspace",
@@ -39,23 +53,36 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates",
-      skip_profile_detection: true
+      xcargs: "-allowProvisioningUpdates"
     )
   end
 
   desc "Build IPA for TestFlight"
   lane :build_testflight do
     # Set up App Store Connect API key
-    app_store_connect_api_key(
+    api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "AuthKey.p8",
       in_house: false
     )
 
-    # Enable automatic signing with App Store Connect API
-    setup_ci if is_ci
+    # Get signing certificate
+    cert(
+      api_key: api_key,
+      development: false,
+      force: false
+    )
+
+    # Get provisioning profile for App Store
+    sigh(
+      api_key: api_key,
+      app_identifier: "com.shiftscanapp",
+      provisioning_name: "Shift Scan AppStore",
+      development: false,
+      readonly: true,
+      force: false
+    )
     
     build_app(
       workspace: "App.xcworkspace",
@@ -67,24 +94,36 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates",
-      skip_profile_detection: true,
-      use_automatic_signing: true
+      xcargs: "-allowProvisioningUpdates"
     )
   end
 
   desc "Build IPA for App Store"
   lane :build_appstore do
     # Set up App Store Connect API key
-    app_store_connect_api_key(
+    api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_filepath: "AuthKey.p8",
       in_house: false
     )
 
-    # Enable automatic signing with App Store Connect API
-    setup_ci if is_ci
+    # Get signing certificate
+    cert(
+      api_key: api_key,
+      development: false,
+      force: false
+    )
+
+    # Get provisioning profile for App Store
+    sigh(
+      api_key: api_key,
+      app_identifier: "com.shiftscanapp",
+      provisioning_name: "Shift Scan AppStore",
+      development: false,
+      readonly: true,
+      force: false
+    )
     
     build_app(
       workspace: "App.xcworkspace",
@@ -96,9 +135,7 @@ platform :ios do
       skip_package_ipa: false,
       skip_package_pkg: true,
       derived_data_path: "build/DerivedData",
-      xcargs: "-allowProvisioningUpdates",
-      skip_profile_detection: true,
-      use_automatic_signing: true
+      xcargs: "-allowProvisioningUpdates"
     )
   end
 end
