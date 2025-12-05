@@ -52,7 +52,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.ref == 'refs/heads/devun-branch-v1'
         run: |
           cd ios/App
-          bundle exec fastlane build_development
+          bundle exec fastlane build_development --verbose
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           ASC_JSON_KEY: ${{ secrets.ASC_JSON_KEY }}
