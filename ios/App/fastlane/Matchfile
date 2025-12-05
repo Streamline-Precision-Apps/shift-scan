@@ -1,9 +1,9 @@
-# Ensure Fastlane Match uses the login keychain and reads the password from env
 keychain_name("login.keychain-db")
 keychain_password(ENV["MATCH_KEYCHAIN_PASSWORD"]) if ENV["MATCH_KEYCHAIN_PASSWORD"]
-git_url("git@github.com:Streamline-Precision-Apps/shift-scan-app-private.git")
+git_url("git@github.com:Streamline-Precision-Apps/shift-scan-certs.git")
 
 storage_mode("git")
+git_branch("main")
 
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
 

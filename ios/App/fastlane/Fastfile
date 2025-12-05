@@ -19,8 +19,9 @@ platform :ios do
   desc "Build development IPA for internal testing"
   lane :build_development do
    match(app_identifier: "com.shiftscanapp", type: "development", readonly: true)
-    build_app(
-      export_method: "development",
+
+   build_app(
+     export_method: "development",
      workspace: "App.xcworkspace",
      scheme: "Shift Scan",
      configuration: "Debug",
@@ -30,9 +31,7 @@ platform :ios do
    # Optional: upload to TestFlight using API key file; comment out for pure local builds
   #  pilot(api_key_path: "fastlane/store.json", skip_waiting_for_build_processing: true)
   end
-  def bump_build_number()
-    increment_build_number(xcodeproj: "App.xcodeproj")
-  end
+ 
 
  
 end
