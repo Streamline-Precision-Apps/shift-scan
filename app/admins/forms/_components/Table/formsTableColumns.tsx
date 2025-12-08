@@ -83,7 +83,7 @@ export function getFormsTableColumns({
         return (
           <div className="text-sm text-center">
             <Link
-              href={`/admins/forms/template?id=${row.original.id}`}
+              href={`/admins/forms/${row.original.id}`}
               className="text-blue-600 underline-offset-2 decoration-solid underline hover:text-sky-600 cursor-pointer"
             >
               {row.original._count.Submissions}
@@ -92,6 +92,20 @@ export function getFormsTableColumns({
         );
       },
     },
+
+    // {
+    //   accessorKey: "createdAt",
+    //   header: "Created",
+    //   cell: ({ row }) => {
+    //     return (
+    //       <div className="text-xs text-center">
+    //         {row.original.createdAt
+    //           ? new Date(row.original.createdAt).toLocaleDateString()
+    //           : "-"}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "updatedAt",
       header: "Last Updated",
@@ -116,7 +130,7 @@ export function getFormsTableColumns({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size={"icon"} asChild>
-                  <Link href={`/admins/forms/template?id=${form.id}`}>
+                  <Link href={`/admins/forms/${form.id}`}>
                     <img
                       src="/eye.svg"
                       alt="View Form"
@@ -148,7 +162,7 @@ export function getFormsTableColumns({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size={"icon"} asChild>
-                  <Link href={`/admins/forms/edit?id=${form.id}`}>
+                  <Link href={`/admins/forms/edit/${form.id}`}>
                     <img
                       src="/formEdit.svg"
                       alt="Edit Form"
