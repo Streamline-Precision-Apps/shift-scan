@@ -13,4 +13,8 @@ firebase-service-account.json
 
 # Notes files
 devDocs
+<<<<<<< HEAD
 dist
+=======
+dist
+>>>>>>> aa840551 (add dist to be ignored)
