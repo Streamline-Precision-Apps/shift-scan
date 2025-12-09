@@ -75,6 +75,7 @@ export default function Home() {
 
     redirectIfMobile();
   }, [isNative]);
+  }, [isNative]);
 
   if (isNative && loading) return null;
 
@@ -185,7 +186,7 @@ export default function Home() {
         <div className="mt-6 text-center animate-fade-in delay-600">
           <a
             href="/privacy-policy"
-            className="text-white  text-sm transition-colors underline underline-offset-2"
+            className="text-gray-500 hover:text-gray-700 text-sm transition-colors underline underline-offset-2"
           >
             View Privacy Policy
           </a>
