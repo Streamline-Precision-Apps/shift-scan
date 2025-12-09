@@ -176,6 +176,15 @@ export default function Home() {
             </button>
           </div>
         </div>
+        {/* Privacy Policy Link */}
+        <div className="mt-6 text-center animate-fade-in delay-600">
+          <a
+            href="/privacy-policy"
+            className="text-gray-500 hover:text-gray-700 text-sm transition-colors underline underline-offset-2"
+          >
+            View Privacy Policy
+          </a>
+        </div>
       </section>
 
       {/* Features Section */}
