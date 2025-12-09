@@ -19,8 +19,13 @@ export default function RootLayout({
   useEffect(() => {
     setIsMounted(true);
     const platform = Capacitor.getPlatform();
+    const currentPath = window.location.pathname;
+    const publicPages = ["/", "/signin", "/signup", "/privacy-policy"];
 
-    if (platform === "ios" || platform === "android") {
+    if (
+      (platform === "ios" || platform === "android") &&
+      !publicPages.includes(currentPath)
+    ) {
       router.push("/signin"); // Redirect to sign-in page
     }
   }, [router]);

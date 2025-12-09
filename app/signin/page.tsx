@@ -445,12 +445,24 @@ export default function SignInPage() {
 
           <div className="mt-4 text-center">
             {!isNative && (
-              <a
-                href="/"
-                className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
-              >
-                ← {t("backToHome")}
-              </a>
+              <>
+                <div className="mt-2">
+                  <a
+                    href="/"
+                    className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
+                  >
+                    ← {t("backToHome")}
+                  </a>
+                </div>
+                <div className="mt-2">
+                  <a
+                    href="/privacy-policy"
+                    className="text-gray-500 hover:text-gray-700 text-sm transition-colors underline underline-offset-2"
+                  >
+                    View Privacy Policy
+                  </a>
+                </div>
+              </>
             )}
           </div>
         </div>
