@@ -144,27 +144,28 @@ export default function SettingSelections({
           </Contents>
         </Holds>
 
-        {/* <Holds background="white" className=" py-3">
+        <Holds background="white" className=" py-3">
           <Contents width="section">
             <Grids rows="1" gap="5">
               <Holds position="row">
                 <Holds size="70">
                   <Texts size={"p5"} position="left">
-                    {t("PersonalReminders")}
+                    {t("PrivacyPolicy")}
                   </Texts>
                 </Holds>
                 <Holds size="30">
-                  <LocaleToggleSwitch
-                    data={updatedData?.personalReminders || false}
-                    onChange={(value: boolean) => {
-                      handleChange("personalReminders", value);
-                    }}
-                  />
+                  <Buttons
+                    href="/v1/hamburger/privacyPolicy"
+                    shadow={"none"}
+                    className="py-2 "
+                  >
+                    <Texts size={"p5"}>View</Texts>
+                  </Buttons>
                 </Holds>
               </Holds>
             </Grids>
           </Contents>
-        </Holds> */}
+        </Holds>
 
         {/*-------------------------App Usage settings------------------------------*/}
         {/* <Holds background="white" className=" py-3">

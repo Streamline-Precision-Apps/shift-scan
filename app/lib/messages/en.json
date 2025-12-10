@@ -1203,6 +1203,7 @@
     "TagUpdatedSuccessfully": "Tag updated successfully."
   },
   "Hamburger-Profile": {
+    "PrivacyPolicy": "Privacy Policy",
     "NewPassword": "New Password",
     "ConfirmPassword": "Confirm Password",
     "SelectFromGallery": "Select from Gallery",
@@ -1306,6 +1307,31 @@
     "AreYouSureYouWantToDeleteThisRequest": "Are you sure you want to delete this request?",
     "Yes": "Yes",
     "Cancel": "Cancel"
+  },
+  "Hamburger-Policy": {
+    "PrivacyPolicy": "Privacy Policy",
+    "lastUpdated": "Last updated December 08, 2025",
+    "introTitle": "Welcome to our Privacy Policy",
+    "introText": "This Privacy Notice for Streamline Precision LLC (\"we\", \"us\", or \"our\") describes how and why we might access, collect, store, use, and/or share (\"process\") your personal information when you use our services, including when you use the Shift Scan app.",
+    "summaryTitle": "Summary of key points",
+    "summaryPoint1": "We collect personal and device information to provide and improve our services.",
+    "summaryPoint2": "You control permissions for camera, location, and notifications in your device settings.",
+    "summaryPoint3": "We do not sell your data. We use cookies only for security, functionality, and analytics.",
+    "infoTitle": "What information do we collect?",
+    "infoPersonal": "Personal information you provide (such as name, email, or contact details).",
+    "infoDevice": "Device and usage information (such as device model, OS, IP address, and app usage).",
+    "infoPermissions": "Permissions for camera, location, and other features (only if you grant access).",
+    "infoNotifications": "Notification preferences and settings.",
+    "processingTitle": "How do we process your information?",
+    "processingPoint1": "To provide, improve, and secure our services.",
+    "processingPoint2": "To communicate with you and comply with legal requirements.",
+    "sharingTitle": "When and with whom do we share your information?",
+    "sharingPoint1": "With service providers as needed to operate the app (never for advertising).",
+    "sharingPoint2": "If required by law or to protect rights and safety.",
+    "cookiesTitle": "Do we use cookies and tracking technologies?",
+    "cookiesText": "We use cookies and similar technologies only for security, functionality, and internal analytics. We do not use them for advertising or tracking you across other sites.",
+    "contactTitle": "Questions or concerns?",
+    "contactText": "If you have questions or concerns about this policy, contact us at support@streamlineprecision.com."
   },
 
   "Components": {

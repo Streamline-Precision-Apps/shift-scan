@@ -240,7 +240,7 @@ export default function PrivacyPolicyPage() {
                 to certain features from your mobile device including your
                 mobile device's camera, camera roll, and other features. If you
                 wish to change your access or permission you may do so in your
-                device’s settings.
+                device's settings.
               </p>
               <p>
                 <b>Mobile device data.</b> We automatically collect device

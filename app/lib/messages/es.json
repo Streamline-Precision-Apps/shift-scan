@@ -1194,6 +1194,7 @@
     "TagUpdatedSuccessfully": "Etiqueta actualizada con éxito."
   },
   "Hamburger-Profile": {
+    "PrivacyPolicy": "Política de privacidad",
     "NewPassword": "Nueva contraseña",
     "ConfirmPassword": "confirmar Contraseña",
     "SelectFromGallery": "Seleccionar de la galería",
@@ -1297,6 +1298,31 @@
     "AreYouSureYouWantToDeleteThisRequest": "¿Estás seguro de que quieres eliminar esta solicitud?",
     "Yes": "Sí",
     "Cancel": "Cancelar"
+  },
+  "Hamburger-Policy": {
+    "PrivacyPolicy": "Política de privacidad",
+    "lastUpdated": "Última actualización 08 de diciembre de 2025",
+    "introTitle": "Bienvenido a nuestra Política de Privacidad",
+    "introText": "Este Aviso de Privacidad para Streamline Precision LLC (\"nosotros\", \"nos\" o \"nuestro\") describe cómo y por qué podemos acceder, recopilar, almacenar, usar y/o compartir (\"procesar\") su información personal cuando utiliza nuestros servicios, incluyendo cuando usa la aplicación Shift Scan.",
+    "summaryTitle": "Resumen de puntos clave",
+    "summaryPoint1": "Recopilamos información personal y del dispositivo para proporcionar y mejorar nuestros servicios.",
+    "summaryPoint2": "Usted controla los permisos para cámara, ubicación y notificaciones en la configuración de su dispositivo.",
+    "summaryPoint3": "No vendemos sus datos. Usamos cookies solo para seguridad, funcionalidad y análisis.",
+    "infoTitle": "¿Qué información recopilamos?",
+    "infoPersonal": "Información personal que usted proporciona (como nombre, correo electrónico o datos de contacto).",
+    "infoDevice": "Información del dispositivo y uso (como modelo, sistema operativo, dirección IP y uso de la app).",
+    "infoPermissions": "Permisos para cámara, ubicación y otras funciones (solo si usted otorga acceso).",
+    "infoNotifications": "Preferencias y configuraciones de notificaciones.",
+    "processingTitle": "¿Cómo procesamos su información?",
+    "processingPoint1": "Para proporcionar, mejorar y proteger nuestros servicios.",
+    "processingPoint2": "Para comunicarnos con usted y cumplir con requisitos legales.",
+    "sharingTitle": "¿Cuándo y con quién compartimos su información?",
+    "sharingPoint1": "Con proveedores de servicios según sea necesario para operar la app (nunca para publicidad).",
+    "sharingPoint2": "Si lo exige la ley o para proteger derechos y seguridad.",
+    "cookiesTitle": "¿Usamos cookies y tecnologías de seguimiento?",
+    "cookiesText": "Usamos cookies y tecnologías similares solo para seguridad, funcionalidad y análisis interno. No las usamos para publicidad ni para rastrearlo en otros sitios.",
+    "contactTitle": "¿Preguntas o inquietudes?",
+    "contactText": "Si tiene preguntas o inquietudes sobre esta política, contáctenos en support@streamlineprecision.com."
   },
   "Components": {
     "CropImage": "Imagen de cultivo"
