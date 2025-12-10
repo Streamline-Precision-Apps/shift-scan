@@ -88,7 +88,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen w-full bg-white  overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative bg-app-gradient bg-to-br from-app-dark-blue via-app-blue to-app-blue overflow-hidden">
+      <section className="h-screen relative bg-app-gradient bg-to-br from-app-dark-blue via-app-blue to-app-blue overflow-hidden">
         {/* Animated Gradient Background Overlay */}
         <div className="pointer-events-none absolute inset-0 z-0">
           <div className="absolute inset-0 bg-linear-to-br from-app-dark-blue via-app-blue to-app-blue animate-gradient-move opacity-80" />
@@ -360,21 +360,6 @@ export default function Home() {
                   <p className="text-gray-600">
                     All data syncs instantly across devices so managers have
                     up-to-the-minute information on crew status.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-app-blue/10 rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">✓</span>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-app-dark-blue mb-2">
-                    Offline Mode
-                  </h3>
-                  <p className="text-gray-600">
-                    Workers can clock in/out even without internet. Data syncs
-                    automatically when connection is restored.
                   </p>
                 </div>
               </div>
