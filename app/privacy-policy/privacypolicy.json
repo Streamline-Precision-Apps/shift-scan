@@ -3,33 +3,65 @@
   "lastUpdated": "Last updated December 08, 2025",
   "policyContent": {
     "Intro": "This Privacy Notice for Streamline Precision LLC (\"we\", \"us\", or \"our\"), describes how and why we might access, collect, store, use, and/or share (\"process\") your personal information when you use our services (\"Services\"), including when you:",
-    "S0L1P1": "Visit our website at",
-    "S0L1P2": "https://shiftscanapp.com",
-    "S0L1P3": "or any website of ours that links to this Privacy Notice",
-    "S0L2P1": "Download and use our mobile applications (Shift Scan), or any other application of ours that links to this Privacy Notice.",
-    "S0L3P1": "Use Shift Scan. Shift Scan is a workforce management application designed to streamline time tracking and personnel management for job sites and field operations. It provides real time tools for administrators and employees to manage shifts, record attendance, and generate reports, improving operational efficiency and accountability.",
-    "S0L4P1": "Engage with us in other related ways, including any marketing or events",
-    "S0L5P1": "Questions or concerns? Reading this privacy notice will help you understand your privacy rights and choices. We are responsible for making decisions about how your information is processed. If you do not agree with our policies and practices, please do not use our services. If you still have questions or concerns, please contact us at",
-    "S0L5P2": "support@shiftscan.com",
-    "S0L6P1": "Summary of key points",
-    "S0L7P1": "This summary provides key points from our privacy notice, but you can find out more details about any of these topics by clicking the link following each key point or by using our table of contents below to find the section you are looking for.",
-    "S0L8P1": "What personal information do we process?",
-    "S0L8P2": "When you visit, use, or navigate our services, we may process personal information depending on how you interact with us and the services, the choices you make, and the products and features you use. We do not process sensitive personal information.",
-    "S0L9P1": "Do we process any sensitive personal information?",
-    "S0L9P2": "Some of the information may be considered special or sensitive in certain jurisdictions for example your racial or ethnic or origins, sexual orientations, and religious beliefs. We do not process sensitive personal information.",
-    "S10P1": "Do we collect any information from third parties?",
-    "S10P2": "we share information in specific situations with affiliates, business partners, and service providers (including for services like the Google Maps Platform). We also allow certain third parties to use tracking technologies on our services for analytics and advertising.",
-    "S11P1": "How do we process your information?",
-    "S11P2": "We process your information to provide, improve, and administer our services, communicate with you, for security and fraud prevention, and to comply with law. We may also process your information for other purposes with your consent. We process your information only when we have a valid legal reason to do so. Learn more about how we process your information.",
-    "S12P1": "In what situations and with which parties do we share personal information?",
-    "S12P2": " We share information in specific situations with specific third parties. Learn more about when and with whom we share your personal information.",
-    "S13P1": "How do we keep your information safe?",
-    "S13P2": "We have adequate organizational and technical processes and procedures in place to protect your personal information. However, no electronic transmission over the Internet or information storage technology can be guaranteed to be 100% secure, so we cannot promise or guarantee that hackers, cyber criminals or other unauthorized third parties will not be able to defeat our secure and improperly collect, access, steal, or modify your information. Learn more about how we keep your information safe.",
-    "S14P1": "What are your rights?",
-    "S14P2": "Depending on where you are located geographically, the applicable privacy laws may mean you have certain rights regarding your personal information. Learn more about your privacy rights.",
-    "S15P1": "Want to learn more about what we do with any information we collect?",
-    "S15P2": "Review the Privacy notice in full.",
-    "TableOfContents": {
+    "S0": {
+      "1": {
+        "1": "Visit our website at",
+        "2": "https://shiftscanapp.com",
+        "3": "or any website of ours that links to this Privacy Notice"
+      },
+      "2": {
+        "1": "Download and use our mobile applications (Shift Scan), or any other application of ours that links to this Privacy Notice."
+      },
+      "3": {
+        "1": "Use Shift Scan. Shift Scan is a workforce management application designed to streamline time tracking and personnel management for job sites and field operations. It provides real time tools for administrators and employees to manage shifts, record attendance, and generate reports, improving operational efficiency and accountability."
+      },
+      "4": {
+        "1": "Engage with us in other related ways, including any marketing or events"
+      },
+      "5": {
+        "1": "Questions or concerns? Reading this privacy notice will help you understand your privacy rights and choices. We are responsible for making decisions about how your information is processed. If you do not agree with our policies and practices, please do not use our services. If you still have questions or concerns, please contact us at",
+        "2": "support@shiftscan.com"
+      },
+      "6": {
+        "1": "Summary of key points"
+      },
+      "7": {
+        "1": "This summary provides key points from our privacy notice, but you can find out more details about any of these topics by clicking the link following each key point or by using our table of contents below to find the section you are looking for."
+      },
+      "8": {
+        "1": "What personal information do we process?",
+        "2": "When you visit, use, or navigate our services, we may process personal information depending on how you interact with us and the services, the choices you make, and the products and features you use. We do not process sensitive personal information."
+      },
+      "9": {
+        "1": "Do we process any sensitive personal information?",
+        "2": "Some of the information may be considered special or sensitive in certain jurisdictions for example your racial or ethnic or origins, sexual orientations, and religious beliefs. We do not process sensitive personal information."
+      },
+      "10": {
+        "1": "Do we collect any information from third parties?",
+        "2": "we share information in specific situations with affiliates, business partners, and service providers (including for services like the Google Maps Platform). We also allow certain third parties to use tracking technologies on our services for analytics and advertising."
+      },
+      "11": {
+        "1": "How do we process your information?",
+        "2": "We process your information to provide, improve, and administer our services, communicate with you, for security and fraud prevention, and to comply with law. We may also process your information for other purposes with your consent. We process your information only when we have a valid legal reason to do so. Learn more about how we process your information."
+      },
+      "12": {
+        "1": "In what situations and with which parties do we share personal information?",
+        "2": " We share information in specific situations with specific third parties. Learn more about when and with whom we share your personal information."
+      },
+      "13": {
+        "1": "How do we keep your information safe?",
+        "2": "We have adequate organizational and technical processes and procedures in place to protect your personal information. However, no electronic transmission over the Internet or information storage technology can be guaranteed to be 100% secure, so we cannot promise or guarantee that hackers, cyber criminals or other unauthorized third parties will not be able to defeat our secure and improperly collect, access, steal, or modify your information. Learn more about how we keep your information safe."
+      },
+      "14": {
+        "1": "What are your rights?",
+        "2": "Depending on where you are located geographically, the applicable privacy laws may mean you have certain rights regarding your personal information. Learn more about your privacy rights."
+      },
+      "15": {
+        "1": "Want to learn more about what we do with any information we collect?",
+        "2": "Review the Privacy notice in full."
+      }
+    },
+    "Toc": {
       "title": "TABLE OF CONTENTS",
       "1": "What information do we collect?",
       "2": "How do we process your information?",
