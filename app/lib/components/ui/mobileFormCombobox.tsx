@@ -5,12 +5,12 @@ import {
   DialogContent,
   DialogOverlay,
   DialogPortal,
-} from "@/app/v1/components/ui/dialog";
-import { Button } from "@/app/v1/components/ui/button";
+} from "@/app/lib/components/ui/dialog";
+import { Button } from "@/app/lib/components/ui/button";
 
 import { XIcon } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Checkbox } from "@/app/v1/components/ui/checkbox";
+import { Checkbox } from "@/app/lib/components/ui/checkbox";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface ComboboxOption {
