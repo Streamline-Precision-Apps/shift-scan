@@ -109,23 +109,23 @@ export default function RTab({ isManager }: { isManager: boolean }) {
     fetchEmployeeRequests();
   }, []);
 
+  // Get unique employees by User.id using a Set
   const uniqueEmployees = Array.isArray(employeeRequests)
-    ? employeeRequests.reduce((acc, current) => {
-        const x = acc.find((item) => item.User.id === current.User.id);
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, [] as EmployeeRequests[])
+    ? Array.from(
+        employeeRequests
+          .reduce((map, current) => {
+            if (!map.has(current.User.id)) {
+              map.set(current.User.id, current);
+            }
+            return map;
+          }, new Map<string, EmployeeRequests>())
+          .values()
+      )
     : [];
 
   return (
     <>
-      <Holds
-        className="h-[10%] border-b-2  border-neutral-100 shrink-0 rounded-lg sticky top-0 z-10 px-2 gap-x-2"
-        position={"row"}
-      >
+      <div className="h-[10%] border-b-2 flex flex-row  p-2  border-neutral-100 shrink-0 rounded-lg sticky top-0 z-10 gap-x-2">
         <Suspense
           fallback={
             <Selects
@@ -146,15 +146,15 @@ export default function RTab({ isManager }: { isManager: boolean }) {
           >
             <option value="all">{t("SelectAFilter")}</option>
             <option value="approved">{t("Approved")}</option>
-            {uniqueEmployees.map((emp) => (
+            {uniqueEmployees.map((emp, idx) => (
               <option key={emp?.User.id} value={emp?.User.id}>
                 {emp?.User.firstName} {emp?.User.lastName}
               </option>
             ))}
           </Selects>
         </Suspense>
-      </Holds>
-      <div className="h-[90%] flex-1 overflow-y-auto no-scrollbar border-t-black border-opacity-5 border-t-2">
+      </div>
+      <div className="h-[90%] border-t-black border-opacity-5 border-t-2 ">
         <Suspense fallback={<RecievedInboxSkeleton />}>
           {isInitialLoading ? (
             <RecievedInboxSkeleton />
@@ -166,12 +166,12 @@ export default function RTab({ isManager }: { isManager: boolean }) {
               pullText={"Pull To Refresh"}
               releaseText={"Release To Refresh"}
               refreshingText="Loading..."
-              containerClassName="h-full"
+              containerClassName="h-full "
             >
               <Contents width={"section"}>
                 {!sentContent ||
                   (sentContent.length === 0 && (
-                    <Holds className="mt-2 h-full">
+                    <Holds className="pt-2 h-full">
                       <Texts size={"sm"} className="italic text-gray-500">
                         {selectedFilter === "all"
                           ? t("NoTeamRequestsSubmittedOrFound")
@@ -184,14 +184,14 @@ export default function RTab({ isManager }: { isManager: boolean }) {
                       </Texts>
                     </Holds>
                   ))}
-                <Holds className="gap-y-4 pt-3 pb-5">
+                <Holds className="h-full gap-y-4 pt-3 pb-10 border-2 border-white ">
                   {sentContent.map((form, index) => {
                     const title =
                       form.FormTemplate?.formType || form.FormTemplate?.name; // Fallback if formTemplate is undefined
                     const isLastItem = index === sentContent.length - 1;
                     return (
                       <Buttons
-                        key={form.id}
+                        key={`${form.id}-${index}`}
                         ref={isLastItem ? lastItemRef : null}
                         className="py-0.5 relative"
                         background={"lightBlue"}

@@ -38,12 +38,18 @@ export default function InboxContent() {
     <Bases>
       <Contents>
         <div
-          className={ios ? "pt-12 h-full" : android ? "pt-4 h-full" : "h-full"}
+          className={
+            ios
+              ? "pt-12  w-full h-full rounded-lg bg-white"
+              : android
+              ? "pt-4  w-full h-full bg-white rounded-lg"
+              : " w-full h-full bg-white rounded-lg"
+          }
         >
-          <div className={`h-full w-full rounded-lg bg-white `}>
-            {/* Static content - header */}
+          {/* Static content - header */}
+          <div className="h-[8%]">
             <TitleBoxes
-              className="h-[8%] shrink-0 rounded-lg sticky top-0 z-10 bg-white"
+              className=" shrink-0 rounded-lg sticky top-0 z-10 bg-white"
               position={"row"}
               onClick={() => router.push(url)}
             >
@@ -54,48 +60,52 @@ export default function InboxContent() {
                 <Titles size={"md"}>{t("FormsDocuments")}</Titles>
               </Holds>
             </TitleBoxes>
+          </div>
 
-            {/* Static content - tabs */}
-            {isManager && (
-              <div className="h-[7%] items-center flex flex-row gap-2 border-2 border-neutral-100 bg-neutral-100">
-                <NewTab
-                  onClick={() => setActiveTab(1)}
-                  isActive={activeTab === 1}
-                  isComplete={true}
-                  titleImage={"/formInspect.svg"}
-                  titleImageAlt={""}
-                  animatePulse={false}
-                  className="border-gray-200 border-2"
-                >
-                  <Titles size={"sm"}>{t("Forms")}</Titles>
-                </NewTab>
+          {/* Static content - tabs */}
+          {isManager && (
+            <div className="h-[7%] shrink-0 items-center flex flex-row gap-2 border-2 border-neutral-100 bg-neutral-100">
+              <NewTab
+                onClick={() => setActiveTab(1)}
+                isActive={activeTab === 1}
+                isComplete={true}
+                titleImage={"/formInspect.svg"}
+                titleImageAlt={""}
+                animatePulse={false}
+                className="border-gray-200 border-2"
+              >
+                <Titles size={"sm"}>{t("Forms")}</Titles>
+              </NewTab>
 
-                <NewTab
-                  onClick={() => setActiveTab(3)}
-                  isActive={activeTab === 3}
-                  isComplete={true}
-                  titleImage={"/formApproval.svg"}
-                  titleImageAlt={""}
-                  animatePulse={false}
-                >
-                  <Titles size={"sm"}>{t("TeamSubmissions")}</Titles>
-                </NewTab>
-              </div>
-            )}
-
-            <div
-              className={isManager ? `h-[calc(100%-8%)]` : `h-[calc(100%-15%)]`}
-            >
-              {activeTab === 1 ? (
-                <FormSelection
-                  loading={loading}
-                  setLoading={setLoading}
-                  isManager={isManager}
-                />
-              ) : activeTab === 3 ? (
-                <RTab isManager={isManager} />
-              ) : null}
+              <NewTab
+                onClick={() => setActiveTab(3)}
+                isActive={activeTab === 3}
+                isComplete={true}
+                titleImage={"/formApproval.svg"}
+                titleImageAlt={""}
+                animatePulse={false}
+              >
+                <Titles size={"sm"}>{t("TeamSubmissions")}</Titles>
+              </NewTab>
             </div>
+          )}
+
+          <div
+            className={
+              isManager
+                ? `h-[calc(100%-15%)] overflow-y-scroll border-6 border-white rounded-lg`
+                : `h-[calc(100%-8%)] overflow-y-scroll border-6 border-white rounded-lg`
+            }
+          >
+            {activeTab === 1 ? (
+              <FormSelection
+                loading={loading}
+                setLoading={setLoading}
+                isManager={isManager}
+              />
+            ) : activeTab === 3 ? (
+              <RTab isManager={isManager} />
+            ) : null}
           </div>
         </div>
       </Contents>

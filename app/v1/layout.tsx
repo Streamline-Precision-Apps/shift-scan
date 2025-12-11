@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-screen overflow-auto bg-linear-to-b from-app-dark-blue to-app-blue">
+    <main className="h-full bg-linear-to-b from-app-dark-blue to-app-blue">
       {children}
     </main>
   );
