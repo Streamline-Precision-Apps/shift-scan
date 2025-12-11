@@ -2,15 +2,15 @@
 
 import * as React from "react";
 import { CheckIcon, ChevronsUpDownIcon, SearchIcon, XIcon } from "lucide-react";
-import { Button } from "@/app/v1/components/ui/button";
+import { Button } from "@/app/lib/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/app/v1/components/ui/dialog";
-import { Input } from "@/app/v1/components/ui/input";
+} from "@/app/lib/components/ui/dialog";
+import { Input } from "@/app/lib/components/ui/input";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/app/lib/utils/utils";
 

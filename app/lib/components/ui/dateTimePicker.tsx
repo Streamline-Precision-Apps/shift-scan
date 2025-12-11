@@ -1,15 +1,15 @@
 "use client";
 import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
-import { Button } from "@/app/v1/components/ui/button";
-import { Calendar } from "@/app/v1/components/ui/calendar";
-import { Input } from "@/app/v1/components/ui/input";
-import { Label } from "@/app/v1/components/ui/label";
+import { Button } from "@/app/lib/components/ui/button";
+import { Calendar } from "@/app/lib/components/ui/calendar";
+import { Input } from "@/app/lib/components/ui/input";
+import { Label } from "@/app/lib/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/app/v1/components/ui/popover";
+} from "@/app/lib/components/ui/popover";
 export interface DateTimePickerProps {
   value: string;
   onChange: (val: string) => void;

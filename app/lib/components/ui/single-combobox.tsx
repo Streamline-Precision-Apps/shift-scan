@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ChevronsUpDownIcon, CheckIcon } from "lucide-react";
-import { Button } from "@/app/v1/components/ui/button";
+import { Button } from "@/app/lib/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -8,12 +8,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/app/v1/components/ui/command";
+} from "@/app/lib/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/app/v1/components/ui/popover";
+} from "@/app/lib/components/ui/popover";
 
 export interface ComboboxOption {
   value: string;
