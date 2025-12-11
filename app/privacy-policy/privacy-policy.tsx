@@ -14,21 +14,25 @@ export default function PrivacyPolicy({
 
   return (
     <>
-      <div className="sticky top-0 rounded-t-2xl bg-white/98 backdrop-blur-sm border-b border-gray-200 p-3 md:p-4 z-10">
-        <div className="text-center">
-          <img
-            src="/windows11/StoreLogo.scale-400.png"
-            alt="Shift Scan Logo"
-            className="h-16 w-auto mx-auto rounded-lg"
-          />
-          <h1 className="text-xl font-bold text-app-dark-blue ">
-            {t("title")}
-          </h1>
-          <p className="text-app-dark-blue text-xs ">{t("lastUpdated")}</p>
+      {!isMobile && (
+        <div className="sticky top-0 rounded-t-2xl bg-white/98 backdrop-blur-sm border-b border-gray-200 p-3 md:p-4 z-10">
+          <div className="text-center">
+            <>
+              <img
+                src="/windows11/StoreLogo.scale-400.png"
+                alt="Shift Scan Logo"
+                className="h-16 w-auto mx-auto rounded-lg"
+              />
+              <h1 className="text-xl font-bold text-app-dark-blue ">
+                {t("title")}
+              </h1>
+            </>
+            <p className="text-app-dark-blue text-xs ">{t("lastUpdated")}</p>
+          </div>
         </div>
-      </div>
-      <div className="flex-1 overflow-y-auto p-6 md:p-8">
-        <div className="text-gray-700 space-y-4 text-sm">
+      )}
+      <div className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="text-gray-700 space-y-4 text-sm pb-20">
           {/* --- Inserted new policy content here --- */}
           <p>{t("policyContent.Intro")}</p>
           <ul className="list-disc ml-4">
@@ -53,7 +57,7 @@ export default function PrivacyPolicy({
                 >
                   {t("policyContent.S0.1.2")}
                 </a>
-              )}
+              )}{" "}
               {t("policyContent.S0.1.3")}
             </li>
             <li>{t("policyContent.S0.2.1")}</li>
@@ -189,6 +193,7 @@ export default function PrivacyPolicy({
             <p>I{t("policyContent.S1.content.2")}</p>
             <p>{t("policyContent.S1.content.3")}</p>
             <p>{t("policyContent.S1.content.4")}</p>
+            <br />
             <ul className="list-disc ml-4">
               <li>{t("policyContent.S1.content.5.1")}</li>
               <li>{t("policyContent.S1.content.5.2")}</li>
@@ -199,49 +204,66 @@ export default function PrivacyPolicy({
               <li>{t("policyContent.S1.content.5.7")}</li>
               <li>{t("policyContent.S1.content.5.8")}</li>
             </ul>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.6.1")}</b>{" "}
               {t("policyContent.S1.content.6.2")}
             </p>
+            <br />
             <p className="font-semibold">{t("policyContent.S1.content.7")}</p>
             <p>{t("policyContent.S1.content.8")}</p>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.9.1")}</b>{" "}
               {t("policyContent.S1.content.9.2")}
             </p>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.10.1")}</b>{" "}
               {t("policyContent.S1.content.10.2")}
             </p>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.11.1")}</b>{" "}
               {t("policyContent.S1.content.11.2")}
             </p>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.12.1")}</b>{" "}
               {t("policyContent.S1.content.12.2")}
             </p>
+            <br />
             <p>{t("policyContent.S1.content.13")}</p>
+            <br />
             <p>{t("policyContent.S1.content.14")}</p>
+            <br />
             <p className="font-semibold">{t("policyContent.S1.content.15")}</p>
+            <br />
             <p>{t("policyContent.S1.content.16")}</p>
+            <br />
             <p>{t("policyContent.S1.content.17")}</p>
+            <br />
             <p>{t("policyContent.S1.content.18")}</p>
+            <br />
             <p>{t("policyContent.S1.content.19")}</p>
-            <ul className="list-disc ml-4">
+
+            <ul className="list-disc ml-4 mt-2">
               <li>
                 <b>{t("policyContent.S1.content.20.1")}</b>{" "}
                 {t("policyContent.S1.content.20.2")}
               </li>
+              <br />
               <li>
                 <b>{t("policyContent.S1.content.21.1")}</b>{" "}
                 {t("policyContent.S1.content.21.2")}
               </li>
+              <br />
               <li>
                 <b>{t("policyContent.S1.content.22.1")}</b>{" "}
                 {t("policyContent.S1.content.22.2")}
               </li>
             </ul>
+            <br />
             <p>
               <b>{t("policyContent.S1.content.23.1")}</b>{" "}
               {t("policyContent.S1.content.23.2")}
@@ -254,8 +276,9 @@ export default function PrivacyPolicy({
               {t("policyContent.S2.title")}
             </h2>
             <p>{t("policyContent.S2.content.1")}</p>
+            <br />
             <p>{t("policyContent.S2.content.2")}</p>
-            <ul className="list-disc ml-4">
+            <ul className="list-disc ml-4 mt-4 space-y-4">
               <li>{t("policyContent.S2.content.3")}</li>
               <li>{t("policyContent.S2.content.4")}</li>
               <li>{t("policyContent.S2.content.5")}</li>
@@ -279,8 +302,9 @@ export default function PrivacyPolicy({
               {t("policyContent.S3.title")}
             </h2>
             <p>{t("policyContent.S3.content.1")}</p>
+            <br />
             <p>{t("policyContent.S3.content.2")}</p>
-            <ul className="list-disc ml-4">
+            <ul className="list-disc ml-4 mt-4 space-y-4">
               <li>
                 <b> {t("policyContent.S3.content.3.1")}</b>{" "}
                 {t("policyContent.S3.content.3.2")}
@@ -306,9 +330,13 @@ export default function PrivacyPolicy({
               {t("policyContent.S4.title")}
             </h2>
             <p>{t("policyContent.S4.content.1")}</p>
+            <br />
             <p>{t("policyContent.S4.content.2")}</p>
+            <br />
             <p>{t("policyContent.S4.content.3")}</p>
+            <br />
             <p>{t("policyContent.S4.content.4")}</p>
+            <br />
             <p>{t("policyContent.S4.content.5")}</p>
           </section>
 
@@ -318,7 +346,9 @@ export default function PrivacyPolicy({
               {t("policyContent.S5.title")}
             </h2>
             <p>{t("policyContent.S5.content.1")}</p>
+            <br />
             <p>{t("policyContent.S5.content.2")}</p>
+            <br />
             <p>{t("policyContent.S5.content.3")}</p>
           </section>
 
@@ -328,6 +358,7 @@ export default function PrivacyPolicy({
               {t("policyContent.S6.title")}
             </h2>
             <p>{t("policyContent.S6.content.1")}</p>
+            <br />
             <p>{t("policyContent.S6.content.2")}</p>
           </section>
 
@@ -337,27 +368,35 @@ export default function PrivacyPolicy({
               {t("policyContent.S7.title")}
             </h2>
             <p>{t("policyContent.S7.content.1")}</p>
+            <br />
             <p>
               <b>{t("policyContent.S7.content.2.1")}</b>{" "}
               {t("policyContent.S7.content.2.2")}
             </p>
+            <br />
             <p>{t("policyContent.S7.content.3")}</p>
+            <br />
             <p>
               <b>{t("policyContent.S7.content.4.1")}</b>{" "}
               {t("policyContent.S7.content.4.2")}
             </p>
+            <br />
             <p className="font-semibold">{t("policyContent.S7.content.5")}</p>
-            <ul className="list-disc ml-4">
+
+            <ul className="list-disc ml-4 mt-4 space-y-4">
               <li>{t("policyContent.S7.content.6")}</li>
               <li>{t("policyContent.S7.content.7")}</li>
               <li>{t("policyContent.S7.content.8")}</li>
               <li>{t("policyContent.S7.content.9")}</li>
             </ul>
+            <br />
             <p>{t("policyContent.S7.content.10")}</p>
+            <br />
             <p>
               <b>{t("policyContent.S7.content.11.1")}</b>{" "}
               {t("policyContent.S7.content.11.2")}
             </p>
+            <br />
             <p>
               {t("policyContent.S7.content.12.1")}{" "}
               {isMobile && isNative ? (
@@ -387,6 +426,7 @@ export default function PrivacyPolicy({
               {t("policyContent.S8.title")}
             </h2>
             <p>{t("policyContent.S8.content.1")}</p>
+            <br />
             <p>{t("policyContent.S8.content.2")}</p>
           </section>
 
@@ -396,7 +436,7 @@ export default function PrivacyPolicy({
               {t("policyContent.S9.title")}
             </h2>
             <p>{t("policyContent.S9.content.1")}</p>
-
+            <br />
             <div className="overflow-x-auto my-4">
               <table className="min-w-full border text-xs">
                 <thead>
@@ -557,6 +597,7 @@ export default function PrivacyPolicy({
               {t("policyContent.S10.title")}
             </h2>
             <p>{t("policyContent.S10.content.1")}</p>
+            <br />
             <p>{t("policyContent.S10.content.2")}</p>
           </section>
 
@@ -574,19 +615,21 @@ export default function PrivacyPolicy({
               </a>{" "}
               {t("policyContent.S11.content.1.3")}
             </p>
-            <p>
-              {t("policyContent.S11.content.2.1")}
-              <br />
-              {t("policyContent.S11.content.2.2")}
-              <br />
-              {t("policyContent.S11.content.2.3")}
-              <br />
-              {t("policyContent.S11.content.2.4")}
-            </p>
+            <div className="mt-4 ml-4">
+              <p>
+                {t("policyContent.S11.content.2.1")}
+                <br />
+                {t("policyContent.S11.content.2.2")}
+                <br />
+                {t("policyContent.S11.content.2.3")}
+                <br />
+                {t("policyContent.S11.content.2.4")}
+              </p>
+            </div>
           </section>
 
           <section id="section-12">
-            <h2 className="font-semibold text-app-dark-blue mb-2 mt-6">
+            <h2 className="font-semibold text-app-dark-blue mb-2 mt-6 ">
               {t("policyContent.S12.title")}
             </h2>
             <p>
