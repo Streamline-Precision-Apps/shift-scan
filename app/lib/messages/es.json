@@ -1300,29 +1300,7 @@
     "Cancel": "Cancelar"
   },
   "Hamburger-Policy": {
-    "PrivacyPolicy": "Política de privacidad",
-    "lastUpdated": "Última actualización 08 de diciembre de 2025",
-    "introTitle": "Bienvenido a nuestra Política de Privacidad",
-    "introText": "Este Aviso de Privacidad para Streamline Precision LLC (\"nosotros\", \"nos\" o \"nuestro\") describe cómo y por qué podemos acceder, recopilar, almacenar, usar y/o compartir (\"procesar\") su información personal cuando utiliza nuestros servicios, incluyendo cuando usa la aplicación Shift Scan.",
-    "summaryTitle": "Resumen de puntos clave",
-    "summaryPoint1": "Recopilamos información personal y del dispositivo para proporcionar y mejorar nuestros servicios.",
-    "summaryPoint2": "Usted controla los permisos para cámara, ubicación y notificaciones en la configuración de su dispositivo.",
-    "summaryPoint3": "No vendemos sus datos. Usamos cookies solo para seguridad, funcionalidad y análisis.",
-    "infoTitle": "¿Qué información recopilamos?",
-    "infoPersonal": "Información personal que usted proporciona (como nombre, correo electrónico o datos de contacto).",
-    "infoDevice": "Información del dispositivo y uso (como modelo, sistema operativo, dirección IP y uso de la app).",
-    "infoPermissions": "Permisos para cámara, ubicación y otras funciones (solo si usted otorga acceso).",
-    "infoNotifications": "Preferencias y configuraciones de notificaciones.",
-    "processingTitle": "¿Cómo procesamos su información?",
-    "processingPoint1": "Para proporcionar, mejorar y proteger nuestros servicios.",
-    "processingPoint2": "Para comunicarnos con usted y cumplir con requisitos legales.",
-    "sharingTitle": "¿Cuándo y con quién compartimos su información?",
-    "sharingPoint1": "Con proveedores de servicios según sea necesario para operar la app (nunca para publicidad).",
-    "sharingPoint2": "Si lo exige la ley o para proteger derechos y seguridad.",
-    "cookiesTitle": "¿Usamos cookies y tecnologías de seguimiento?",
-    "cookiesText": "Usamos cookies y tecnologías similares solo para seguridad, funcionalidad y análisis interno. No las usamos para publicidad ni para rastrearlo en otros sitios.",
-    "contactTitle": "¿Preguntas o inquietudes?",
-    "contactText": "Si tiene preguntas o inquietudes sobre esta política, contáctenos en support@streamlineprecision.com."
+    "PrivacyPolicy": "Política de privacidad"
   },
   "Components": {
     "CropImage": "Imagen de cultivo"
@@ -1541,5 +1519,365 @@
   "Animations": {
     "cancel": "Cancelar",
     "delete": "Eliminar"
+  },
+  "PrivacyPolicy": {
+    "title": "Política de privacidad de la aplicación Shift Scan",
+    "lastUpdated": "Última actualización 08 de diciembre de 2025",
+    "policyContent": {
+      "Intro": "Este Aviso de privacidad para Streamline Precision LLC (\"nosotros\", \"nos\" o \"nuestro\") describe cómo y por qué podemos acceder, recopilar, almacenar, usar y/o compartir (\"procesar\") su información personal cuando utiliza nuestros servicios (\"Servicios\"), incluso cuando usted:",
+      "S0": {
+        "1": {
+          "1": "Visite nuestro sitio web en",
+          "2": "https://shiftscanapp.com",
+          "3": "o cualquier sitio web nuestro que enlace a este Aviso de Privacidad"
+        },
+        "2": {
+          "1": "Descargue y utilice nuestras aplicaciones móviles (Shift Scan), o cualquier otra aplicación nuestra que enlace con este Aviso de Privacidad."
+        },
+        "3": {
+          "1": "Utilice la exploración por turnos. "
+        },
+        "4": {
+          "1": "Interactuar con nosotros de otras formas relacionadas, incluido cualquier marketing o evento."
+        },
+        "5": {
+          "1": "¿Preguntas o inquietudes? ",
+          "2": "soporte@shiftscan.com"
+        },
+        "6": {
+          "1": "Resumen de puntos clave"
+        },
+        "7": {
+          "1": "Este resumen proporciona puntos clave de nuestro aviso de privacidad, pero puede encontrar más detalles sobre cualquiera de estos temas haciendo clic en el enlace que sigue a cada punto clave o utilizando nuestra tabla de contenido a continuación para encontrar la sección que está buscando."
+        },
+        "8": {
+          "1": "¿Qué datos personales procesamos?",
+          "2": "Cuando visita, utiliza o navega por nuestros servicios, podemos procesar información personal dependiendo de cómo interactúa con nosotros y los servicios, las elecciones que realiza y los productos y funciones que utiliza. "
+        },
+        "9": {
+          "1": "¿Procesamos alguna información personal sensible?",
+          "2": "Parte de la información puede considerarse especial o confidencial en determinadas jurisdicciones, por ejemplo, su origen racial o étnico, orientaciones sexuales y creencias religiosas. "
+        },
+        "10": {
+          "1": "¿Recopilamos alguna información de terceros?",
+          "2": "Compartimos información en situaciones específicas con afiliados, socios comerciales y proveedores de servicios (incluidos servicios como Google Maps Platform). "
+        },
+        "11": {
+          "1": "¿Cómo procesamos su información?",
+          "2": "Procesamos su información para proporcionar, mejorar y administrar nuestros servicios, comunicarnos con usted, por motivos de seguridad y prevención de fraude, y para cumplir con la ley. "
+        },
+        "12": {
+          "1": "¿En qué situaciones y con qué partes compartimos información personal?",
+          "2": " Compartimos información en situaciones específicas con terceros específicos. "
+        },
+        "13": {
+          "1": "¿Cómo mantenemos segura su información?",
+          "2": "Contamos con procesos y procedimientos organizativos y técnicos adecuados para proteger su información personal. "
+        },
+        "14": {
+          "1": "¿Cuales son tus derechos?",
+          "2": "Dependiendo de dónde se encuentre geográficamente, las leyes de privacidad aplicables pueden significar que usted tiene ciertos derechos con respecto a su información personal. "
+        },
+        "15": {
+          "1": "¿Quiere obtener más información sobre lo que hacemos con la información que recopilamos?",
+          "2": "Revisa el aviso de Privacidad en su totalidad."
+        }
+      },
+      "Toc": {
+        "1": "¿Qué información recopilamos?",
+        "2": "¿Cómo procesamos su información?",
+        "3": "¿Cuándo y con quién compartimos su información personal?",
+        "4": "¿Utilizamos cookies y otras tecnologías de seguimiento?",
+        "5": "¿Cuánto tiempo conservamos su información?",
+        "6": "¿Cómo mantenemos segura su información?",
+        "7": "¿Cuáles son sus derechos de privacidad?",
+        "8": "Controles para funciones de No seguimiento",
+        "9": "¿Tienen los residentes de Estados Unidos derechos de privacidad específicos?",
+        "10": "¿Hacemos actualizaciones a este aviso?",
+        "11": "¿Cómo puede contactarnos sobre este aviso?",
+        "12": "¿Cómo puede revisar, actualizar o eliminar los datos que recopilamos sobre usted?",
+        "title": "TABLA DE CONTENIDO"
+      },
+      "S1": {
+        "title": "1. ¿QUÉ INFORMACIÓN RECOGEMOS?",
+        "content": {
+          "1": "Información personal que usted nos revela",
+          "2": "En resumen: recopilamos la información personal que usted nos proporciona.",
+          "3": "Recopilamos información personal que usted nos proporciona voluntariamente cuando se registra en los servicios, expresa interés en obtener información sobre nosotros o nuestros productos y servicios, cuando participa en actividades en el servicio o cuando se comunica con nosotros.",
+          "4": "Información personal proporcionada por usted. ",
+          "5": {
+            "1": "nombre",
+            "2": "números de teléfono",
+            "3": "direcciones de correo electrónico",
+            "4": "nombres de usuario",
+            "5": "contraseñas",
+            "6": "ubicación",
+            "7": "fecha de nacimiento",
+            "8": "firma"
+          },
+          "6": {
+            "1": "Información sensible.",
+            "2": "No procesamos información sensible."
+          },
+          "7": "Datos de la aplicación.",
+          "8": "Si utiliza nuestra(s) aplicación(es), también podemos recopilar la siguiente información si decide brindarnos acceso o permiso:",
+          "9": {
+            "1": "Información biométrica.",
+            "2": " Nuestra aplicación puede permitirle utilizar funciones nativas del dispositivo, como huellas dactilares o reconocimiento facial, para acceder o verificar la cuenta. "
+          },
+          "10": {
+            "1": "Acceso a dispositivos móviles.",
+            "2": "Podemos solicitar acceso o permiso a ciertas funciones de su dispositivo móvil, incluida la cámara de su dispositivo móvil, el carrete de la cámara y otras funciones. "
+          },
+          "11": {
+            "1": "Datos del dispositivo móvil.",
+            "2": "Recopilamos automáticamente información del dispositivo (como la ID de su dispositivo móvil, modelo y fabricante), sistema operativo, información de versión e información de configuración del sistema, números de identificación de dispositivo y aplicación, tipo y versión del navegador, modelo de hardware, proveedor de servicios de Internet y/o operador de telefonía móvil, y dirección de Protocolo de Internet (IP) (o servidor proxy). "
+          },
+          "12": {
+            "1": "Notificaciones push.",
+            "2": "Es posible que solicitemos enviarle notificaciones automáticas sobre su cuenta o ciertas características de su(s) aplicación(es). "
+          },
+          "13": "Esta información es necesaria principalmente para mantener la seguridad y las operaciones de nuestras aplicaciones, para la resolución de problemas y con fines de análisis e informes internos.",
+          "14": "Toda la información personal que nos proporcione debe ser verdadera, completa y precisa, y debe notificarnos cualquier cambio en dicha información personal.",
+          "15": "Información recopilada automáticamente",
+          "16": "En resumen: cierta información, como su dirección de Protocolo de Internet (IP) y/o las características del navegador y del dispositivo, se recopila automáticamente cuando visita nuestros Servicios.",
+          "17": "Recopilamos automáticamente cierta información cuando visita, utiliza o navega por los Servicios. ",
+          "18": "Como muchas empresas, también recopilamos información a través de cookies y tecnologías similares.",
+          "19": "La información que recopilamos incluye:",
+          "20": {
+            "1": "Datos de registro y uso.",
+            "2": "Los datos de registro y uso son información relacionada con la función, la seguridad y el rendimiento de nuestros servicios, que nuestros servidores recopilan automáticamente cuando usted accede o utiliza la aplicación o el sitio web Shift Scan. "
+          },
+          "21": {
+            "1": "Datos del dispositivo.",
+            "2": "Recopilamos datos del dispositivo, como información sobre su computadora, teléfono, tableta u otros dispositivos que utiliza para acceder a los servicios. "
+          },
+          "22": {
+            "1": "Datos de ubicación.",
+            "2": "Recopilamos datos de ubicación, como información sobre la ubicación de su dispositivo, que puede ser precisa o imprecisa. "
+          },
+          "23": {
+            "1": "API de Google",
+            "2": " Nuestro uso de la información recibida de las API de Google se ajustará a la Política de datos de usuario del servicio API de Google, incluidos los requisitos de uso limitado."
+          }
+        }
+      },
+      "S2": {
+        "title": " 2. ¿CÓMO PROCESAMOS TU INFORMACIÓN?",
+        "content": {
+          "1": "En resumen: procesamos su información para proporcionar, mejorar y administrar nuestros servicios, comunicarnos con usted, por seguridad y prevención de fraude, y para cumplir con la ley. ",
+          "2": "Procesamos su información personal por diversos motivos dependiendo de cómo interactúa con nuestros servicios, que incluyen:",
+          "3": "Para facilitar la creación y autenticación de cuentas y administrar las cuentas de los usuarios. ",
+          "4": "Entregar y facilitar la prestación de servicios al usuario. ",
+          "5": "Responder a las consultas de los usuarios/ofrecer soporte a los usuarios. ",
+          "6": " Para enviarle información administrativa. ",
+          "7": "Para cumplir y gestionar sus pedidos. ",
+          "8": "Para permitir a los usuarios utilizar su comunicación. ",
+          "9": "Para solicitar comentarios. ",
+          "10": "Para enviarle comunicaciones promocionales y de marketing. ",
+          "11": "Para publicar testimonios. ",
+          "12": "Para proteger nuestros servicios. ",
+          "13": "Evaluar y mejorar nuestros servicios, productos, marketing y su experiencia. ",
+          "14": "Identificar tendencias de uso. ",
+          "15": "Determinar la efectividad de nuestras campañas de marketing y promoción. ",
+          "16": "Para cumplir con nuestras obligaciones legales. "
+        }
+      },
+      "S3": {
+        "title": "3. ¿CUÁNDO Y CON QUIÉN COMPARTIMOS TU INFORMACIÓN PERSONAL?",
+        "content": {
+          "1": "En resumen: podemos compartir información en situaciones específicas descritas en esta sección y/o con los siguientes terceros.",
+          "2": "Es posible que necesitemos compartir su información personal en las siguientes situaciones:",
+          "3": {
+            "1": "Transferencias de negocios.",
+            "2": "Podemos compartir o transferir su información en relación con, o durante las negociaciones de, cualquier fusión, venta de activos de la empresa, financiación o adquisición de todo o una parte de nuestro negocio a otra empresa."
+          },
+          "4": {
+            "1": "Cuando utilizamos las API de la plataforma Google Maps.",
+            "2": "Podemos compartir su información con ciertas API de la plataforma Google Map (por ejemplo, API de Google Map, API de Places). "
+          },
+          "5": {
+            "1": "Afiliados.",
+            "2": "Podemos compartir su información con nuestros Afiliados, en cuyo caso les exigiremos que respeten este aviso de privacidad. "
+          },
+          "6": {
+            "1": "Socios comerciales.",
+            "2": "Podemos compartir su información con nuestros socios comerciales para ofrecerle ciertos productos, servicios o promociones."
+          },
+          "7": {
+            "1": "Otros usuarios.",
+            "2": "Cuando comparte información personal (por ejemplo, al publicar comentarios, contribuciones u otro contenido en los servicios) o interactúa de otro modo con áreas públicas de los servicios, dicha información personal puede ser vista por todos los usuarios y puede estar disponible públicamente fuera de los servicios a perpetuidad. "
+          }
+        }
+      },
+      "S4": {
+        "title": "4. ¿UTILIZAMOS COOKIES Y OTRAS TECNOLOGÍAS DE SEGUIMIENTO?",
+        "content": {
+          "1": "En resumen: podemos utilizar cookies y otras tecnologías de seguimiento para recopilar y almacenar información.",
+          "2": "Podemos utilizar cookies y tecnologías de seguimiento similares (como balizas web y píxeles) para recopilar información cuando interactúa con nuestros servicios. ",
+          "3": "No permitimos que terceros o proveedores de servicios utilicen tecnologías de seguimiento en línea en nuestros servicios para adaptar anuncios a sus intereses, rastrear su actividad en otros sitios web o con fines de publicidad conductual que constituirían una \"venta\" o \"compartición\" de información personal según las leyes estatales de EE. UU. aplicables. ",
+          "4": "En la medida en que estas Tecnologías de seguimiento en línea se consideren una “venta”/”compartir” (que incluye publicidad dirigida, según se define en las leyes aplicables) según las leyes estatales aplicables de EE. UU., usted puede optar por no participar en estas Tecnologías de seguimiento en línea enviando una solicitud como se describe a continuación en la sección “¿TIENEN LOS RESIDENTES DE ESTADOS UNIDOS DERECHOS DE PRIVACIDAD ESPECÍFICOS?”",
+          "5": "En nuestro aviso de cookies se establece información específica sobre cómo utilizamos dichas Tecnologías y cómo puede rechazar determinadas cookies."
+        }
+      },
+      "S5": {
+        "title": "5. ¿CUÁNTO TIEMPO CONSERVAMOS TU INFORMACIÓN?",
+        "content": {
+          "1": "En resumen: conservamos su información durante el tiempo que sea necesario para cumplir con los fines descritos en el aviso de privacidad a menos que la ley exija lo contrario.",
+          "2": "Solo conservaremos su información personal durante el tiempo que sea necesario para el propósito establecido en el Aviso de privacidad, a menos que la ley exija o permita una retención más prolongada (como requisitos fiscales, contables u otros requisitos legales). ",
+          "3": "Cuando no tengamos necesidades comerciales legítimas continuas para procesar su información personal, eliminaremos o anonimizaremos dicha información o, si esto no es posible (por ejemplo, porque su información personal se ha almacenado en archivos de respaldo), almacenaremos de forma segura su información personal y la aislaremos de cualquier procesamiento posterior hasta que sea posible eliminarla."
+        }
+      },
+      "S6": {
+        "title": "6. ¿CÓMO MANTENEMOS SU INFORMACIÓN SEGURA?",
+        "content": {
+          "1": "En resumen: nuestro objetivo es proteger su información personal a través de un sistema de medidas de seguridad organizativas y técnicas.",
+          "2": "Hemos implementado medidas de seguridad técnicas y organizativas apropiadas y razonables diseñadas para proteger la seguridad de su información personal. "
+        }
+      },
+      "S7": {
+        "title": "7. ¿CUÁLES SON TUS DERECHOS DE PRIVACIDAD?",
+        "content": {
+          "1": "En resumen: puede revisar, cambiar o cancelar su cuenta en cualquier momento, dependiendo de su país, provincia o estado de residencia.",
+          "2": {
+            "1": "Retirar su consentimiento:",
+            "2": "Si confiamos en su consentimiento para procesar su información personal, que puede ser un consentimiento expreso y/o implícito según la ley aplicable, tiene derecho a retirar su consentimiento en cualquier momento. "
+          },
+          "3": "Sin embargo, tenga en cuenta que esto no afectará la legalidad del procesamiento antes de su retirada ni, cuando la ley aplicable lo permita, afectará el procesamiento de su información personal realizado en Reliance por motivos de procesamiento legal distintos del consentimiento.",
+          "4": {
+            "1": "Optar por no recibir comunicaciones promocionales y de marketing:",
+            "2": "Puede darse de baja de nuestras Comunicaciones promocionales y de marketing en cualquier momento haciendo clic en el enlace para cancelar la suscripción en los correos electrónicos que le enviamos, o comunicándose con nosotros utilizando los detalles proporcionados en esta sección \"¿CÓMO PUEDE CONTACTARNOS SOBRE ESTE AVISO?\" "
+          },
+          "5": "INFORMACIÓN DE LA CUENTA",
+          "6": "Si en algún momento desea revisar o cambiar la información de su cuenta o cancelarla, puede:",
+          "7": "Editar información personal en su página de perfil",
+          "8": "Puede comunicarse con el administrador de su cuenta para editar y cancelar su cuenta.",
+          "9": " El administrador de su cuenta puede editar/cancelar su cuenta siempre que",
+          "10": "Si solicita cancelar su cuenta, desactivaremos o eliminaremos sus cuentas e información de nuestras bases de datos activas. ",
+          "11": {
+            "1": "Cookies y tecnologías similares:",
+            "2": "La mayoría de los navegadores web están configurados para aceptar cookies de forma predeterminada. "
+          },
+          "12": {
+            "1": "Si tiene alguna pregunta o comentario sobre sus derechos de privacidad, puede enviarnos un correo electrónico a",
+            "2": "soporte@shiftscan.com."
+          }
+        }
+      },
+      "S8": {
+        "title": "8. CONTROLES PARA FUNCIONES DE NO SEGUIMIENTO",
+        "content": {
+          "1": "La mayoría de los navegadores web y algunos sistemas operativos y aplicaciones móviles incluyen una función o configuración de No rastrear (“DNT”) que puede activar para indicar su preferencia de privacidad de que no se supervisen ni recopilen datos sobre su actividad de navegación en línea. ",
+          "2": "La ley de California nos exige que le informemos cómo respondemos a las señales DNT del navegador web. "
+        }
+      },
+      "S9": {
+        "title": "9. ¿TIENEN LOS RESIDENTES DE ESTADOS UNIDOS DERECHOS DE PRIVACIDAD ESPECÍFICOS?",
+        "content": {
+          "1": "En resumen: si es residente de California, Colorado, Connecticut, Delaware, Florida, Indiana, Iowa, Kentucky, Maryland, Minnesota, Montana, Nebraska, New Hampshire, Nueva Jersey, Oregón, Rhode Island, Tennessee, Texas, Utah, Virginia, puede tener derecho a solicitar acceso y recibir detalles sobre la información personal que mantenemos sobre usted y cómo la hemos procesado, corregir imprecisiones, obtener una copia o eliminar su información personal. ",
+          "Table": {
+            "TH": {
+              "1": "Categoría",
+              "2": "Ejemplos",
+              "3": "Coleccionado"
+            },
+            "TB": {
+              "A": {
+                "1": "A. Identificadores",
+                "2": "Detalles de contacto, como nombre real, alias, dirección postal, número de contacto telefónico o móvil, identificador personal único, identificador en línea, dirección de protocolo de Internet, dirección de correo electrónico y nombre de cuenta.",
+                "3": "SÍ"
+              },
+              "B": {
+                "1": "B. Información personal según se define en el estatuto de Registros de clientes de California",
+                "2": "Nombre, información de contacto, educación, empleo, historial laboral e información financiera.",
+                "3": "SÍ"
+              },
+              "C": {
+                "1": "C. Características de clasificación protegidas según la ley estatal o federal",
+                "2": "Género, edad, fecha de nacimiento, raza y origen étnico, origen nacional, estado civil y otros datos demográficos.",
+                "3": "NO"
+              },
+              "D": {
+                "1": "D. Información comercial",
+                "2": "Información de transacciones, historial de compras, detalles financieros e información de pago.",
+                "3": "NO"
+              },
+              "E": {
+                "1": "E. Información biométrica",
+                "2": "Huellas dactilares y de voz",
+                "3": "NO"
+              },
+              "F": {
+                "1": "F. Internet u otra actividad de red similar",
+                "2": "Historial de navegación, historial de búsqueda, comportamiento en línea, datos de interés e interacciones con nuestros sitios web, aplicaciones, sistemas y anuncios y otros",
+                "3": "NO"
+              },
+              "G": {
+                "1": "G. Datos de geolocalización",
+                "2": "Ubicación del dispositivo",
+                "3": "SÍ"
+              },
+              "H": {
+                "1": "H. Información de audio, electrónica, sensorial o similar",
+                "2": "Imágenes y grabaciones de audio, vídeo o llamadas creadas en relación con nuestras actividades comerciales.",
+                "3": "NO"
+              },
+              "I": {
+                "1": "I. Información profesional o laboral",
+                "2": "Datos de contacto comercial para brindarle nuestros servicios a nivel comercial o puesto de trabajo, historial laboral y calificaciones profesionales si solicita un trabajo con nosotros.",
+                "3": "SÍ"
+              },
+              "J": {
+                "1": "J. Información educativa",
+                "2": "Registros estudiantiles e información del directorio",
+                "3": "NO"
+              },
+              "K": {
+                "1": "K. Inferencias extraídas de otra información personal",
+                "2": "Inferencias extraídas de cualquiera de la información personal recopilada enumerada anteriormente para crear un perfil o resumen sobre, por ejemplo, las preferencias y características de un individuo.",
+                "3": "NO"
+              },
+              "L": {
+                "1": "L. Información personal confidencial",
+                "2": "",
+                "3": "Número de Seguro Social, número de licencia de conducir, número de tarjeta de identificación estatal, número de pasaporte u otros identificadores similares; "
+              }
+            }
+          }
+        }
+      },
+      "S10": {
+        "title": "10. ¿ACTUALIZAMOS ESTE AVISO?",
+        "content": {
+          "1": " En resumen: Sí, actualizaremos este aviso según sea necesario para cumplir con las leyes pertinentes.",
+          "2": "Podemos actualizar este Aviso de Privacidad de vez en cuando. "
+        }
+      },
+      "S11": {
+        "title": "11. ¿CÓMO PUEDE CONTACTARNOS SOBRE ESTE AVISO?",
+        "content": {
+          "1": {
+            "1": "Si tiene preguntas o comentarios sobre este aviso, puede enviarnos un correo electrónico a",
+            "2": "soporte@streamlineprecision.com",
+            "3": "o contáctenos por correo postal a:"
+          },
+          "2": {
+            "1": "Optimice la precisión LLC",
+            "2": "120S 100W",
+            "3": "Burley, identificación 83318",
+            "4": "Estados Unidos"
+          }
+        }
+      },
+      "S12": {
+        "title": "12. ¿CÓMO PUEDES REVISAR, ACTUALIZAR O ELIMINAR LOS DATOS QUE RECOPILAMOS DE TI?",
+        "content": {
+          "1": {
+            "1": "Según las leyes aplicables de su país o estado de residencia en los EE. UU., puede tener derecho a solicitar acceso a la información personal que recopilamos de usted, detalles sobre cómo la hemos procesado, corregir inexactitudes o eliminar su información personal. ",
+            "2": "solicitud de acceso del interesado."
+          }
+        }
+      }
+    }
   }
 }

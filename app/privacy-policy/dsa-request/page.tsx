@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function DataSubjectAccessRequestPage() {
@@ -16,6 +17,8 @@ export default function DataSubjectAccessRequestPage() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
 
   const isFormComplete =
     form.website &&
@@ -82,17 +85,17 @@ export default function DataSubjectAccessRequestPage() {
       <div className="relative z-10 w-full max-w-2xl">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
           {/* Sticky Header */}
-          <div className="sticky top-0 bg-white/98 backdrop-blur-sm border-b border-gray-200 p-6 md:p-8 z-10">
+          <div className="sticky top-0 bg-white/98 backdrop-blur-sm border-b border-gray-200 p-4 md:p-5 z-10">
             <div className="text-center">
               <img
                 src="/windows11/StoreLogo.scale-400.png"
                 alt="Shift Scan Logo"
-                className="h-16 w-auto mx-auto mb-4 rounded-lg"
+                className="h-16 w-auto mx-auto rounded-lg"
               />
-              <h1 className="text-2xl font-bold text-app-dark-blue mb-2">
+              <h1 className="text-lg font-bold text-app-dark-blue">
                 Data Subject Access Request
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm">
                 Please complete this form to submit a data subject access
                 request.
               </p>
@@ -272,7 +275,11 @@ export default function DataSubjectAccessRequestPage() {
           <div className="sticky bottom-0 bg-white/98 backdrop-blur-sm border-t border-gray-200 p-4 z-10">
             <div className="flex items-center justify-between">
               <a
-                href="/"
+                href={
+                  returnUrl === "/v1/hamburger/privacyPolicy"
+                    ? "/v1/hamburger/privacyPolicy"
+                    : "/"
+                }
                 className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
               >
                 ← Back to Home
