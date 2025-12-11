@@ -1,89 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Capacitor } from "@capacitor/core";
-import { useEffect, useState } from "react";
-import { useUserStore } from "./lib/store/userStore";
-import { useProfitStore } from "./lib/store/profitStore";
-import { useEquipmentStore } from "./lib/store/equipmentStore";
-import { useCostCodeStore } from "./lib/store/costCodeStore";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./v1/components/ui/popover";
-import { getApiUrl } from "./lib/utils/api-Utils";
 
 export default function Home() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const isNative = Capacitor.isNativePlatform();
-
-  const redirectAfterAuth = () => {
-    const target = isNative ? "/v1" : "/admins";
-    router.push(target);
-  };
-
-  useEffect(() => {
-    const redirectIfMobile = async () => {
-      if (isNative) {
-        const token = localStorage.getItem("jwt");
-        const userId = localStorage.getItem("userId");
-        const url = getApiUrl();
-
-        if (token && userId) {
-          try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            if (Date.now() < payload.exp * 1000) {
-              // User logged in → call init API
-              const response = await fetch(`${url}/api/v1/init`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ token, userId }),
-              });
-              const data = await response.json();
-              if (data.user) {
-                useUserStore.getState().setUser(data.user);
-              }
-              if (data.jobsites) {
-                useProfitStore.getState().setJobsites(data.jobsites);
-              }
-              if (data.equipments) {
-                useEquipmentStore.getState().setEquipments(data.equipments);
-              }
-              if (data.costCodes) {
-                useCostCodeStore.getState().setCostCodes(data.costCodes);
-              }
-              if (useUserStore.getState().user?.accountSetup === false) {
-                router.replace("/signin/signup");
-                return;
-              }
-
-              redirectAfterAuth();
-              return;
-            }
-          } catch {
-            localStorage.removeItem("jwt");
-          }
-        }
-
-        router.replace("/signin"); // not logged in
-      }
-
-      setLoading(false); // web shows landing page
-    };
-
-    redirectIfMobile();
-  }, [router, isNative]);
-
-  if (isNative && loading) return null;
-
-  if (loading)
-    return (
-      <div>
-        <main className="relative min-h-screen max-h-screen overflow-hidden bg-app-gradient bg-to-br from-app-dark-blue via-app-blue to-app-blue px-2 md:px-8 py-0 flex flex-col items-center justify-center"></main>
-      </div>
-    );
 
   return (
     <main className="relative min-h-screen max-h-screen overflow-hidden bg-app-gradient bg-to-br from-app-dark-blue via-app-blue to-app-blue px-2 md:px-8 py-0 flex flex-col items-center justify-center">
@@ -122,7 +41,9 @@ export default function Home() {
             Book a Demo
           </button>
           <button
-            onClick={() => router.push("/signin")}
+            onClick={() =>
+              router.push("https://dashboard.shiftscanapp.com/signin")
+            }
             className="w-full md:w-auto bg-white hover:bg-white/80 text-app-dark-blue font-bold py-3 px-8 rounded-xl shadow-lg text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-app-blue cursor-pointer"
             type="button"
           >

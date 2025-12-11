@@ -11,11 +11,6 @@ export function proxy(request: NextRequest) {
       userAgent
     );
 
-  // Check if it's running in Capacitor (mobile app)
-  const isCapacitor =
-    request.headers.get("x-capacitor") ||
-    request.nextUrl.searchParams.get("capacitor") === "true";
-
   return NextResponse.next();
 }
 
